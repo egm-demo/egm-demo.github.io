@@ -53,7 +53,7 @@ td.p{white-space:nowrap;color:var(--mut)}
 </style></head><body>
 <header><div class="w">
 <h1><span>ЕГМ</span> · Очистка Excel от личных данных</h1>
-<p>Загрузите таблицу, и программа уберёт из неё телефоны, ФИО и инициалы, ИНН и электронные почты. Оформление, формулы и листы остаются как были.</p>
+<p>Загрузите таблицу, и программа уберёт из неё телефоны, ФИО и инициалы, ИНН, электронные почты, СНИЛС, паспорта, номера карт и госномера. Оформление, формулы и листы остаются как были.</p>
 <div class="lock">🔒 Файл не отправляется в интернет: вся обработка идёт на этом компьютере</div>
 </div></header>
 <main class="w">
@@ -70,6 +70,10 @@ td.p{white-space:nowrap;color:var(--mut)}
       <label><input type="checkbox" id="o_name" checked><span>ФИО и инициалы<small>Иванов И.И., И. Иванов, Иванов Иван Иванович, Сергей Петров</small></span></label>
       <label><input type="checkbox" id="o_inn" checked><span>ИНН<small>10 и 12 цифр, проверяется по контрольной сумме</small></span></label>
       <label><input type="checkbox" id="o_email" checked><span>Электронные почты<small>и ссылки mailto: в ячейках</small></span></label>
+      <label><input type="checkbox" id="o_snils" checked><span>СНИЛС<small>112-233-445 95, проверяется по контрольной сумме</small></span></label>
+      <label><input type="checkbox" id="o_passport" checked><span>Паспорта<small>серия и номер: 45 12 345678, «паспорт 4512 № 345678»</small></span></label>
+      <label><input type="checkbox" id="o_card" checked><span>Номера банковских карт<small>16–19 цифр, проверяются по алгоритму Луна. Расчётные счета не трогает</small></span></label>
+      <label><input type="checkbox" id="o_plate" checked><span>Госномера машин и прицепов<small>А123ВС777, А 123 ВС 50, АВ 1234 77</small></span></label>
       <label><input type="checkbox" id="o_meta" checked><span>Автора файла и комментариев<small>имя того, кто создал и правил файл</small></span></label>
     </div>
     <div>
@@ -77,7 +81,7 @@ td.p{white-space:nowrap;color:var(--mut)}
       <label><input type="radio" name="mode" value="label" checked><span>Метками: [Телефон 1], [ФИО 2]<small>одинаковые данные получают одну метку, видно, где один и тот же человек</small></span></label>
       <label><input type="radio" name="mode" value="stars"><span>Звёздочками: ***</span></label>
       <label><input type="radio" name="mode" value="empty"><span>Оставить ячейку пустой</span></label>
-      <p class="how" style="margin:12px 0 0"><b>Столбцы</b> с заголовками «Телефон», «ФИО», «Контактное лицо», «Водитель», «ИНН», «Email» и похожими очищаются целиком, даже если данные записаны необычно.</p>
+      <p class="how" style="margin:12px 0 0"><b>Столбцы</b> с заголовками «Телефон», «ФИО», «Контактное лицо», «Водитель», «ИНН», «Email», «СНИЛС», «Паспорт», «Карта», «Госномер» и похожими очищаются целиком, даже если данные записаны необычно.</p>
     </div>
   </div>
 </section>
@@ -99,7 +103,15 @@ const W=`[${UP}][${LO}]+(?:-[${UP}][${LO}]+)?`;
 const PAT=`[${UP}][${LO}]+(?:вич|вна|чна|ьич)`;
 const FIRST='Александр Алексей Анатолий Андрей Антон Аркадий Арсений Артём Артем Артур Богдан Борис Вадим Валентин Валерий Василий Виктор Виталий Владимир Владислав Всеволод Вячеслав Геннадий Георгий Глеб Григорий Давид Даниил Данил Денис Дмитрий Евгений Егор Ефим Захар Иван Игорь Илья Иннокентий Кирилл Константин Леонид Максим Марат Матвей Михаил Никита Николай Олег Павел Пётр Петр Роман Руслан Рустам Савелий Святослав Семён Семен Сергей Станислав Степан Тимофей Тимур Фёдор Федор Эдуард Юрий Ярослав Ринат Ильдар Рашид Шамиль Айдар Азат Алишер Фарход Бахтиёр Бахтиер Анвар Рамиль Александра Алёна Алена Алина Алла Анастасия Ангелина Анна Антонина Валентина Валерия Вероника Виктория Галина Дарья Диана Евгения Екатерина Елена Елизавета Жанна Зинаида Зоя Инна Ирина Карина Кристина Ксения Лариса Лидия Людмила Маргарита Марина Мария Наталья Наталия Нина Оксана Ольга Полина Раиса Светлана София Софья Тамара Татьяна Ульяна Эльвира Юлия'.split(' ').join('|');
 const SUR=`[${UP}][${LO}]*(?:ов|ев|ёв|ин|ын|ский|цкий|ской|енко|ук|юк|чук|ян|дзе|швили|ова|ева|ёва|ина|ына|ская|цкая|их|ых)`;
+const PL='АВЕКМНОРСТУХABEKMHOPCTYX';
 const RE={
+  card:/(?<![\d*])\d{4}(?:[ \-]?\d{4}){3}(?:[ \-]?\d{1,3})?(?![\d*])/g,
+  snils:/(?<!\d)\d{3}[\- ]?\d{3}[\- ]?\d{3}[\- ]{0,2}\d{2}(?!\d)/g,
+  snilsLab:/(СНИЛС\s*[:№]?\s*)(\d{3}[\- ]?\d{3}[\- ]?\d{3}[\- ]{0,2}\d{2}|\d{11})(?!\d)/gi,
+  passLab:/((?:паспорт[а-яё]*(?:\s+(?:гражданина\s+)?РФ)?|серия)\s*[:№]?\s*(?:серия\s*)?)(\d{2}\s?\d{2}\s*(?:№|номер|N)?\s*\d{6})(?!\d)/gi,
+  passRun:/(?<![\d.,])\d{2} \d{2} \d{6}(?![\d.,])/g,
+  plate:new RegExp(`(?<![${L}\\d])[${PL}] ?\\d{3} ?[${PL}]{2} ?\\d{2,3}(?:\\s?RUS)?(?![${L}\\d])`,'gi'),
+  plateTr:new RegExp(`(?<![${L}\\d])[${PL}]{2} ?\\d{4} ?\\d{2,3}(?![${L}\\d])`,'gi'),
   email:/[A-Za-z0-9._%+\-]+@[A-Za-z0-9А-Яа-яЁё\-]+(?:\.[A-Za-z0-9А-Яа-яЁё\-]+)*\.(?:[A-Za-z]{2,}|рф|РФ)/g,
   innLab:/(ИНН(?:\s*\/\s*КПП)?\s*[:№#]?\s*)(\d{12}|\d{10})(?!\d)/gi,
   innRun:/(?<!\d)(\d{12}|\d{10})(?!\d)/g,
@@ -118,11 +130,15 @@ const RE={
   org:/(^|[^А-Яа-яЁё])(ООО|ОАО|ЗАО|ПАО|НАО|АО|ГУП|МУП|ФГУП|ГБУ|ГКУ|МКУ|LLC|Ltd|Inc)([^А-Яа-яЁё]|$)|«|"/,
 };
 const GEO=new Set(['Москва','Московская','Ростов','Королёв','Королев','Калинин','Пушкин','Иванов','Кстов','Саров','Чехов','Протвин','Электрогорск','Фрязин','Видное','Ленин','Гагарин','Ленина','Гагарина','Пушкина','Кирова','Чехова','Мира','Строгино','Тушино','Медведково','Бирюлево','Дмитровский','Можайский','Ленинский','Волоколамский','Ярославский','Рязанский','Каширский','Мичуринский','Кутузовский','Невский','Гостин','Кремлин','Останкин','Сокольники','Коньково','Петербург','Новгород','Посад','Подольск','Химки','Королёв','Королев','Балашиха','Мытищи','Люберцы','Красногорск','Одинцово','Пушкино','Щёлково','Щелково','Реутов','Домодедово','Раменское','Жуковский','Коломна','Серпухов','Дмитров','Клин','Ногинск','Тверь','Тула','Калуга','Рязань','Область','Обл']);
-const STOP=new Set(['Магазин','Бензин','Керосин','Мандарин','Апельсин','Карантин','Каолин','Аспирин','Пластин','Гравин','Бетонов','Блоков','Заказов','Рейсов','Клиентов','Товаров','Платежей','Итогов','Остатков','Документов','Договоров','Счетов','Адресов','Объектов','Карьеров','Материалов','Поставщиков','Водителей','Грузов','Песков','Звонков','Часов','Дней','Тонн','Кубов','Метров','Литров','Рублей','Процентов','Плюсов','Минусов','Вариантов','Отзывов','Итого','Всего','Нет','Да','Без','Не','Самовывоз','Наличные','Безнал','Отдел','Офис','Склад','Резерв','Свободен','Свободна','Отпуск','Болен','Уволен','Уволена','Все','Любой','Другое','Прочее','Неизвестно','Новый','Новая','Клиент','Менеджер','Водитель','Директор','Бухгалтер','Диспетчер']);
+const STOP=new Set(['Машина','Машины','Машину','Машиной','Машин','Камаз','Камаза','Самосвал','Тягач','Прицеп','Полуприцеп','Фургон','Газель','Маз','Шахман','Howo','Скания','Вольво','Магазин','Бензин','Керосин','Мандарин','Апельсин','Карантин','Каолин','Аспирин','Пластин','Гравин','Бетонов','Блоков','Заказов','Рейсов','Клиентов','Товаров','Платежей','Итогов','Остатков','Документов','Договоров','Счетов','Адресов','Объектов','Карьеров','Материалов','Поставщиков','Водителей','Грузов','Песков','Звонков','Часов','Дней','Тонн','Кубов','Метров','Литров','Рублей','Процентов','Плюсов','Минусов','Вариантов','Отзывов','Итого','Всего','Нет','Да','Без','Не','Самовывоз','Наличные','Безнал','Отдел','Офис','Склад','Резерв','Свободен','Свободна','Отпуск','Болен','Уволен','Уволена','Все','Любой','Другое','Прочее','Неизвестно','Новый','Новая','Клиент','Менеджер','Водитель','Директор','Бухгалтер','Диспетчер']);
 const HDR=[
   ['email',/(e-?mail|эл\.?\s*почт|электронн[а-яё]*\s+почт|^почта|^mail)/i],
   ['phone',/(телефон|^тел(\.|\s|$|[^а-яё])|моб|сотов|whats\s?app|ватсап|вотсап|phone|номер\s+тел)/i],
   ['inn',/(^|[^а-яё])инн([^а-яё]|$)/i],
+  ['snils',/(снилс|страхов[а-яё]*\s+номер)/i],
+  ['passport',/(паспорт|^серия(\s|$)|^удостоверени)/i],
+  ['card',/(номер\s+карт|^карта$|^№\s*карты|банковск[а-яё]*\s+карт|^card)/i],
+  ['plate',/(госномер|гос\.?\s*номер|^г\/н|^гн$|^номер\s+(авто|машин|тс|а\/м)|^авто(мобиль)?$|^машина$|^тс$|^а\/м$|^прицеп$)/i],
   ['name',/(ф\.?\s*и\.?\s*о|фамили|^имя|отчеств|контактн[а-яё]*\s+лиц|^конт\.?\s*лицо|^контакт$|водител|ответственн|менеджер|сотрудник|^директор|руководител|представител|получател|^принял|^сдал|экспедитор|^исполнитель|^диспетчер|^кто\s|^автор|^звонил|^оператор)/i],
 ];
 function hdrKind(t){
@@ -138,24 +154,33 @@ function innOk(d){
   if(d.length===12) return f([7,2,4,10,3,5,9,4,6,8])===n[10] && f([3,7,2,4,10,3,5,9,4,6,8])===n[11];
   return false;
 }
+function snilsOk(d){
+  if(d.length!==11||/^(\d)\1+$/.test(d))return false;
+  let sum=0; for(let i=0;i<9;i++) sum+=(+d[i])*(9-i);
+  let c=sum<100?sum:sum<102?0:sum%101; if(c===100)c=0;
+  return c===+d.slice(9);
+}
+function luhn(d){let s=0;for(let i=0;i<d.length;i++){let x=+d[d.length-1-i];if(i%2){x*=2;if(x>9)x-=9}s+=x}return s%10===0}
+const CYR={A:'А',B:'В',E:'Е',K:'К',M:'М',H:'Н',O:'О',P:'Р',C:'С',T:'Т',Y:'У',X:'Х'};
 function phoneOk(m,numeric){
   const d=digits(m), fmt=/[^\d]/.test(m.trim());
   if(d.length===11) return /^[78]/.test(d);
   if(d.length===10) return fmt ? /^[3-9]/.test(d) : /^9/.test(d);
   return false;
 }
-const TL={phone:'Телефон',name:'ФИО',inn:'ИНН',email:'Email',meta:'Автор'};
+const TL={phone:'Телефон',name:'ФИО',inn:'ИНН',email:'Email',snils:'СНИЛС',passport:'Паспорт',card:'Карта',plate:'Госномер',meta:'Автор'};
 function norm(type,v){
   v=String(v);
   if(type==='phone'){let d=digits(v); if(d.length===11&&d[0]==='8')d='7'+d.slice(1); if(d.length===10)d='7'+d; return d;}
-  if(type==='inn') return digits(v);
+  if(type==='inn'||type==='snils'||type==='card'||type==='passport') return digits(v);
+  if(type==='plate') return v.toUpperCase().replace(/\s|RUS/g,'').replace(/[ABEKMHOPCTYX]/g,c=>CYR[c]);
   return v.toLowerCase().replace(/ё/g,'е').replace(/[\s.]+/g,' ').trim();
 }
-function makeCtx(opt){return{opt,map:new Map(),cnt:{phone:0,name:0,inn:0,email:0,meta:0},counts:{phone:0,name:0,inn:0,email:0,meta:0},hits:[],where:''}}
+function makeCtx(opt){const z=()=>Object.fromEntries(Object.keys(TL).map(k=>[k,0]));return{opt,map:new Map(),orig:new Map(),cnt:z(),counts:z(),hits:[],where:''}}
 function label(ctx,type,orig){
   const key=type+'|'+norm(type,orig);
   let lab=ctx.map.get(key);
-  if(!lab){lab=`[${TL[type]} ${++ctx.cnt[type]}]`; ctx.map.set(key,lab);}
+  if(!lab){lab=`[${TL[type]} ${++ctx.cnt[type]}]`; ctx.map.set(key,lab); ctx.orig.set(lab,String(orig).trim());}
   ctx.counts[type]++;
   const out=ctx.opt.mode==='label'?lab:ctx.opt.mode==='stars'?'***':'';
   if(ctx.hits.length<5000) ctx.hits.push({where:ctx.where,type,orig:String(orig).trim(),out:out||'(пусто)'});
@@ -167,12 +192,19 @@ function clean(text,forced,ctx,numeric){
   const o=ctx.opt, toks=[]; let s=String(text);
   const T=(type,m)=>{toks.push([type,m]);return '\u0001'+(toks.length-1)+'\u0002'};
   if(numeric){
-    if(forced==='name')return null;
+    if(forced==='name'||forced==='plate')return null;
+    if(forced&&o[forced]&&/^\d+$/.test(s.trim())) return label(ctx,forced,s.trim());
     if(!forced){
-      if(o.inn&&s.length===9&&innOk('0'+s)) s=T('inn',s);
+      if(o.card&&s.length>=16&&luhn(s)) s=T('card',s);
+      else if(o.snils&&(s.length===11||s.length===10||s.length===9)&&snilsOk(s.padStart(11,'0'))&&!(s.length===11&&/^[78]9/.test(s))) s=T('snils',s);
+      else if(o.inn&&s.length===9&&innOk('0'+s)) s=T('inn',s);
       else if(o.inn&&s.length===11&&!/^[78]/.test(s)&&innOk('0'+s)) s=T('inn',s);
     }
   }
+  if(o.card) s=s.replace(RE.card,m=>{const d=digits(m);return d.length>=16&&d.length<=19&&luhn(d)&&!/^(\d)\1+$/.test(d)?T('card',m):m});
+  if(o.snils){ s=s.replace(RE.snilsLab,(m,pre,d)=>pre+T('snils',d)); s=s.replace(RE.snils,m=>{const d=digits(m),fmt=/\D/.test(m);return snilsOk(d)&&(fmt||!/^[78]/.test(d))?T('snils',m):m}); }
+  if(o.passport){ s=s.replace(RE.passLab,(m,pre,d)=>pre+T('passport',d)); s=s.replace(RE.passRun,m=>T('passport',m)); }
+  if(o.plate&&!numeric){ s=s.replace(RE.plate,m=>/\d{3}/.test(m)&&!/000/.test(m.replace(/\D/g,'').slice(0,3))?T('plate',m):m); s=s.replace(RE.plateTr,m=>T('plate',m)); }
   if(o.email) s=s.replace(RE.email,m=>T('email',m));
   if(o.inn){ s=s.replace(RE.innLab,(m,pre,d)=>pre+T('inn',d)); s=s.replace(RE.innRun,m=>innOk(m)?T('inn',m):m); }
   if(o.phone){
@@ -189,6 +221,10 @@ function clean(text,forced,ctx,numeric){
   if(forced&&o[forced]){
     if(forced==='phone') s=s.replace(/\+?\d[\d\s\-–().]{3,}\d/g,m=>digits(m).length>=5?T('phone',m):m);
     else if(forced==='inn') s=s.replace(/(?<!\d)\d{9,12}(?!\d)/g,m=>T('inn',m));
+    else if(forced==='snils') s=s.replace(/\d[\d\s\-]{7,}\d/g,m=>digits(m).length>=9?T('snils',m):m);
+    else if(forced==='passport') s=s.replace(/\d[\d\s№N\-]{4,}\d/g,m=>digits(m).length>=6?T('passport',m):m);
+    else if(forced==='card') s=s.replace(/\d[\d\s\-*]{10,}\d/g,m=>digits(m).length>=12?T('card',m):m);
+    else if(forced==='plate'&&!toks.some(t=>t[0]==='plate')){s=s.replace(/(?<![А-ЯЁA-Zа-яёa-z\d])[А-ЯЁA-Z]{0,3} ?\d{3,4} ?[А-ЯЁA-Z]{0,3} ?(?:\d{2,3})?(?:\s?RUS)?(?![А-ЯЁA-Zа-яёa-z\d])/gi,m=>/[А-ЯЁA-Z]/i.test(m)&&m.trim().length>=6?T('plate',m.trim()):m);}
     else if(forced==='email') s=s.replace(/[^\s,;<>()\u0001\u0002]+@[^\s,;<>()\u0001\u0002]+/g,m=>T('email',m));
     else if(forced==='name'){
       const back=x=>x.replace(/\u0001(\d+)\u0002/g,(_,i)=>toks[i][1]);
@@ -327,7 +363,7 @@ async function cleanXlsx(buf,opt){
       let r=null;
       if(t==='inlineStr') r=clean(textOf(inner),forced,ctx);
       else if(t==='str'){const v=vOf(inner); if(v!=null) r=clean(unesc(v),forced,ctx)}
-      else if(t==='n'){const v=vOf(inner); const d=v!=null?numDigits(v):null; if(d&&(d.length>=9||forced==='phone'&&d.length>=5)) r=clean(d,forced,ctx,true)}
+      else if(t==='n'){const v=vOf(inner); const d=v!=null?numDigits(v):null; if(d&&(d.length>=9||(forced==='phone'||forced==='passport'||forced==='snils'||forced==='card')&&d.length>=5)) r=clean(d,forced,ctx,true)}
       if(r==null)return m;
       n++; if(/<f[\s>]/.test(inner)) formulasDropped=true;
       if(r==='') return `<c${delAttr(a,'t')}/>`;
@@ -400,13 +436,13 @@ async function cleanCSV(buf,opt){
   for(let r=0;r<Math.min(15,rows.length);r++){const ne=rows[r].filter(x=>x.trim()).length;if(ne<2)continue;const hs=rows[r].map((s,c)=>[c,s,hdrKind(s)]).filter(x=>x[2]);if(!hs.length)continue;for(const[c,s,k]of hs)if(opt[k])head[c]={kind:k,row:r,title:s.trim()};break}
   for(const c of Object.keys(head)) cols.push(`столбец ${+c+1} «${esc(head[c].title)}» — ${TL[head[c].kind]} целиком`);
   let n=0;
-  for(let r=0;r<rows.length;r++)for(let c=0;c<rows[r].length;c++){const h=head[c];ctx.where=`строка ${r+1}, столбец ${c+1}`;const v=rows[r][c];const num=/^\d{9,12}$/.test(v.trim());const x=clean(num?v.trim():v,h&&r>h.row?h.kind:null,ctx,num);if(x!=null){rows[r][c]=x;n++}}
+  for(let r=0;r<rows.length;r++)for(let c=0;c<rows[r].length;c++){const h=head[c];ctx.where=`строка ${r+1}, столбец ${c+1}`;const v=rows[r][c];const num=/^\d{9,19}$/.test(v.trim());const x=clean(num?v.trim():v,h&&r>h.row?h.kind:null,ctx,num);if(x!=null){rows[r][c]=x;n++}}
   const out=rows.map(r=>r.map(v=>/["\n\r]/.test(v)||v.includes(d)?'"'+v.replace(/"/g,'""')+'"':v).join(d)).join('\r\n');
   return{blob:new Blob(['\uFEFF'+out],{type:'text/csv;charset=utf-8'}),ctx,warn:[],cols,perSheet:[['Таблица',n]]};
 }
 
 /* ===================== интерфейс ===================== */
-const opts=()=>({phone:$('#o_phone').checked,name:$('#o_name').checked,inn:$('#o_inn').checked,email:$('#o_email').checked,meta:$('#o_meta').checked,mode:document.querySelector('input[name=mode]:checked').value});
+const opts=()=>({phone:$('#o_phone').checked,name:$('#o_name').checked,inn:$('#o_inn').checked,email:$('#o_email').checked,snils:$('#o_snils').checked,passport:$('#o_passport').checked,card:$('#o_card').checked,plate:$('#o_plate').checked,meta:$('#o_meta').checked,mode:document.querySelector('input[name=mode]:checked').value});
 window.__results=[];
 async function handle(file){
   const box=document.createElement('section'); box.className='card res';
@@ -419,14 +455,14 @@ async function handle(file){
     const opt=opts(), buf=await file.arrayBuffer(), t0=performance.now();
     const R=ext==='.csv'?await cleanCSV(buf,opt):await cleanXlsx(buf,opt);
     const outName=file.name.replace(/(\.[^.]+)?$/,m=>'_обезличено'+(m||'.xlsx'));
-    const url=URL.createObjectURL(R.blob), c=R.ctx.counts, total=c.phone+c.name+c.inn+c.email;
+    const url=URL.createObjectURL(R.blob), c=R.ctx.counts, total=c.phone+c.name+c.inn+c.email+c.snils+c.passport+c.card+c.plate;
     window.__results.push({name:outName,blob:R.blob,counts:c,hits:R.ctx.hits});
     const chip=(k,txt)=>`<span class="chip${c[k]?'':' zero'}">${txt}: <b>${c[k]}</b></span>`;
     const cells=R.perSheet.reduce((a,b)=>a+b[1],0);
-    const keyCsv=opt.mode==='label'?'\uFEFFМетка;Было\r\n'+[...R.ctx.map].map(([k,v])=>v+';"'+R.ctx.hits.find(h=>h.out===v)?.orig.replace(/"/g,'""')+'"').join('\r\n'):null;
+    const keyCsv=opt.mode==='label'?'\uFEFFМетка;Было\r\n'+[...R.ctx.orig].map(([v,o])=>v+';"'+o.replace(/"/g,'""')+'"').join('\r\n'):null;
     box.innerHTML=`<h2>${esc(file.name)}</h2>
       <div class="sub">${(R.blob.size/1024).toFixed(0)} КБ · ${((performance.now()-t0)/1000).toFixed(1)} с · изменено ячеек: ${cells}${R.perSheet.length>1?' ('+R.perSheet.map(([s,n])=>esc(s)+': '+n).join(', ')+')':''}</div>
-      <div class="chips">${chip('phone','Телефоны')}${chip('name','ФИО')}${chip('inn','ИНН')}${chip('email','Email')}${opt.meta?chip('meta','Автор файла'):''}</div>
+      <div class="chips">${chip('phone','Телефоны')}${chip('name','ФИО')}${chip('inn','ИНН')}${chip('email','Email')}${opt.snils?chip('snils','СНИЛС'):''}${opt.passport?chip('passport','Паспорта'):''}${opt.card?chip('card','Карты'):''}${opt.plate?chip('plate','Госномера'):''}${opt.meta?chip('meta','Автор файла'):''}</div>
       ${total?'':'<div class="okm">Личных данных не найдено. Проверьте файл глазами на всякий случай.</div>'}
       ${R.cols.length?`<div class="cols"><b>Очищено целиком по заголовку:</b><br>${R.cols.join('<br>')}</div>`:''}
       ${R.warn.map(w=>`<div class="warn">${w}</div>`).join('')}
