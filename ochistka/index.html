@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ЕГМ · Очистка Excel от личных данных</title>
+<style>
+:root{--red:#E3120B;--red2:#c20e08;--redl:#fdecea;--ink:#141518;--mut:#565c66;--line:#dcdfe3;--bg:#f3f4f5;--ok:#13804a;--okl:#e6f4ec}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:15px}
+header{background:var(--ink);color:#fff;padding:28px 20px 34px}
+.w{max-width:980px;margin:0 auto}
+header h1{margin:0 0 8px;font-size:clamp(24px,3.4vw,34px);line-height:1.15}
+header h1 span{color:var(--red)}
+header p{margin:0;color:#b9bec6;max-width:700px;line-height:1.5}
+.lock{display:inline-flex;gap:8px;align-items:center;margin-top:14px;background:rgba(255,255,255,.08);padding:7px 12px;border-radius:99px;font-size:13.5px;color:#dfe3e8}
+main{padding:22px 20px 60px}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;margin-bottom:16px}
+.drop{border:2px dashed #c3c8cf;border-radius:16px;padding:34px 16px;text-align:center;cursor:pointer;transition:.15s;display:block}
+.drop:hover,.drop.on{border-color:var(--red);background:var(--redl)}
+.drop b{display:block;font-size:19px;margin-bottom:6px}
+.drop span{color:var(--mut)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.opts h3{margin:0 0 8px;font-size:14px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.opts label{display:flex;gap:9px;align-items:flex-start;padding:5px 0;cursor:pointer;line-height:1.35}
+.opts input{accent-color:var(--red);width:17px;height:17px;margin:1px 0 0;flex:none}
+.opts small{display:block;color:var(--mut);font-size:12.5px}
+.res h2{margin:0 0 4px;font-size:18px;word-break:break-all}
+.sub{color:var(--mut);font-size:13.5px;margin-bottom:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+.chip{background:var(--bg);border-radius:99px;padding:6px 12px;font-size:14px}
+.chip b{font-size:15px}
+.chip.zero{opacity:.55}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:12px;padding:11px 18px;font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
+.btn.red{background:var(--red);color:#fff}.btn.red:hover{background:var(--red2)}
+.btn.gray{background:var(--bg);color:var(--ink)}.btn.gray:hover{background:#e6e8eb}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.warn{background:#fff6e0;border:1px solid #f1d58c;border-radius:12px;padding:10px 12px;margin:10px 0;font-size:14px;line-height:1.45}
+.err{background:var(--redl);border:1px solid #f3b4b0;border-radius:12px;padding:12px;font-size:14.5px;line-height:1.45}
+.okm{background:var(--okl);border:1px solid #b5dcc4;border-radius:12px;padding:10px 12px;margin:10px 0;font-size:14px}
+.cols{font-size:14px;color:var(--ink);margin:8px 0;line-height:1.6}
+.cols code{background:var(--bg);padding:1px 6px;border-radius:6px;font-size:13px}
+details{margin-top:14px}
+summary{cursor:pointer;font-weight:600;padding:6px 0}
+.tw{overflow:auto;max-height:440px;border:1px solid var(--line);border-radius:12px;margin-top:8px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{position:sticky;top:0;background:#fafbfc;font-weight:600}
+td.o{color:#9b1c14;word-break:break-word}td.n{color:var(--ok);word-break:break-word}
+td.p{white-space:nowrap;color:var(--mut)}
+.spin{width:18px;height:18px;border:3px solid var(--line);border-top-color:var(--red);border-radius:50%;animation:s 1s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px}
+@keyframes s{to{transform:rotate(360deg)}}
+.how{color:var(--mut);font-size:13.5px;line-height:1.55}
+.how b{color:var(--ink)}
+@media(max-width:640px){.opts{grid-template-columns:1fr}}
+</style></head><body>
+<header><div class="w">
+<h1><span>ЕГМ</span> · Очистка Excel от личных данных</h1>
+<p>Загрузите таблицу, и программа уберёт из неё телефоны, ФИО и инициалы, ИНН и электронные почты. Оформление, формулы и листы остаются как были.</p>
+<div class="lock">🔒 Файл не отправляется в интернет: вся обработка идёт на этом компьютере</div>
+</div></header>
+<main class="w">
+<section class="card">
+  <label class="drop" id="drop">
+    <input type="file" id="file" accept=".xlsx,.xlsm,.csv,.xls" multiple hidden>
+    <b>Перетащите сюда файлы Excel</b>
+    <span>или нажмите, чтобы выбрать. Форматы: .xlsx, .xlsm, .csv. Можно несколько файлов сразу.</span>
+  </label>
+  <div class="opts">
+    <div>
+      <h3>Что убрать</h3>
+      <label><input type="checkbox" id="o_phone" checked><span>Номера телефонов<small>+7 916 123-45-67, 8(495)…, 89161234567, иностранные</small></span></label>
+      <label><input type="checkbox" id="o_name" checked><span>ФИО и инициалы<small>Иванов И.И., И. Иванов, Иванов Иван Иванович, Сергей Петров</small></span></label>
+      <label><input type="checkbox" id="o_inn" checked><span>ИНН<small>10 и 12 цифр, проверяется по контрольной сумме</small></span></label>
+      <label><input type="checkbox" id="o_email" checked><span>Электронные почты<small>и ссылки mailto: в ячейках</small></span></label>
+      <label><input type="checkbox" id="o_meta" checked><span>Автора файла и комментариев<small>имя того, кто создал и правил файл</small></span></label>
+    </div>
+    <div>
+      <h3>Чем заменить</h3>
+      <label><input type="radio" name="mode" value="label" checked><span>Метками: [Телефон 1], [ФИО 2]<small>одинаковые данные получают одну метку, видно, где один и тот же человек</small></span></label>
+      <label><input type="radio" name="mode" value="stars"><span>Звёздочками: ***</span></label>
+      <label><input type="radio" name="mode" value="empty"><span>Оставить ячейку пустой</span></label>
+      <p class="how" style="margin:12px 0 0"><b>Столбцы</b> с заголовками «Телефон», «ФИО», «Контактное лицо», «Водитель», «ИНН», «Email» и похожими очищаются целиком, даже если данные записаны необычно.</p>
+    </div>
+  </div>
+</section>
+<div id="results"></div>
+<section class="card how">
+  <b>Как пользоваться.</b> Перетащите файл, дождитесь отчёта и нажмите «Скачать очищенный файл». Откройте его и пролистайте: программа ищет данные по шаблонам, поэтому редкие варианты (имя без фамилии, телефон словами) может пропустить. Что именно заменено, видно в списке «Показать замены».<br>
+  <b>Старый формат .xls</b> откройте в Excel и сохраните как «Книга Excel (.xlsx)». <b>Файл с паролем</b> сначала откройте и снимите пароль.
+</section>
+</main>
+<script>
+'use strict';
+const $=s=>document.querySelector(s);
+const enc=new TextEncoder(), dec=new TextDecoder();
+
+/* ===================== поиск личных данных ===================== */
+const UP='А-ЯЁ', LO='а-яё', L=`${UP}${LO}A-Za-z`;
+const NB=`(?<![${L}])`, NA=`(?![${L}])`;
+const W=`[${UP}][${LO}]+(?:-[${UP}][${LO}]+)?`;
+const PAT=`[${UP}][${LO}]+(?:вич|вна|чна|ьич)`;
+const FIRST='Александр Алексей Анатолий Андрей Антон Аркадий Арсений Артём Артем Артур Богдан Борис Вадим Валентин Валерий Василий Виктор Виталий Владимир Владислав Всеволод Вячеслав Геннадий Георгий Глеб Григорий Давид Даниил Данил Денис Дмитрий Евгений Егор Ефим Захар Иван Игорь Илья Иннокентий Кирилл Константин Леонид Максим Марат Матвей Михаил Никита Николай Олег Павел Пётр Петр Роман Руслан Рустам Савелий Святослав Семён Семен Сергей Станислав Степан Тимофей Тимур Фёдор Федор Эдуард Юрий Ярослав Ринат Ильдар Рашид Шамиль Айдар Азат Алишер Фарход Бахтиёр Бахтиер Анвар Рамиль Александра Алёна Алена Алина Алла Анастасия Ангелина Анна Антонина Валентина Валерия Вероника Виктория Галина Дарья Диана Евгения Екатерина Елена Елизавета Жанна Зинаида Зоя Инна Ирина Карина Кристина Ксения Лариса Лидия Людмила Маргарита Марина Мария Наталья Наталия Нина Оксана Ольга Полина Раиса Светлана София Софья Тамара Татьяна Ульяна Эльвира Юлия'.split(' ').join('|');
+const SUR=`[${UP}][${LO}]*(?:ов|ев|ёв|ин|ын|ский|цкий|ской|енко|ук|юк|чук|ян|дзе|швили|ова|ева|ёва|ина|ына|ская|цкая|их|ых)`;
+const RE={
+  email:/[A-Za-z0-9._%+\-]+@[A-Za-z0-9А-Яа-яЁё\-]+(?:\.[A-Za-z0-9А-Яа-яЁё\-]+)*\.(?:[A-Za-z]{2,}|рф|РФ)/g,
+  innLab:/(ИНН(?:\s*\/\s*КПП)?\s*[:№#]?\s*)(\d{12}|\d{10})(?!\d)/gi,
+  innRun:/(?<!\d)(\d{12}|\d{10})(?!\d)/g,
+  phIntl:/(?<![\dA-Za-z])\+(?!7)\d{1,3}(?:[\s\-().]*\d){7,13}(?!\d)/g,
+  phRu:/(?<![\d+])(?:(?:\+\s?7|8|7)[\s\-–.]*)?\(?\d{3}\)?[\s\-–.]*\d{3}[\s\-–.]*\d{2}[\s\-–.]*\d{2}(?!\d)/g,
+  n1:new RegExp(`${NB}${W}\\s+${W}\\s+${PAT}(?:\\s+(?:оглы|кызы))?${NA}`,'g'),
+  n2:new RegExp(`${NB}${W}\\s+${PAT}\\s+${W}${NA}`,'g'),
+  n3:new RegExp(`${NB}(${W})\\s+[${UP}]\\.\\s?(?:[${UP}]\\.?)?(?![${LO}])`,'g'),
+  n4:new RegExp(`${NB}[${UP}]\\.\\s?(?:[${UP}]\\.\\s?)?(${W})${NA}`,'g'),
+  n5:new RegExp(`${NB}(?:(?:${FIRST})\\s+${SUR}|${SUR}\\s+(?:${FIRST}))${NA}`,'g'),
+  n6:new RegExp(`${NB}(?:${FIRST})\\s+${PAT}${NA}`,'g'),
+  n7:new RegExp(`${NB}(?:${FIRST})${NA}`,'g'),
+  n8:new RegExp(`${NB}[${UP}][${LO}]{2,}(?:ов|ев|ёв|ова|ева|ёва|ин|ина|ын|ына|енко|швили|дзе)${NA}`,'g'),
+  street:/(ул|улиц[аеы]|пр|пр-т|проспект|пер|переул[а-я]*|им|имени|пл|площад[ьи]|ш|шоссе|б-р|бульвар|наб|набережн[а-я]*|пр-д|проезд|туп|тупик|мкр|г|город[а-я]*|д|дер|деревн[а-я]*|пос|посел[а-я]*|с|село|ст|станц[а-я]*|м|метро|р-н|район[а-я]*|карьер[а-я]*|завод[а-я]*|мост[а-я]*)\.?\s*$/i,
+  seq:new RegExp(`${NB}[${UP}A-Z][${LO}a-z]+(?:-[${UP}A-Z][${LO}a-z]+)?(?:\\s+(?:[${UP}A-Z][${LO}a-z]+|[${UP}A-Z]\\.)(?:\\s?[${UP}A-Z]\\.)?){0,2}`),
+  org:/(^|[^А-Яа-яЁё])(ООО|ОАО|ЗАО|ПАО|НАО|АО|ГУП|МУП|ФГУП|ГБУ|ГКУ|МКУ|LLC|Ltd|Inc)([^А-Яа-яЁё]|$)|«|"/,
+};
+const GEO=new Set(['Москва','Московская','Ростов','Королёв','Королев','Калинин','Пушкин','Иванов','Кстов','Саров','Чехов','Протвин','Электрогорск','Фрязин','Видное','Ленин','Гагарин','Ленина','Гагарина','Пушкина','Кирова','Чехова','Мира','Строгино','Тушино','Медведково','Бирюлево','Дмитровский','Можайский','Ленинский','Волоколамский','Ярославский','Рязанский','Каширский','Мичуринский','Кутузовский','Невский','Гостин','Кремлин','Останкин','Сокольники','Коньково','Петербург','Новгород','Посад','Подольск','Химки','Королёв','Королев','Балашиха','Мытищи','Люберцы','Красногорск','Одинцово','Пушкино','Щёлково','Щелково','Реутов','Домодедово','Раменское','Жуковский','Коломна','Серпухов','Дмитров','Клин','Ногинск','Тверь','Тула','Калуга','Рязань','Область','Обл']);
+const STOP=new Set(['Магазин','Бензин','Керосин','Мандарин','Апельсин','Карантин','Каолин','Аспирин','Пластин','Гравин','Бетонов','Блоков','Заказов','Рейсов','Клиентов','Товаров','Платежей','Итогов','Остатков','Документов','Договоров','Счетов','Адресов','Объектов','Карьеров','Материалов','Поставщиков','Водителей','Грузов','Песков','Звонков','Часов','Дней','Тонн','Кубов','Метров','Литров','Рублей','Процентов','Плюсов','Минусов','Вариантов','Отзывов','Итого','Всего','Нет','Да','Без','Не','Самовывоз','Наличные','Безнал','Отдел','Офис','Склад','Резерв','Свободен','Свободна','Отпуск','Болен','Уволен','Уволена','Все','Любой','Другое','Прочее','Неизвестно','Новый','Новая','Клиент','Менеджер','Водитель','Директор','Бухгалтер','Диспетчер']);
+const HDR=[
+  ['email',/(e-?mail|эл\.?\s*почт|электронн[а-яё]*\s+почт|^почта|^mail)/i],
+  ['phone',/(телефон|^тел(\.|\s|$|[^а-яё])|моб|сотов|whats\s?app|ватсап|вотсап|phone|номер\s+тел)/i],
+  ['inn',/(^|[^а-яё])инн([^а-яё]|$)/i],
+  ['name',/(ф\.?\s*и\.?\s*о|фамили|^имя|отчеств|контактн[а-яё]*\s+лиц|^конт\.?\s*лицо|^контакт$|водител|ответственн|менеджер|сотрудник|^директор|руководител|представител|получател|^принял|^сдал|экспедитор|^исполнитель|^диспетчер|^кто\s|^автор|^звонил|^оператор)/i],
+];
+function hdrKind(t){
+  if(t==null)return null; t=String(t).trim();
+  if(!t||t.length>40||t.split(/\s+/).length>5)return null;
+  for(const[k,re]of HDR) if(re.test(t)) return k;
+  return null;
+}
+const digits=s=>String(s).replace(/\D/g,'');
+function innOk(d){
+  const n=[...d].map(Number), f=w=>w.reduce((a,x,i)=>a+x*n[i],0)%11%10;
+  if(d.length===10) return f([2,4,10,3,5,9,4,6,8])===n[9];
+  if(d.length===12) return f([7,2,4,10,3,5,9,4,6,8])===n[10] && f([3,7,2,4,10,3,5,9,4,6,8])===n[11];
+  return false;
+}
+function phoneOk(m,numeric){
+  const d=digits(m), fmt=/[^\d]/.test(m.trim());
+  if(d.length===11) return /^[78]/.test(d);
+  if(d.length===10) return fmt ? /^[3-9]/.test(d) : /^9/.test(d);
+  return false;
+}
+const TL={phone:'Телефон',name:'ФИО',inn:'ИНН',email:'Email',meta:'Автор'};
+function norm(type,v){
+  v=String(v);
+  if(type==='phone'){let d=digits(v); if(d.length===11&&d[0]==='8')d='7'+d.slice(1); if(d.length===10)d='7'+d; return d;}
+  if(type==='inn') return digits(v);
+  return v.toLowerCase().replace(/ё/g,'е').replace(/[\s.]+/g,' ').trim();
+}
+function makeCtx(opt){return{opt,map:new Map(),cnt:{phone:0,name:0,inn:0,email:0,meta:0},counts:{phone:0,name:0,inn:0,email:0,meta:0},hits:[],where:''}}
+function label(ctx,type,orig){
+  const key=type+'|'+norm(type,orig);
+  let lab=ctx.map.get(key);
+  if(!lab){lab=`[${TL[type]} ${++ctx.cnt[type]}]`; ctx.map.set(key,lab);}
+  ctx.counts[type]++;
+  const out=ctx.opt.mode==='label'?lab:ctx.opt.mode==='stars'?'***':'';
+  if(ctx.hits.length<5000) ctx.hits.push({where:ctx.where,type,orig:String(orig).trim(),out:out||'(пусто)'});
+  return out;
+}
+/* text -> новый текст или null, если ничего не найдено */
+function clean(text,forced,ctx,numeric){
+  if(text==null||text==='')return null;
+  const o=ctx.opt, toks=[]; let s=String(text);
+  const T=(type,m)=>{toks.push([type,m]);return '\u0001'+(toks.length-1)+'\u0002'};
+  if(numeric){
+    if(forced==='name')return null;
+    if(!forced){
+      if(o.inn&&s.length===9&&innOk('0'+s)) s=T('inn',s);
+      else if(o.inn&&s.length===11&&!/^[78]/.test(s)&&innOk('0'+s)) s=T('inn',s);
+    }
+  }
+  if(o.email) s=s.replace(RE.email,m=>T('email',m));
+  if(o.inn){ s=s.replace(RE.innLab,(m,pre,d)=>pre+T('inn',d)); s=s.replace(RE.innRun,m=>innOk(m)?T('inn',m):m); }
+  if(o.phone){
+    s=s.replace(RE.phIntl,m=>{const n=digits(m).length;return n>=8&&n<=15?T('phone',m):m});
+    s=s.replace(RE.phRu,m=>phoneOk(m,numeric)?T('phone',m):m);
+  }
+  if(o.name&&!numeric){
+    s=s.replace(RE.n1,m=>T('name',m)).replace(RE.n2,m=>T('name',m));
+    s=s.replace(RE.n3,(m,w)=>GEO.has(w)||STOP.has(w)?m:T('name',m));
+    s=s.replace(RE.n4,(m,w)=>GEO.has(w)||STOP.has(w)?m:T('name',m));
+    s=s.replace(RE.n5,m=>T('name',m)).replace(RE.n6,m=>T('name',m)).replace(RE.n7,m=>T('name',m));
+    s=s.replace(RE.n8,(m,off,str)=>GEO.has(m)||STOP.has(m)||RE.street.test(str.slice(Math.max(0,off-20),off))||/[«"]\s*$/.test(str.slice(0,off))?m:T('name',m));
+  }
+  if(forced&&o[forced]){
+    if(forced==='phone') s=s.replace(/\+?\d[\d\s\-–().]{3,}\d/g,m=>digits(m).length>=5?T('phone',m):m);
+    else if(forced==='inn') s=s.replace(/(?<!\d)\d{9,12}(?!\d)/g,m=>T('inn',m));
+    else if(forced==='email') s=s.replace(/[^\s,;<>()\u0001\u0002]+@[^\s,;<>()\u0001\u0002]+/g,m=>T('email',m));
+    else if(forced==='name'){
+      const back=x=>x.replace(/\u0001(\d+)\u0002/g,(_,i)=>toks[i][1]);
+      s=s.split(/([,;\n\/]+)/).map((part,ix)=>{
+        if(ix%2)return part;
+        const plain=back(part), core=plain.trim();
+        if(!core||RE.org.test(plain))return part;
+        const other=part.replace(/\u0001(\d+)\u0002/g,(m,i)=>toks[i][0]==='name'?'':m);
+        if(/\u0001/.test(other))return part;
+        if(!/[А-Яа-яЁёA-Za-z]/.test(core))return part;
+        if(!/\s/.test(core)&&STOP.has(core))return part;
+        const lead=plain.match(/^\s*/)[0], tail=plain.match(/\s*$/)[0];
+        return lead+T('name',core)+tail;
+      }).join('');
+      toks.forEach((t,i)=>{if(t[0]==='name'&&!s.includes('\u0001'+i+'\u0002'))t[0]='_drop'});
+    }
+  }
+  if(!toks.length)return null;
+  let out=s.replace(/\u0001(\d+)\u0002/g,(_,i)=>label(ctx,toks[i][0],toks[i][1]));
+  if(o.mode==='empty') out=out.replace(/[ \t]{2,}/g,' ').replace(/^[\s,;:–-]+|[\s,;:–-]+$/g,'');
+  return out;
+}
+
+/* ===================== ZIP (xlsx) без библиотек ===================== */
+const CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(u){let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC[(c^u[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0}
+const pipe=async(u8,stream)=>new Uint8Array(await new Response(new Blob([u8]).stream().pipeThrough(stream)).arrayBuffer());
+function readZip(buf){
+  const u8=new Uint8Array(buf), dv=new DataView(buf);
+  if(u8[0]===0xD0&&u8[1]===0xCF) throw new Error('Это старый формат .xls или файл защищён паролем. Откройте его в Excel, снимите пароль (если есть) и сохраните как «Книга Excel (.xlsx)».');
+  let e=-1; for(let i=u8.length-22;i>=Math.max(0,u8.length-65557);i--) if(dv.getUint32(i,true)===0x06054b50){e=i;break}
+  if(e<0) throw new Error('Не получилось открыть файл: он повреждён или это не таблица Excel.');
+  const n=dv.getUint16(e+10,true); let p=dv.getUint32(e+16,true); const list=[];
+  for(let k=0;k<n;k++){
+    if(dv.getUint32(p,true)!==0x02014b50) throw new Error('Файл повреждён.');
+    const method=dv.getUint16(p+10,true),time=dv.getUint16(p+12,true),date=dv.getUint16(p+14,true),crc=dv.getUint32(p+16,true),
+      csize=dv.getUint32(p+20,true),usize=dv.getUint32(p+24,true),nl=dv.getUint16(p+28,true),xl=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),off=dv.getUint32(p+42,true);
+    if(csize===0xFFFFFFFF||off===0xFFFFFFFF) throw new Error('Файл слишком большой (больше 4 ГБ).');
+    const name=dec.decode(u8.subarray(p+46,p+46+nl));
+    const ds=off+30+dv.getUint16(off+26,true)+dv.getUint16(off+28,true);
+    list.push({name,method,time,date,crc,usize,raw:u8.subarray(ds,ds+csize)});
+    p+=46+nl+xl+cl;
+  }
+  return list;
+}
+async function unpack(e){ if(e.method===0)return e.raw; if(e.method===8)return pipe(e.raw,new DecompressionStream('deflate-raw')); throw new Error('Неизвестное сжатие в файле.'); }
+function writeZip(list,mime){
+  const parts=[],cen=[];let off=0;
+  for(const e of list){
+    const nb=enc.encode(e.name), h=new DataView(new ArrayBuffer(30));
+    h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(8,e.method,true);h.setUint16(10,e.time,true);h.setUint16(12,e.date,true);
+    h.setUint32(14,e.crc,true);h.setUint32(18,e.raw.length,true);h.setUint32(22,e.usize,true);h.setUint16(26,nb.length,true);
+    parts.push(new Uint8Array(h.buffer),nb,e.raw);
+    const c=new DataView(new ArrayBuffer(46));
+    c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x0800,true);c.setUint16(10,e.method,true);c.setUint16(12,e.time,true);c.setUint16(14,e.date,true);
+    c.setUint32(16,e.crc,true);c.setUint32(20,e.raw.length,true);c.setUint32(24,e.usize,true);c.setUint16(28,nb.length,true);c.setUint32(42,off,true);
+    cen.push(new Uint8Array(c.buffer),nb); off+=30+nb.length+e.raw.length;
+  }
+  const size=cen.reduce((a,b)=>a+b.length,0), z=new DataView(new ArrayBuffer(22));
+  z.setUint32(0,0x06054b50,true);z.setUint16(8,list.length,true);z.setUint16(10,list.length,true);z.setUint32(12,size,true);z.setUint32(16,off,true);
+  return new Blob([...parts,...cen,new Uint8Array(z.buffer)],{type:mime});
+}
+
+/* ===================== XML ===================== */
+const ENT={amp:'&',lt:'<',gt:'>',quot:'"',apos:"'"};
+const unesc=s=>s.replace(/&(#x[0-9a-fA-F]+|#\d+|amp|lt|gt|quot|apos);/g,(m,c)=>c[0]==='#'?String.fromCodePoint(c[1]==='x'||c[1]==='X'?parseInt(c.slice(2),16):+c.slice(1)):ENT[c]);
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const getAttr=(a,n)=>{const m=a.match(new RegExp('(?:^|\\s)'+n+'="([^"]*)"'));return m?m[1]:null};
+const setAttr=(a,n,v)=>new RegExp('(?:^|\\s)'+n+'="').test(a)?a.replace(new RegExp('((?:^|\\s)'+n+'=")[^"]*"'),'$1'+v+'"'):a+' '+n+'="'+v+'"';
+const delAttr=(a,n)=>a.replace(new RegExp('\\s'+n+'="[^"]*"'),'');
+const CELL=/<c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/c>)/g;
+const textOf=inner=>{let t='';inner.replace(/<rPh\b[\s\S]*?<\/rPh>/g,'').replace(/<t(?:\s[^>]*)?>([\s\S]*?)<\/t>/g,(m,x)=>{t+=unesc(x);return m});return t};
+const vOf=inner=>{const m=inner.match(/<v(?:\s[^>]*)?>([\s\S]*?)<\/v>/);return m?m[1]:null};
+const splitRef=r=>{const m=/^\$?([A-Z]+)\$?(\d+)$/.exec(r||'');return m?{col:m[1],row:+m[2]}:null};
+const numDigits=v=>{v=String(v).trim();if(/^\d+$/.test(v))return v;const n=Number(v);return Number.isInteger(n)&&n>0&&n<1e15?String(n):null};
+const inl=t=>`<is><t xml:space="preserve">${esc(t)}</t></is>`;
+function cleanTags(xml,tag,ctx,where){
+  return xml.replace(new RegExp(`(<${tag}(?:\\s[^>]*)?>)([\\s\\S]*?)(</${tag}>)`,'g'),(m,a,b,c)=>{ctx.where=where;const r=clean(unesc(b),null,ctx);return r==null?m:a+esc(r)+c});
+}
+const resolve=(base,t)=>t.startsWith('/')?t.slice(1):(base+t).replace(/[^/]+\/\.\.\//g,'');
+
+async function cleanXlsx(buf,opt){
+  const list=readZip(buf), by=new Map(list.map(e=>[e.name,e])), ctx=makeCtx(opt), txt={}, warn=[], cols=[], perSheet=[];
+  const get=async n=>{if(!(n in txt)){const e=by.get(n);txt[n]=e?dec.decode(await unpack(e)):null}return txt[n]};
+  const changed=new Set(), put=(n,v)=>{if(v!==txt[n]){txt[n]=v;changed.add(n)}};
+  const wb=await get('xl/workbook.xml'); if(!wb) throw new Error('В файле не найдена книга Excel.');
+  const rels=await get('xl/_rels/workbook.xml.rels')||'';
+  const rmap={}; rels.replace(/<Relationship\b([^>]*)\/?>/g,(m,a)=>{rmap[getAttr(a,'Id')]=getAttr(a,'Target');return m});
+  const sheets=[]; wb.replace(/<sheet\b([^>]*)\/?>/g,(m,a)=>{const id=getAttr(a,'r:id')||(a.match(/\s\w+:id="([^"]*)"/)||[])[1];const t=rmap[id];if(t)sheets.push({name:unesc(getAttr(a,'name')||''),path:resolve('xl/',t)});return m});
+  // общие строки
+  const ssPath=Object.values(rmap).map(t=>resolve('xl/',t)).find(p=>/sharedStrings/i.test(p))||'xl/sharedStrings.xml';
+  const sst=await get(ssPath); const ssT=[];
+  if(sst) sst.replace(/<si>([\s\S]*?)<\/si>|<si\/>/g,(m,inner)=>{ssT.push(inner?textOf(inner):'');return m});
+  const forcedSS=new Map(), whereSS=[];
+  // проход 1: заголовки столбцов
+  for(const sh of sheets){
+    const xml=await get(sh.path); if(!xml){continue}
+    const head={}, rowStr={};
+    let m; CELL.lastIndex=0;
+    while((m=CELL.exec(xml))){
+      const a=m[1],inner=m[2]; if(inner==null)continue; const p=splitRef(getAttr(a,'r')); if(!p)continue;
+      const t=getAttr(a,'t'); let s=null;
+      if(t==='s'){const v=vOf(inner); if(v!=null){s=ssT[+v]; if(whereSS[+v]==null) whereSS[+v]=sh.name+'!'+p.col+p.row;}}
+      else if(t==='inlineStr') s=textOf(inner); else if(t==='str'){const v=vOf(inner); if(v!=null)s=unesc(v)}
+      if(p.row<=15&&s!=null&&String(s).trim()){ (rowStr[p.row]=rowStr[p.row]||[]).push([p.col,s]); }
+    }
+    for(const r of Object.keys(rowStr).map(Number).sort((x,y)=>x-y)){
+      if(rowStr[r].length<2)continue;
+      const hs=rowStr[r].map(([c,s])=>[c,s,hdrKind(s)]).filter(x=>x[2]);
+      if(!hs.length)continue;
+      for(const[c,s,k]of hs) if(opt[k]) head[c]={kind:k,row:r,title:String(s).trim()};
+      break;
+    }
+    sh.head=head;
+    for(const c of Object.keys(head)) cols.push(`${sh.name}: столбец <code>${c}</code> «${esc(head[c].title)}» — ${TL[head[c].kind]} целиком`);
+    CELL.lastIndex=0;
+    while((m=CELL.exec(xml))){
+      const a=m[1],inner=m[2]; if(inner==null||getAttr(a,'t')!=='s')continue; const p=splitRef(getAttr(a,'r')); if(!p)continue;
+      const h=head[p.col]; if(h&&p.row>h.row){const v=vOf(inner); if(v!=null&&!forcedSS.has(+v)) forcedSS.set(+v,h.kind)}
+    }
+  }
+  // общие строки: чистим
+  const ssNew=new Map();
+  ssT.forEach((s,i)=>{ctx.where=whereSS[i]||'';const r=clean(s,forcedSS.get(i)||null,ctx);if(r!=null)ssNew.set(i,r)});
+  if(sst&&ssNew.size){let i=0;put(ssPath,sst.replace(/<si>([\s\S]*?)<\/si>|<si\/>/g,m=>{const r=ssNew.get(i++);return r==null?m:(r===''?'<si><t/></si>':`<si><t xml:space="preserve">${esc(r)}</t></si>`)}))}
+  // проход 2: ячейки листов
+  let formulasDropped=false;
+  for(const sh of sheets){
+    let xml=await get(sh.path); if(!xml)continue; let n=0;
+    xml=xml.replace(CELL,(m,a,inner)=>{
+      if(inner==null)return m;
+      const ref=getAttr(a,'r'), p=splitRef(ref), t=getAttr(a,'t')||'n';
+      const h=p&&sh.head[p.col], forced=h&&p.row>h.row?h.kind:null;
+      ctx.where=sh.name+'!'+(ref||'');
+      if(t==='s'){const v=vOf(inner); if(v!=null&&ssNew.has(+v))n++; return m}
+      let r=null;
+      if(t==='inlineStr') r=clean(textOf(inner),forced,ctx);
+      else if(t==='str'){const v=vOf(inner); if(v!=null) r=clean(unesc(v),forced,ctx)}
+      else if(t==='n'){const v=vOf(inner); const d=v!=null?numDigits(v):null; if(d&&(d.length>=9||forced==='phone'&&d.length>=5)) r=clean(d,forced,ctx,true)}
+      if(r==null)return m;
+      n++; if(/<f[\s>]/.test(inner)) formulasDropped=true;
+      if(r==='') return `<c${delAttr(a,'t')}/>`;
+      return `<c${setAttr(a,'t','inlineStr')}>${inl(r)}</c>`;
+    });
+    // колонтитулы и подсказки ссылок
+    for(const tg of ['oddHeader','oddFooter','evenHeader','evenFooter','firstHeader','firstFooter']) xml=cleanTags(xml,tg,ctx,sh.name+' (колонтитул)');
+    xml=xml.replace(/<hyperlink\b([^>]*)\/>/g,(m,a)=>{for(const at of ['display','tooltip','location']){const v=getAttr(a,at);if(v){ctx.where=sh.name+' (ссылка)';const r=clean(unesc(v),null,ctx);if(r!=null)a=setAttr(a,at,esc(r))}}return `<hyperlink${a}/>`});
+    put(sh.path,xml); perSheet.push([sh.name,n]);
+    // ссылки mailto: и tel:
+    const rp=sh.path.replace(/([^/]+)$/,'_rels/$1.rels'), rx=await get(rp);
+    if(rx&&(opt.email||opt.phone)) put(rp,rx.replace(/Target="(mailto|tel):[^"]*"/gi,(m,k)=>{const ok=k.toLowerCase()==='mailto'?opt.email:opt.phone;if(!ok)return m;ctx.where=sh.name+' (ссылка)';label(ctx,k.toLowerCase()==='mailto'?'email':'phone',unesc(m.slice(9+k.length,-1)));return `Target="${k}:"`}));
+    if(new RegExp(`${NB}${W}\\s+[${UP}]\\.`).test(sh.name)||RE.n1.test(sh.name)) warn.push(`Название листа «${esc(sh.name)}» похоже на ФИО. Переименуйте лист вручную: автоматически это сломало бы формулы.`);
+    RE.n1.lastIndex=0;
+  }
+  // комментарии, надписи, диаграммы, внешние ссылки
+  const authors=[];
+  for(const name of list.map(e=>e.name)){
+    if(/^xl\/comments[^/]*\.xml$|^xl\/comments\/[^/]*\.xml$/i.test(name)){
+      let x=await get(name);
+      if(opt.meta) x=x.replace(/<author>([\s\S]*?)<\/author>/g,(m,a)=>{if(a.trim())authors.push(unesc(a).trim());ctx.where='Комментарии';return '<author>'+(authors.length?label(ctx,'meta',unesc(a))||'Автор':'Автор')+'</author>'});
+      x=x.replace(/(<t(?:\s[^>]*)?>)([\s\S]*?)(<\/t>)/g,(m,a,b,c)=>{let s=unesc(b);let ch=false;for(const au of authors){if(au&&s.includes(au)){s=s.split(au).join(TL.meta);ch=true}}ctx.where='Комментарии';const r=clean(s,null,ctx);return r!=null?a+esc(r)+c:ch?a+esc(s)+c:m});
+      put(name,x);
+    } else if(/^xl\/threadedComments\/.*\.xml$/i.test(name)) put(name,cleanTags(await get(name),'text',ctx,'Комментарии'));
+    else if(/^xl\/persons\/.*\.xml$/i.test(name)&&opt.meta){let k=0;put(name,(await get(name)).replace(/displayName="[^"]*"/g,()=>`displayName="Автор ${++k}"`).replace(/userId="[^"]*"/g,'userId=""'))}
+    else if(/^xl\/(drawings|charts)\/[^/]*\.xml$/i.test(name)){let x=await get(name);x=cleanTags(x,'a:t',ctx,'Надписи и диаграммы');x=cleanTags(x,'c:v',ctx,'Диаграммы');put(name,x)}
+    else if(/^xl\/externalLinks\/[^/]*\.xml$/i.test(name)) put(name,cleanTags(await get(name),'v',ctx,'Внешние ссылки'));
+    else if(/^xl\/pivotCache\/pivotCacheDefinition[^/]*\.xml$/i.test(name)){
+      const kinds=[]; let x=await get(name);
+      x=x.replace(/<cacheField\b([^>]*?)(\/>|>([\s\S]*?)<\/cacheField>)/g,(m,a,_e,inner)=>{const k=hdrKind(unesc(getAttr(a,'name')||''));kinds.push(k&&opt[k]?k:null);if(inner==null)return m;
+        return m.replace(/<(s|n)\b([^>]*?)\/>/g,(mm,tg,aa)=>{const v=getAttr(aa,'v');if(v==null)return mm;ctx.where='Сводная таблица';const r=tg==='s'?clean(unesc(v),k&&opt[k]?k:null,ctx):(numDigits(v)&&numDigits(v).length>=9?clean(numDigits(v),k,ctx,true):null);return r==null?mm:`<s${setAttr(delAttr(aa,'v'),'v',esc(r))}/>`})});
+      put(name,x);
+      const rr=await get(name.replace(/([^/]+)$/,'_rels/$1.rels')); const rec=rr&&(rr.match(/Target="([^"]*pivotCacheRecords[^"]*)"/)||[])[1];
+      if(rec){const rpth=resolve('xl/pivotCache/',rec), rxml=await get(rpth); if(rxml) put(rpth,rxml.replace(/<r>([\s\S]*?)<\/r>/g,(m,inner)=>{let i=0;return '<r>'+inner.replace(/<(x|s|n|b|e|m|d)\b([^>]*?)\/>/g,(mm,tg,aa)=>{const k=kinds[i++];if(tg!=='s'&&tg!=='n')return mm;const v=getAttr(aa,'v');if(v==null)return mm;ctx.where='Сводная таблица';const r=tg==='s'?clean(unesc(v),k,ctx):(numDigits(v)&&numDigits(v).length>=9?clean(numDigits(v),k,ctx,true):null);return r==null?mm:`<s v="${esc(r)}"/>`})+'</r>'}))}
+      warn.push('В файле есть сводные таблицы. Данные в них очищены. Если нужно, обновите их: «Данные → Обновить всё».');
+    }
+    else if(/^xl\/revisions\//i.test(name)&&!warn.some(w=>w.includes('историю')))warn.push('Файл хранит историю изменений (общая книга), в ней могут остаться старые данные. Отключите общий доступ в Excel и сохраните файл заново.');
+  }
+  // свойства файла
+  if(opt.meta){
+    const core=await get('docProps/core.xml');
+    if(core){let x=core.replace(/<(dc:creator|cp:lastModifiedBy)>[\s\S]*?<\/\1>/g,(m,tg)=>{ctx.where='Свойства файла';label(ctx,'meta',m.replace(/<[^>]+>/g,''));return `<${tg}></${tg}>`});for(const tg of['dc:title','dc:subject','dc:description','cp:keywords'])x=cleanTags(x,tg,ctx,'Свойства файла');put('docProps/core.xml',x)}
+    const app=await get('docProps/app.xml'); if(app) put('docProps/app.xml',app.replace(/<(Company|Manager)>[\s\S]*?<\/\1>/g,'<$1></$1>'));
+    if(/<fileSharing\b[^>]*userName=/.test(wb)) put('xl/workbook.xml',wb.replace(/(<fileSharing\b[^>]*?)\s+userName="[^"]*"/,'$1'));
+  }
+  // если удалили формулы, цепочку вычислений Excel перестроит сам
+  let out=list;
+  if(formulasDropped&&by.has('xl/calcChain.xml')){
+    out=list.filter(e=>e.name!=='xl/calcChain.xml');
+    const ct=await get('[Content_Types].xml'); put('[Content_Types].xml',ct.replace(/<Override\b[^>]*calcChain[^>]*\/>/g,''));
+    put('xl/_rels/workbook.xml.rels',(await get('xl/_rels/workbook.xml.rels')).replace(/<Relationship\b[^>]*calcChain[^>]*\/>/g,''));
+    warn.push('Формулы, которые выдавали телефоны, ФИО, ИНН или почту, заменены готовыми значениями.');
+  }
+  const fin=[];
+  for(const e of out){
+    if(changed.has(e.name)){const d=enc.encode(txt[e.name]);fin.push({...e,method:8,crc:crc32(d),usize:d.length,raw:await pipe(d,new CompressionStream('deflate-raw'))})}
+    else fin.push(e);
+  }
+  const blob=writeZip(fin,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  return{blob,ctx,warn,cols,perSheet};
+}
+
+/* ===================== CSV ===================== */
+function parseCSV(t,d){const rows=[];let row=[],f='',q=false;for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++}else q=false}else f+=c}else if(c==='"')q=true;else if(c===d){row.push(f);f=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&t[i+1]==='\n')i++;row.push(f);rows.push(row);row=[];f=''}else f+=c}if(f!==''||row.length){row.push(f);rows.push(row)}return rows}
+async function cleanCSV(buf,opt){
+  let t; try{t=new TextDecoder('utf-8',{fatal:true}).decode(buf)}catch(e){t=new TextDecoder('windows-1251').decode(buf)}
+  t=t.replace(/^\uFEFF/,'');
+  const first=t.split(/\r?\n/)[0]||''; const d=[';',',','\t'].sort((a,b)=>first.split(b).length-first.split(a).length)[0];
+  const rows=parseCSV(t,d), ctx=makeCtx(opt), head={}, cols=[];
+  for(let r=0;r<Math.min(15,rows.length);r++){const ne=rows[r].filter(x=>x.trim()).length;if(ne<2)continue;const hs=rows[r].map((s,c)=>[c,s,hdrKind(s)]).filter(x=>x[2]);if(!hs.length)continue;for(const[c,s,k]of hs)if(opt[k])head[c]={kind:k,row:r,title:s.trim()};break}
+  for(const c of Object.keys(head)) cols.push(`столбец ${+c+1} «${esc(head[c].title)}» — ${TL[head[c].kind]} целиком`);
+  let n=0;
+  for(let r=0;r<rows.length;r++)for(let c=0;c<rows[r].length;c++){const h=head[c];ctx.where=`строка ${r+1}, столбец ${c+1}`;const v=rows[r][c];const num=/^\d{9,12}$/.test(v.trim());const x=clean(num?v.trim():v,h&&r>h.row?h.kind:null,ctx,num);if(x!=null){rows[r][c]=x;n++}}
+  const out=rows.map(r=>r.map(v=>/["\n\r]/.test(v)||v.includes(d)?'"'+v.replace(/"/g,'""')+'"':v).join(d)).join('\r\n');
+  return{blob:new Blob(['\uFEFF'+out],{type:'text/csv;charset=utf-8'}),ctx,warn:[],cols,perSheet:[['Таблица',n]]};
+}
+
+/* ===================== интерфейс ===================== */
+const opts=()=>({phone:$('#o_phone').checked,name:$('#o_name').checked,inn:$('#o_inn').checked,email:$('#o_email').checked,meta:$('#o_meta').checked,mode:document.querySelector('input[name=mode]:checked').value});
+window.__results=[];
+async function handle(file){
+  const box=document.createElement('section'); box.className='card res';
+  box.innerHTML=`<h2>${esc(file.name)}</h2><div class="sub"><span class="spin"></span>Обрабатываю…</div>`;
+  $('#results').prepend(box);
+  try{
+    if(!('DecompressionStream'in window)) throw new Error('Браузер устарел. Откройте страницу в свежем Chrome, Яндекс Браузере или Edge.');
+    const ext=(file.name.match(/\.[^.]+$/)||[''])[0].toLowerCase();
+    if(ext==='.xls') throw new Error('Старый формат .xls. Откройте файл в Excel и сохраните как «Книга Excel (.xlsx)», потом загрузите сюда.');
+    const opt=opts(), buf=await file.arrayBuffer(), t0=performance.now();
+    const R=ext==='.csv'?await cleanCSV(buf,opt):await cleanXlsx(buf,opt);
+    const outName=file.name.replace(/(\.[^.]+)?$/,m=>'_обезличено'+(m||'.xlsx'));
+    const url=URL.createObjectURL(R.blob), c=R.ctx.counts, total=c.phone+c.name+c.inn+c.email;
+    window.__results.push({name:outName,blob:R.blob,counts:c,hits:R.ctx.hits});
+    const chip=(k,txt)=>`<span class="chip${c[k]?'':' zero'}">${txt}: <b>${c[k]}</b></span>`;
+    const cells=R.perSheet.reduce((a,b)=>a+b[1],0);
+    const keyCsv=opt.mode==='label'?'\uFEFFМетка;Было\r\n'+[...R.ctx.map].map(([k,v])=>v+';"'+R.ctx.hits.find(h=>h.out===v)?.orig.replace(/"/g,'""')+'"').join('\r\n'):null;
+    box.innerHTML=`<h2>${esc(file.name)}</h2>
+      <div class="sub">${(R.blob.size/1024).toFixed(0)} КБ · ${((performance.now()-t0)/1000).toFixed(1)} с · изменено ячеек: ${cells}${R.perSheet.length>1?' ('+R.perSheet.map(([s,n])=>esc(s)+': '+n).join(', ')+')':''}</div>
+      <div class="chips">${chip('phone','Телефоны')}${chip('name','ФИО')}${chip('inn','ИНН')}${chip('email','Email')}${opt.meta?chip('meta','Автор файла'):''}</div>
+      ${total?'':'<div class="okm">Личных данных не найдено. Проверьте файл глазами на всякий случай.</div>'}
+      ${R.cols.length?`<div class="cols"><b>Очищено целиком по заголовку:</b><br>${R.cols.join('<br>')}</div>`:''}
+      ${R.warn.map(w=>`<div class="warn">${w}</div>`).join('')}
+      <div class="row"><a class="btn red" href="${url}" download="${esc(outName)}">⬇ Скачать очищенный файл</a>
+      ${keyCsv&&total?`<button class="btn gray" data-key>Скачать ключ замен</button>`:''}</div>
+      ${keyCsv&&total?'<div class="how" style="margin-top:8px">Ключ показывает, какая метка что заменяет. Храните его у себя и <b>не отправляйте вместе с файлом</b>.</div>':''}
+      ${R.ctx.hits.length?`<details><summary>Показать замены (${R.ctx.hits.length}${R.ctx.hits.length>=5000?'+':''})</summary><div class="tw"><table><thead><tr><th>Где</th><th>Что</th><th>Было</th><th>Стало</th></tr></thead><tbody>${R.ctx.hits.slice(0,1500).map(h=>`<tr><td class="p">${esc(h.where)}</td><td class="p">${TL[h.type]}</td><td class="o">${esc(h.orig)}</td><td class="n">${esc(h.out)}</td></tr>`).join('')}</tbody></table></div>${R.ctx.hits.length>1500?'<div class="how">Показаны первые 1500.</div>':''}</details>`:''}`;
+    const kb=box.querySelector('[data-key]'); if(kb) kb.onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([keyCsv],{type:'text/csv'}));a.download=file.name.replace(/(\.[^.]+)?$/,'_ключ.csv');a.click()};
+  }catch(e){console.error(e);box.innerHTML=`<h2>${esc(file.name)}</h2><div class="err">${esc(e.message||String(e))}</div>`}
+}
+const drop=$('#drop'), inp=$('#file');
+inp.onchange=()=>{[...inp.files].forEach(handle);inp.value=''};
+['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('on')}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('on')}));
+drop.addEventListener('drop',e=>[...e.dataTransfer.files].forEach(handle));
+</script>
+</body></html>
