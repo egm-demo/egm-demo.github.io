@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<!-- Концепция: «Доставка списком» — сначала зона объекта (4 крупные кнопки с ценой доставки и городами-примерами), затем материалы с ценой «машина под ключ» для выбранной зоны.
+     Референс: выбор тарифа/зоны в сервисах доставки (Яндекс Доставка, СДЭК) — зона как главный фильтр страницы. -->
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ЕГМ НЕРУД — щебень и песок с доставкой: цена машины под ключ по зонам</title>
+<meta name="description" content="Выберите, где ваш объект, и увидите цену самосвала 25&nbsp;т под ключ. Гранитный щебень в пределах МКАД — 66&nbsp;250&nbsp;₽ за машину.">
+<style>
+@font-face{font-family:Golos;font-weight:400;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-400.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:Golos;font-weight:400;font-display:swap;src:url(../_assets/fonts/golos-latin-400.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:Golos;font-weight:600;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-600.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:Golos;font-weight:600;font-display:swap;src:url(../_assets/fonts/golos-latin-600.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:Golos;font-weight:800;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-800.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:Golos;font-weight:800;font-display:swap;src:url(../_assets/fonts/golos-latin-800.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+:root{--g:#141518;--red:#E3120B;--redh:#c70f09;--bg:#fff;--bg2:#f3f4f6;--line:#d5d8dd;--mute:#4b4f56}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font:400 17px/1.5 Golos,system-ui,sans-serif;color:var(--g);background:var(--bg);padding-bottom:84px;overflow-wrap:anywhere}
+img{max-width:100%;display:block}
+a{color:inherit}
+.w{max-width:1080px;margin:0 auto;padding:0 16px}
+.num{font-variant-numeric:tabular-nums}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+header .w{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px}
+.logo{display:inline-flex;align-items:center;min-height:48px}
+.logo img{height:30px;width:auto}
+nav{display:none}
+nav a{display:inline-flex;align-items:center;min-height:48px;padding:0 14px;text-decoration:none;font-weight:600}
+.hphone{display:none;font-weight:800;text-decoration:none;font-size:20px}
+.btn{display:flex;align-items:center;justify-content:center;min-height:52px;padding:0 22px;border:2px solid var(--red);border-radius:8px;background:var(--red);color:#fff;font:800 18px/1 Golos,system-ui,sans-serif;text-decoration:none;cursor:pointer;text-align:center;transition:transform .12s}
+.btn:active{transform:scale(.97)}
+.btn.alt{background:#fff;color:var(--g);border-color:var(--g)}
+h1{font:800 clamp(30px,8vw,52px)/1.08 Golos,system-ui,sans-serif;letter-spacing:-.01em}
+h2{font:800 clamp(26px,6vw,36px)/1.12 Golos,system-ui,sans-serif;margin-bottom:12px}
+section{padding:40px 0}
+.hero{background:var(--g);color:#fff;padding:24px 0 28px}
+.hero p.sub{margin-top:10px;color:#e4e6ea}
+.q{margin-top:20px;font:800 22px/1.2 Golos,system-ui,sans-serif}
+.zones{display:grid;gap:10px;margin-top:12px}
+.z{position:relative}
+.z input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.z label{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;min-height:76px;padding:12px 16px;border:3px solid #55585f;border-radius:10px;background:#1f2126;color:#fff;cursor:pointer}
+.z .n{font:800 20px/1.2 Golos,system-ui,sans-serif}
+.z .p{grid-row:1/3;grid-column:2;font:800 24px/1 Golos,system-ui,sans-serif;text-align:right;white-space:nowrap}
+.z .p small{display:block;margin-top:4px;font:400 14px/1.2 Golos,system-ui,sans-serif;color:#d4d6db}
+.z .ex{font-size:15px;color:#d4d6db;line-height:1.3}
+.z input:checked+label{background:#fff;color:var(--g);border-color:var(--red)}
+.z input:checked+label .ex,.z input:checked+label .p small{color:#3c4048}
+.z input:checked+label .n:before{content:"✓ ";color:var(--red)}
+.z input:focus-visible+label{outline:3px solid #fff;outline-offset:2px}
+.hnote{margin-top:12px;font-size:15px;color:#d4d6db}
+.sel{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-bottom:6px}
+.pill{display:inline-block;padding:4px 12px;border-radius:99px;background:var(--red);color:#fff;font-weight:800}
+.list{list-style:none;padding:0;border-top:1px solid var(--line)}
+.list li{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+.list .nm{font-weight:800;font-size:19px}
+.list .nm small{display:block;font-weight:400;font-size:15px;color:var(--mute);line-height:1.3}
+.list .tp{grid-row:1/3;grid-column:2;text-align:right}
+.list .tp b{display:block;font:800 26px/1 Golos,system-ui,sans-serif;white-space:nowrap}
+.list .tp span{font-size:14px;color:var(--mute)}
+.list .calc{font-size:15px;color:var(--mute);grid-column:1}
+.list .go{grid-column:1/3;display:flex}
+.list .go a{display:inline-flex;align-items:center;min-height:44px;font-weight:600;color:var(--red);text-decoration:underline;text-underline-offset:3px}
+.note{margin-top:14px;color:var(--mute);font-size:16px}
+.grey{background:var(--bg2)}
+.tbl{width:100%;border-collapse:collapse;margin-top:8px;font-size:16px}
+.tbl th,.tbl td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{font-weight:600;color:var(--mute);font-size:15px}
+.tbl td:last-child,.tbl th:last-child{text-align:right;white-space:nowrap}
+.svc{list-style:none;padding:0;display:grid;gap:0;border-top:1px solid var(--line)}
+.svc li{padding:14px 0;border-bottom:1px solid var(--line)}
+.svc b{display:block;font-size:19px}
+.svc span{color:var(--mute);font-size:16px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;list-style:none;padding:0}
+.stats li{padding:14px;background:#fff;border:1px solid var(--line);border-radius:8px}
+.stats b{display:block;font:800 34px/1 Golos,system-ui,sans-serif}
+.steps{list-style:none;padding:0;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:44px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.steps li:before{content:counter(s);display:grid;place-items:center;width:44px;height:44px;border-radius:8px;background:var(--g);color:#fff;font-weight:800;font-size:20px}
+.steps b{display:block;font-size:19px}
+.steps span{color:var(--mute);font-size:16px}
+details{border-bottom:1px solid var(--line)}
+summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px;padding:8px 0;font-weight:800;font-size:18px;cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:8px;background:var(--bg2);font-size:24px}
+details[open] summary:after{content:"−"}
+details p{padding:0 0 16px;color:var(--mute)}
+label.f,.f{display:block;margin:14px 0 6px;font-weight:600}
+input.i,textarea.i{width:100%;min-height:52px;padding:0 14px;border:2px solid #8b8f97;border-radius:8px;background:#fff;color:var(--g);font:400 18px/1.2 Golos,system-ui,sans-serif}
+textarea.i{padding:12px 14px;min-height:88px;resize:vertical}
+.i:focus{border-color:var(--g);outline:none}
+.err{display:none;margin-top:8px;color:#b00d07;font-weight:600}
+.err.on{display:block}
+.ok{display:none;padding:20px;border-radius:10px;background:var(--g);color:#fff;font:800 24px/1.25 Golos,system-ui,sans-serif}
+.ok.on{display:block}
+.small{margin-top:10px;font-size:14px;color:var(--mute)}
+.two{display:grid;gap:28px}
+.tel{display:block;min-height:48px;font:800 clamp(28px,8vw,38px)/1.2 Golos,system-ui,sans-serif;text-decoration:none;margin:4px 0 8px}
+footer{background:var(--g);color:#d4d6db;padding:28px 0;font-size:14px}
+footer p+p{margin-top:6px}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line);box-shadow:0 -2px 8px rgba(0,0,0,.08)}
+.bar .btn{min-height:52px}
+@media(min-width:900px){
+ body{padding-bottom:0;font-size:18px}
+ .bar{display:none}
+ nav,.hphone{display:flex}
+ .w{padding:0 28px}
+ .zones{grid-template-columns:repeat(4,1fr)}
+ .z label{grid-template-columns:1fr;min-height:190px;align-content:start;gap:6px;padding:16px}
+ .z .p{grid-row:auto;grid-column:auto;text-align:left;font-size:30px;order:-1}
+ .z .p small{display:inline;margin-left:6px}
+ .list li{grid-template-columns:1fr 200px 220px;gap:16px}
+ .list .tp{grid-row:auto;grid-column:auto;order:2}
+ .list .calc{grid-column:auto}
+ .list .go{grid-column:auto;order:3;justify-content:flex-end}
+ .two{grid-template-columns:1fr 1fr}
+ .stats{grid-template-columns:repeat(4,1fr)}
+ .svc{grid-template-columns:1fr 1fr;column-gap:32px}
+}
+@media(hover:hover){.btn:hover{background:var(--redh);border-color:var(--redh)}.btn.alt:hover{background:var(--bg2)}.z label:hover{border-color:#fff}nav a:hover{text-decoration:underline}summary:hover{color:var(--red)}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header><div class="w">
+ <a class="logo" href="#top" aria-label="ЕГМ НЕРУД"><img src="../_assets/logo-on-light.png" alt="ЕГМ НЕРУД" width="110" height="30"></a>
+ <nav aria-label="Разделы"><a href="#materials">Цены</a><a href="#delivery">Доставка</a><a href="#services">Услуги</a><a href="#contacts">Контакты</a></nav>
+ <a class="hphone num" href="tel:+79629101530">+7 (962) 910-15-30</a>
+</div></header>
+
+<main id="top">
+<div class="hero"><div class="w">
+ <h1>Щебень и песок с доставкой. Цена машины под ключ</h1>
+ <p class="sub">Самосвал 25&nbsp;т, материал и доставка в одной цене. Ориентировочно, точную подтвердим за 15 минут.</p>
+ <div class="q" id="zq">Где ваш объект?</div>
+ <div class="zones" role="radiogroup" aria-labelledby="zq" id="zones"></div>
+ <p class="hnote">Города — примеры, уточним по адресу. Цена доставки за один самосвал (25&nbsp;т).</p>
+</div></div>
+
+<section id="materials"><div class="w">
+ <div class="sel"><h2 style="margin:0">Материалы</h2><span class="pill" id="selz">В пределах МКАД</span></div>
+ <p class="note" style="margin:0 0 12px" id="selnote">Цена за 1 самосвал 25&nbsp;т: материал + доставка.</p>
+ <ul class="list num" id="mlist"></ul>
+ <p class="note">Цены ориентировочно. Фракции щебня: 5–10, 20–40, 40–70&nbsp;мм. Галька, ЩПС (щебёночно-песчаная смесь) и отсев — по запросу. Нужно меньше или больше 25&nbsp;т — посчитаем отдельно.</p>
+</div></section>
+
+<section id="delivery" class="grey"><div class="w">
+ <h2>Доставка по зонам</h2>
+ <table class="tbl num">
+  <thead><tr><th>Зона</th><th>Примеры городов</th><th>1 машина, 25&nbsp;т</th></tr></thead>
+  <tbody id="dtb"></tbody>
+ </table>
+ <p class="note">Города — примеры, уточним по адресу. Подача машины — от 24 часов. Возим собственными самосвалами, без посредников.</p>
+</div></section>
+
+<section id="services"><div class="w">
+ <h2>Другие услуги</h2>
+ <ul class="svc">
+  <li><b>Вывоз грунта</b><span>от 400&nbsp;₽ за м³</span></li>
+  <li><b>Вывоз снега</b><span>со стройплощадок и коммерческой недвижимости</span></li>
+  <li><b>Аренда спецтехники</b><span>цена фиксируется на весь срок</span></li>
+  <li><b>Аренда контейнеров</b><span>для строительных отходов</span></li>
+  <li><b>Самосвалы на объект</b><span>от одной машины до постоянной логистики</span></li>
+ </ul>
+</div></section>
+
+<section class="grey"><div class="w">
+ <h2>Почему ЕГМ</h2>
+ <ul class="stats">
+  <li><b class="num">8+</b>лет в поставках</li>
+  <li><b class="num">7+</b>единиц своей техники</li>
+  <li><b class="num">40+</b>объектов в месяц</li>
+  <li><b class="num">24/7</b>на связи</li>
+ </ul>
+ <p class="note">Работаем с юрлицами по договору, без посредников.</p>
+</div></section>
+
+<section><div class="w">
+ <h2>Как заказать</h2>
+ <ol class="steps">
+  <li><div><b>Заявка</b><span>звонок, форма или мессенджер</span></div></li>
+  <li><div><b>Расчёт и договор</b><span>цену подтверждаем за 15 минут</span></div></li>
+  <li><div><b>Подача самосвала</b><span>от 24 часов</span></div></li>
+  <li><div><b>Выгрузка и документы</b><span>закрывающие документы сразу</span></div></li>
+ </ol>
+</div></section>
+
+<section class="grey"><div class="w">
+ <h2>Вопросы</h2>
+ <details><summary>Как считается зона?</summary><p>По расстоянию от МКАД до адреса выгрузки. Если объект на границе зон, назовём точную цену при расчёте.</p></details>
+ <details><summary>Что входит в цену «под ключ»?</summary><p>25&nbsp;т материала плюс доставка одним самосвалом. Выгрузка на вашем объекте, документы — закрывающие.</p></details>
+ <details><summary>Что такое ПГС?</summary><p>Песчано-гравийная смесь. Идёт на подсыпку, основания дорог и площадок.</p></details>
+ <details><summary>Когда приедет машина?</summary><p>Подача — от 24 часов. Срок назовём при расчёте.</p></details>
+ <details><summary>Работаете с юрлицами?</summary><p>Да, по договору: от одной машины до постоянной логистики стройплощадки.</p></details>
+</div></section>
+
+<section id="order"><div class="w two">
+ <div>
+  <h2>Заявка</h2>
+  <form id="of" novalidate>
+   <div class="f" style="margin-top:0">Зона: <b id="oz">В пределах МКАД</b></div>
+   <label class="f" for="ph">Телефон</label>
+   <input class="i" id="ph" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 ___ ___-__-__">
+   <div class="err" id="perr" role="alert">Укажите телефон: минимум 10 цифр.</div>
+   <label class="f" for="nm">Имя (по желанию)</label>
+   <input class="i" id="nm" autocomplete="name">
+   <label class="f" for="cm">Материал и адрес (по желанию)</label>
+   <textarea class="i" id="cm" placeholder="Например: гранитный щебень 20–40, Химки"></textarea>
+   <button class="btn" type="submit" style="width:100%;margin-top:16px">Отправить заявку</button>
+   <p class="small">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
+  </form>
+  <div class="ok" id="ok" role="status" tabindex="-1">Спасибо, перезвоним за 15 минут.</div>
+ </div>
+ <div id="contacts">
+  <h2>Контакты</h2>
+  <a class="tel num" href="tel:+79629101530">+7 (962) 910-15-30</a>
+  <p>На связи 24/7.</p>
+  <p style="margin-top:8px"><a href="mailto:sale@egm-nerud.ru">sale@egm-nerud.ru</a></p>
+  <p>г. Москва, пр-кт Мира, 102к1</p>
+ </div>
+</div></section>
+</main>
+
+<footer><div class="w">
+ <p>ООО «ЕГМ», ИНН 7727442967, ОГРН 1207700145850.</p>
+ <p>Цены на сайте ориентировочные и не являются публичной офертой.</p>
+</div></footer>
+
+<div class="bar"><a class="btn alt" href="tel:+79629101530">Позвонить</a><a class="btn" href="#order">Заявка</a></div>
+
+<script>
+(function(){
+ var Z=[
+  {n:"В пределах МКАД",d:7500,ex:"Москва"},
+  {n:"До 30 км от МКАД",d:8500,ex:"Химки, Мытищи, Люберцы"},
+  {n:"30–60 км",d:10500,ex:"Пушкино, Подольск, Домодедово"},
+  {n:"60–100 км",d:13500,ex:"Сергиев Посад, Чехов, Наро-Фоминск"}];
+ var M=[
+  ["Щебень гранитный","фракции 5–10, 20–40, 40–70 мм",2350,"1,4"],
+  ["Щебень известняковый","",1450,"1,3"],
+  ["Щебень вторичный","из переработанного бетона и кирпича",950,"1,35"],
+  ["Песок сеяный","",650,"1,6"],
+  ["Песок мытый","",900,"1,55"],
+  ["ПГС","песчано-гравийная смесь",800,"1,65"],
+  ["Грунт плодородный","",700,"1,2"]];
+ var $=function(i){return document.getElementById(i)},f=function(n){return n.toLocaleString("ru-RU")};
+ var cur=0;
+ var zh="";
+ Z.forEach(function(z,i){
+  zh+='<div class="z"><input type="radio" name="zone" id="z'+i+'" value="'+i+'"'+(i===0?" checked":"")+'><label for="z'+i+'"><span class="n">'+z.n+'</span><span class="p num">'+f(z.d)+' ₽<small>доставка</small></span><span class="ex">'+z.ex+(i?" (примеры)":"")+'</span></label></div>';
+ });
+ $("zones").innerHTML=zh;
+ $("dtb").innerHTML=Z.map(function(z){return "<tr><td><b>"+z.n+"</b></td><td>"+z.ex+" <span style='color:#4b4f56'>(примеры)</span></td><td><b>"+f(z.d)+" ₽</b></td></tr>"}).join("");
+ function render(){
+  var z=Z[cur];
+  $("selz").textContent=z.n;$("oz").textContent=z.n;
+  $("selnote").textContent="Цена за 1 самосвал 25 т: материал + доставка "+f(z.d)+" ₽.";
+  $("mlist").innerHTML=M.map(function(m){
+   var tot=25*m[2]+z.d;
+   return '<li><div class="nm">'+m[0]+(m[1]?'<small>'+m[1]+'</small>':'')+'</div><div class="tp"><b data-t="'+tot+'">'+f(tot)+' ₽</b><span>машина под ключ</span></div><div class="calc">'+f(m[2])+' ₽/т × 25 т + доставка '+f(z.d)+' ₽</div><div class="go"><a href="#order" data-m="'+m[0]+'">Заказать</a></div></li>';
+  }).join("");
+ }
+ $("zones").addEventListener("change",function(e){cur=+e.target.value;render()});
+ $("mlist").addEventListener("click",function(e){
+  var a=e.target.closest("a[data-m]");if(!a)return;
+  $("cm").value=a.dataset.m+", 25 т, "+Z[cur].n+".";
+ });
+ render();
+ $("of").addEventListener("submit",function(e){
+  e.preventDefault();
+  var d=$("ph").value.replace(/\D/g,"");
+  if(d.length<10){$("perr").classList.add("on");$("ph").setAttribute("aria-invalid","true");$("ph").focus();return}
+  $("perr").classList.remove("on");
+  $("of").style.display="none";$("ok").classList.add("on");$("ok").focus();
+ });
+})();
+</script>
+</body>
+</html>

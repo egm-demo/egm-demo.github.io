@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- Концепция: 40-warm — тёплая дружелюбная подача, разговорные фразы, песочный фон, круглые кнопки, пиктограммы SVG.
+     Референс: ВкусВилл (мягкие крупные карточки, простые иконки, дружелюбный тон). Акцент только красный. -->
+<link rel="icon" href="data:,">
+<title>ЕГМ НЕРУД — привезём щебень, песок и ПГС завтра</title>
+<meta name="description" content="Щебень, песок, ПГС и грунт с доставкой по Москве и МО. Цены от 650&nbsp;₽/т. Цену подтверждаем за 15 минут.">
+<style>
+@font-face{font-family:Golos;font-weight:400;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-400.woff2) format("woff2");unicode-range:U+0400-04FF}
+@font-face{font-family:Golos;font-weight:400;font-display:swap;src:url(../_assets/fonts/golos-latin-400.woff2) format("woff2");unicode-range:U+0000-00FF,U+2116,U+20BD}
+@font-face{font-family:Golos;font-weight:500;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-500.woff2) format("woff2");unicode-range:U+0400-04FF}
+@font-face{font-family:Golos;font-weight:500;font-display:swap;src:url(../_assets/fonts/golos-latin-500.woff2) format("woff2");unicode-range:U+0000-00FF,U+2116,U+20BD}
+@font-face{font-family:Golos;font-weight:700;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-700.woff2) format("woff2");unicode-range:U+0400-04FF}
+@font-face{font-family:Golos;font-weight:700;font-display:swap;src:url(../_assets/fonts/golos-latin-700.woff2) format("woff2");unicode-range:U+0000-00FF,U+2116,U+20BD}
+@font-face{font-family:Golos;font-weight:800;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-800.woff2) format("woff2");unicode-range:U+0400-04FF}
+@font-face{font-family:Golos;font-weight:800;font-display:swap;src:url(../_assets/fonts/golos-latin-800.woff2) format("woff2");unicode-range:U+0000-00FF,U+2116,U+20BD}
+:root{--red:#E3120B;--ink:#141518;--mute:#5f6368;--sand:#f6f1e8;--sand2:#ece4d4;--card:#fffdf9;--line:#ddd2bd}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;scroll-padding-top:12px}
+body{font:400 18px/1.5 Golos,system-ui,sans-serif;color:var(--ink);background:var(--sand);padding-bottom:84px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+a{color:inherit}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+h1,h2,h3{font-family:Golos,sans-serif;line-height:1.12}
+h2{font-weight:800;font-size:28px;margin-bottom:6px}
+.sub{color:var(--mute);margin-bottom:18px}
+section{padding:34px 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:0 28px;border-radius:999px;border:2px solid var(--red);background:var(--red);color:#fff;font:700 18px/1 Golos,sans-serif;text-decoration:none;cursor:pointer;transition:transform .12s,background .12s}
+.btn.ghost{background:#fff;color:var(--ink);border-color:var(--ink)}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,textarea:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+@media(hover:hover){.btn:hover{background:#b80e08;border-color:#b80e08}.btn.ghost:hover{background:var(--ink);color:#fff}}
+header{padding:10px 0}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px}
+header img{height:32px;width:auto;display:block}
+header .lg{display:inline-flex;align-items:center;min-height:48px}
+header nav{display:none}
+.hp{font-weight:700;text-decoration:none;min-height:48px;display:inline-flex;align-items:center;white-space:nowrap}
+/* hero */
+.hero{padding:14px 0 26px}
+.hero h1{font-weight:800;font-size:34px}
+.hero .hi{margin-top:8px;font-size:19px}
+.hero .btn{margin-top:16px;width:100%}
+.mini{display:grid;gap:10px;margin-top:18px}
+.mini a{display:flex;align-items:center;gap:12px;background:var(--card);border:2px solid var(--line);border-radius:22px;padding:12px 16px;text-decoration:none;min-height:64px}
+.mini a:active{transform:scale(.98)}
+.mini .ic{flex:none;width:44px;height:44px}
+.mini b{font-weight:800;font-size:20px;white-space:nowrap}
+.mini span.t{flex:1;font-weight:500}
+.hint{margin-top:12px;font-size:16px;color:var(--mute)}
+.hero .photo{display:none}
+/* материалы */
+.grid{display:grid;gap:12px}
+.mat{background:var(--card);border:2px solid var(--line);border-radius:26px;padding:16px;display:grid;grid-template-columns:56px 1fr auto;gap:4px 14px;align-items:center}
+.mat svg{width:56px;height:56px;grid-row:span 2}
+.mat h3{font-size:20px;font-weight:700}
+.mat .p{font-weight:800;font-size:22px;white-space:nowrap;text-align:right}
+.mat .p small{display:block;font-size:14px;font-weight:500;color:var(--mute)}
+.mat .d{grid-column:2/4;font-size:16px;color:var(--mute)}
+.mat.n .p{grid-row:1}
+/* калькулятор */
+.calcbox{background:var(--card);border:2px solid var(--line);border-radius:30px;padding:20px 16px}
+.calc{display:grid;gap:14px}
+.calc label{display:block;font-weight:700;font-size:17px;margin-bottom:6px}
+.calc select,.calc input{width:100%;min-height:56px;border-radius:18px;border:2px solid #b9ac92;background:#fff;color:var(--ink);font:500 18px Golos,sans-serif;padding:0 16px}
+.res{margin-top:18px;background:var(--sand2);border-radius:22px;padding:16px}
+.res .sum{display:block;font:800 40px/1.1 Golos,sans-serif}
+.res p{font-size:16px;color:#3c4043;margin-top:6px}
+.calcbox .btn{margin-top:14px;width:100%}
+/* услуги */
+.srv{display:grid;gap:10px}
+.srv div{display:grid;grid-template-columns:48px 1fr;gap:4px 14px;align-items:start;background:var(--card);border:2px solid var(--line);border-radius:22px;padding:14px 16px}
+.srv svg{width:48px;height:48px;grid-row:span 2}
+.srv h3{font-size:19px;font-weight:700}
+.srv p{font-size:16px;color:var(--mute)}
+/* почему */
+.nums{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.nums div{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:14px}
+.nums b{display:block;font-weight:800;font-size:32px;line-height:1}
+.nums span{font-size:16px;color:var(--mute)}
+.why ul{list-style:none;display:grid;gap:10px}
+.why li{display:flex;gap:12px;align-items:flex-start}
+.why li svg{flex:none;width:28px;height:28px;margin-top:1px}
+.photos{display:grid;gap:10px;margin-top:18px}
+.photos img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:26px;display:block}
+.quote{margin-top:16px;border-left:5px solid var(--red);padding:2px 0 2px 14px;font-size:18px}
+.quote cite{display:block;margin-top:6px;font-size:16px;font-style:normal;color:var(--mute)}
+/* шаги */
+.steps{list-style:none;display:grid;gap:10px;counter-reset:s}
+.steps li{counter-increment:s;display:flex;gap:14px;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:22px;padding:14px 16px}
+.steps li:before{content:counter(s);flex:none;width:44px;height:44px;border-radius:50%;background:var(--red);color:#fff;font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center}
+.steps b{display:block}
+.steps span{font-size:16px;color:var(--mute)}
+/* faq */
+details.q{background:var(--card);border:2px solid var(--line);border-radius:22px;margin-bottom:10px}
+details.q summary{min-height:56px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:700;cursor:pointer;list-style:none}
+details.q summary::-webkit-details-marker{display:none}
+details.q summary:after{content:"+";font-size:28px;line-height:1;color:var(--red);flex:none}
+details.q[open] summary:after{content:"–"}
+details.q p{padding:0 16px 14px}
+/* форма */
+.formbox{background:var(--ink);color:#fff;border-radius:30px;padding:22px 16px}
+.formbox h2{margin-bottom:8px}
+.formbox .big{display:flex;align-items:center;justify-content:center;min-height:60px;border-radius:999px;background:#fff;color:var(--ink);font:800 24px/1 Golos,sans-serif;text-decoration:none;margin:12px 0 16px;white-space:nowrap}
+.formbox form{display:grid;gap:12px}
+.formbox label{display:block;font-weight:500;font-size:16px;margin-bottom:4px}
+.formbox input,.formbox textarea{width:100%;min-height:56px;border-radius:18px;border:2px solid #fff;background:#fff;color:var(--ink);font:400 18px Golos,sans-serif;padding:0 16px}
+.formbox textarea{padding:12px 16px;min-height:80px}
+.err{color:#ffb4b0;font-weight:500;font-size:16px}
+.agree{font-size:14px;color:#d2d4d8}
+.thanks{display:none;font-weight:700;font-size:22px;padding:8px 0}
+.done form{display:none}.done .thanks{display:block}
+footer{padding:26px 0 30px;font-size:15px;color:#3c4043;border-top:2px solid var(--line)}
+footer .wrap{display:grid;gap:12px}
+footer a{display:inline-flex;align-items:center;min-height:44px}
+/* панель */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:9;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:var(--sand);border-top:2px solid var(--line)}
+.bar .btn{min-height:52px;padding:0 10px}
+@media(min-width:800px){
+ body{padding-bottom:0;font-size:19px}.bar{display:none}
+ section{padding:56px 0}h2{font-size:38px}
+ header nav{display:flex;gap:6px}header nav a{display:inline-flex;align-items:center;min-height:48px;padding:0 14px;text-decoration:none;font-weight:500;border-radius:999px}
+ header nav a:hover{background:var(--sand2)}
+ header img{height:38px}
+ .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center}
+ .hero h1{font-size:52px}.hero .btn{width:auto}
+ .hero .photo{display:block}.hero .photo img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:36px;display:block}
+ .grid{grid-template-columns:1fr 1fr}
+ .srv{grid-template-columns:1fr 1fr}
+ .nums{grid-template-columns:repeat(4,1fr)}
+ .photos{grid-template-columns:1fr 1fr}
+ .calc{grid-template-columns:1.4fr 1fr 1.4fr}
+ .calcbox{padding:28px}.calcbox .btn{width:auto}
+ .formbox{padding:36px;display:grid;grid-template-columns:1fr 1.1fr;gap:36px}
+ .steps{grid-template-columns:1fr 1fr}
+}
+@media(max-width:350px){.mat{grid-template-columns:48px 1fr}.mat svg{width:48px;height:48px}.mat .p{grid-column:2;text-align:left;grid-row:auto}.hero h1{font-size:29px}.mini b{font-size:18px}.formbox .big{font-size:21px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+ <symbol id="i-check" viewBox="0 0 28 28"><circle cx="14" cy="14" r="13" fill="#E3120B"/><path d="M8 14.5l4 4 8-9" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</defs></svg>
+
+<header><div class="wrap">
+ <a class="lg" href="#top" aria-label="ЕГМ НЕРУД"><img src="../_assets/logo-on-light.png" alt="ЕГМ НЕРУД" width="128" height="32"></a>
+ <nav aria-label="Разделы"><a href="#ceny">Цены</a><a href="#raschet">Расчёт</a><a href="#uslugi">Услуги</a><a href="#kontakty">Контакты</a></nav>
+ <a class="hp" href="tel:+79629101530">+7 (962) 910-15-30</a>
+</div></header>
+
+<main id="top">
+<section class="hero"><div class="wrap">
+ <div>
+  <h1>Привезём щебень, песок и ПГС завтра</h1>
+  <p class="hi">Свои самосвалы по Москве и области. Скажем цену за 15 минут.</p>
+  <div class="mini">
+   <a href="#ceny"><svg class="ic" viewBox="0 0 56 56" aria-hidden="true"><path d="M6 46l12-20 8 10 8-14 16 24z" fill="#8a8f96"/><path d="M26 36l8-14 6 10z" fill="#5f6368"/></svg><span class="t">Щебень от</span><b>950&nbsp;₽/т</b></a>
+   <a href="#ceny"><svg class="ic" viewBox="0 0 56 56" aria-hidden="true"><path d="M4 46c10-20 18-26 24-26s14 8 24 26z" fill="#d9bf86"/><path d="M14 46c6-10 11-15 14-15s8 5 14 15z" fill="#c3a56a"/></svg><span class="t">Песок от</span><b>650&nbsp;₽/т</b></a>
+  </div>
+  <p class="hint">Цены ориентировочные, без доставки. Самосвал 25&nbsp;т в пределах МКАД — 7&nbsp;500&nbsp;₽.</p>
+  <a class="btn" href="#raschet">Посчитать стоимость</a>
+ </div>
+ <div class="photo"><img src="../_assets/pogruzka.jpg" alt="Погрузка щебня в самосвал" width="800" height="600"></div>
+</div></section>
+
+<section id="ceny"><div class="wrap">
+ <h2>Что возим и сколько стоит</h2>
+ <p class="sub">Цена за тонну, ориентировочно, без доставки.</p>
+ <div class="grid">
+  <div class="mat"><svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="28" fill="#ece4d4"/><path d="M10 40l9-15 6 8 7-11 12 18z" fill="#6b7078"/><path d="M25 33l7-11 5 8z" fill="#3c4043"/></svg><h3>Щебень гранитный</h3><div class="p">2&nbsp;350&nbsp;₽<small>за тонну</small></div><p class="d">Для бетона и дорог. Фракции 5–10, 20–40, 40–70&nbsp;мм.</p></div>
+  <div class="mat"><svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="28" fill="#ece4d4"/><path d="M10 40l9-15 6 8 7-11 12 18z" fill="#b9b2a2"/><path d="M25 33l7-11 5 8z" fill="#8f887a"/></svg><h3>Щебень известняковый</h3><div class="p">1&nbsp;450&nbsp;₽<small>за тонну</small></div><p class="d">Для оснований и подсыпки.</p></div>
+  <div class="mat"><svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="28" fill="#ece4d4"/><path d="M10 40l9-15 6 8 7-11 12 18z" fill="#9aa0a6"/><path d="M25 33l7-11 5 8z" fill="#5f6368"/></svg><h3>Щебень вторичный</h3><div class="p">950&nbsp;₽<small>за тонну</small></div><p class="d">Из переработанного бетона и кирпича. Для временных дорог.</p></div>
+  <div class="mat"><svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="28" fill="#ece4d4"/><path d="M8 42c8-16 14-22 20-22s12 6 20 22z" fill="#d9bf86"/></svg><h3>Песок сеяный</h3><div class="p">650&nbsp;₽<small>за тонну</small></div><p class="d">Для подсыпки и засыпки.</p></div>
+  <div class="mat"><svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="28" fill="#ece4d4"/><path d="M8 42c8-16 14-22 20-22s12 6 20 22z" fill="#e6cf9a"/><path d="M20 14c3 4 3 7 0 10-3-3-3-6 0-10z" fill="#4a90c2"/></svg><h3>Песок мытый</h3><div class="p">900&nbsp;₽<small>за тонну</small></div><p class="d">Чистый, без глины. Для бетона и растворов.</p></div>
+  <div class="mat"><svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="28" fill="#ece4d4"/><path d="M8 42c8-16 14-22 20-22s12 6 20 22z" fill="#c9b07a"/><circle cx="22" cy="36" r="3" fill="#8a8f96"/><circle cx="31" cy="32" r="3.5" fill="#6b7078"/><circle cx="37" cy="38" r="2.5" fill="#8a8f96"/></svg><h3>ПГС</h3><div class="p">800&nbsp;₽<small>за тонну</small></div><p class="d">Песчано-гравийная смесь. Для дорог и оснований.</p></div>
+  <div class="mat"><svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="28" fill="#ece4d4"/><path d="M8 42c8-16 14-22 20-22s12 6 20 22z" fill="#5b4636"/><path d="M28 20c0-6 4-9 9-9 0 5-3 9-9 9z" fill="#5f9150"/></svg><h3>Грунт плодородный</h3><div class="p">700&nbsp;₽<small>за тонну</small></div><p class="d">Для газонов и клумб.</p></div>
+ </div>
+ <p class="hint">Есть ещё галька, ЩПС (щебёночно-песчаная смесь) и отсев — спросите по телефону.</p>
+</div></section>
+
+<section id="raschet"><div class="wrap">
+ <h2>Посчитаем сами</h2>
+ <p class="sub">Выберите три пункта — сразу увидите цену.</p>
+ <div class="calcbox">
+  <form class="calc" id="calc" onsubmit="return false" aria-label="Расчёт стоимости">
+   <div><label for="mat">Что везём</label><select id="mat">
+    <option value="2350" selected>Щебень гранитный</option><option value="1450">Щебень известняковый</option><option value="950">Щебень вторичный</option><option value="650">Песок сеяный</option><option value="900">Песок мытый</option><option value="800">ПГС</option><option value="700">Грунт плодородный</option></select></div>
+   <div><label for="qty">Сколько тонн</label><input id="qty" type="number" inputmode="numeric" min="1" max="5000" value="25"></div>
+   <div><label for="zone">Куда</label><select id="zone">
+    <option value="7500" selected>Москва, в пределах МКАД</option><option value="8500">До 30&nbsp;км от МКАД</option><option value="10500">30–60&nbsp;км от МКАД</option><option value="13500">60–100&nbsp;км от МКАД</option></select></div>
+  </form>
+  <div class="res" aria-live="polite">
+   <span class="sum" id="sum">66&nbsp;250&nbsp;₽</span>
+   <p id="det">1 самосвал. Материал 58&nbsp;750&nbsp;₽ + доставка 7&nbsp;500&nbsp;₽. Цена ориентировочная, точную подтвердим за 15 минут.</p>
+  </div>
+  <a class="btn" href="#kontakty">Заказать по этой цене</a>
+ </div>
+</div></section>
+
+<section id="uslugi"><div class="wrap">
+ <h2>Ещё мы умеем</h2>
+ <p class="sub">Если нужна не только доставка.</p>
+ <div class="srv">
+  <div><svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="24" fill="#ece4d4"/><path d="M8 30h20v-9h8l6 7v2H8z" fill="#141518"/><circle cx="16" cy="33" r="4" fill="#E3120B"/><circle cx="34" cy="33" r="4" fill="#E3120B"/></svg><h3>Вывоз грунта</h3><p>От 400&nbsp;₽ за м³.</p></div>
+  <div><svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="24" fill="#ece4d4"/><path d="M24 10v28M12 17l24 14M12 31l24-14" stroke="#141518" stroke-width="3" stroke-linecap="round"/></svg><h3>Вывоз снега</h3><p>Со стройплощадок и коммерческой недвижимости.</p></div>
+  <div><svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="24" fill="#ece4d4"/><path d="M10 34h22v-8l-8-8h-6v8H10z" fill="#141518"/><path d="M32 22l8 12" stroke="#E3120B" stroke-width="4" stroke-linecap="round"/><circle cx="16" cy="36" r="3" fill="#E3120B"/></svg><h3>Аренда спецтехники</h3><p>Цена фиксируется на весь срок.</p></div>
+  <div><svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="24" fill="#ece4d4"/><path d="M9 18h30l-4 16H13z" fill="#141518"/><path d="M9 18h30" stroke="#E3120B" stroke-width="4"/></svg><h3>Аренда контейнеров</h3><p>Для строительных отходов.</p></div>
+  <div><svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="24" fill="#ece4d4"/><path d="M8 32h22V20h8l4 6v6H8z" fill="#141518"/><path d="M24 14l4 4h-8z" fill="#E3120B"/><circle cx="16" cy="34" r="3.5" fill="#E3120B"/><circle cx="35" cy="34" r="3.5" fill="#E3120B"/></svg><h3>Самосвалы на объект</h3><p>Поставим машины на вашу площадку.</p></div>
+ </div>
+</div></section>
+
+<section class="why" id="pochemu"><div class="wrap">
+ <h2>Почему к нам обращаются</h2>
+ <div class="nums">
+  <div><b>8+</b><span>лет в поставках</span></div>
+  <div><b>7+</b><span>своих самосвалов и машин</span></div>
+  <div><b>40+</b><span>объектов каждый месяц</span></div>
+  <div><b>24/7</b><span>на связи</span></div>
+ </div>
+ <ul>
+  <li><svg aria-hidden="true"><use href="#i-check"/></svg>Возим сами, без посредников.</li>
+  <li><svg aria-hidden="true"><use href="#i-check"/></svg>Работаем по договору с юрлицами.</li>
+  <li><svg aria-hidden="true"><use href="#i-check"/></svg>Одна машина или постоянная логистика стройплощадки.</li>
+  <li><svg aria-hidden="true"><use href="#i-check"/></svg>Подача техники от 24 часов.</li>
+ </ul>
+ <div class="photos"><img src="../_assets/park.jpg" alt="Самосвалы ЕГМ на площадке" width="800" height="600" loading="lazy"><img src="../_assets/sheben.jpg" alt="Щебень" width="760" height="480" loading="lazy"></div>
+ <blockquote class="quote">«Главные ценности нашей компании — соблюдение договорённостей, верность принципам и победа вместе с заказчиком».<cite>Владимир Балабанов, генеральный директор ООО «ЕГМ»</cite></blockquote>
+</div></section>
+
+<section id="kak"><div class="wrap">
+ <h2>Как всё происходит</h2>
+ <ol class="steps">
+  <li><div><b>Вы оставляете заявку</b><span>Звонок, форма или мессенджер.</span></div></li>
+  <li><div><b>Считаем и заключаем договор</b><span>Цену подтверждаем за 15 минут.</span></div></li>
+  <li><div><b>Подаём самосвал</b><span>От 24 часов.</span></div></li>
+  <li><div><b>Выгружаем и отдаём документы</b><span>Закрывающие документы вместе с машиной.</span></div></li>
+ </ol>
+</div></section>
+
+<section id="voprosy"><div class="wrap">
+ <h2>Частые вопросы</h2>
+ <details class="q"><summary>Сколько везёт один самосвал?</summary><p>25 тонн. Количество машин считаем сами: 30&nbsp;т — это 2 самосвала.</p></details>
+ <details class="q"><summary>Когда приедет машина?</summary><p>Подача техники от 24 часов после подтверждения заявки.</p></details>
+ <details class="q"><summary>Работаете по договору?</summary><p>Да, с юридическими лицами по договору, закрывающие документы выдаём после выгрузки.</p></details>
+ <details class="q"><summary>Что такое фракция?</summary><p>Размер зёрен щебня. Фракция 20–40&nbsp;мм — камни от 2 до 4 сантиметров. У нас есть 5–10, 20–40 и 40–70&nbsp;мм.</p></details>
+ <details class="q"><summary>Цена окончательная?</summary><p>На сайте цены ориентировочные. Точную назовём в течение 15 минут после заявки.</p></details>
+</div></section>
+
+<section id="kontakty"><div class="wrap">
+ <div class="formbox" id="fbox">
+  <div>
+   <h2>Позвоните или напишите</h2>
+   <p>На связи 24/7. Перезвоним за 15 минут.</p>
+   <a class="big" href="tel:+79629101530">+7 (962) 910-15-30</a>
+   <p><a href="mailto:sale@egm-nerud.ru" style="display:inline-flex;align-items:center;min-height:44px">sale@egm-nerud.ru</a></p>
+   <p>г. Москва, пр-кт Мира, 102к1</p>
+  </div>
+  <div>
+   <form id="lead" novalidate>
+    <div><label for="ph">Ваш телефон</label><input id="ph" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 ___ ___-__-__" aria-describedby="err"><div class="err" id="err" role="alert"></div></div>
+    <div><label for="nm">Как вас зовут (по желанию)</label><input id="nm" autocomplete="name"></div>
+    <div><label for="cm">Что нужно привезти (по желанию)</label><textarea id="cm"></textarea></div>
+    <button class="btn ghost" type="submit">Отправить заявку</button>
+    <p class="agree">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
+   </form>
+   <div class="thanks" role="status">Спасибо, перезвоним за 15 минут.</div>
+  </div>
+ </div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+ <img src="../_assets/logo-on-light.png" alt="ЕГМ НЕРУД" width="112" height="28" style="height:28px;width:auto">
+ <p>ООО «ЕГМ», ИНН 7727442967, ОГРН 1207700145850. г. Москва, пр-кт Мира, 102к1.</p>
+ <p><a href="tel:+79629101530">+7 (962) 910-15-30</a> · <a href="mailto:sale@egm-nerud.ru">sale@egm-nerud.ru</a></p>
+</div></footer>
+
+<div class="bar"><a class="btn ghost" href="tel:+79629101530">Позвонить</a><a class="btn" href="#kontakty">Заявка</a></div>
+
+<script>
+(function(){
+ var $=function(i){return document.getElementById(i)};
+ var nf=new Intl.NumberFormat('ru-RU'),pr=new Intl.PluralRules('ru-RU');
+ var F={one:'самосвал',few:'самосвала',many:'самосвалов',other:'самосвала'};
+ function calc(){
+  var q=Math.max(1,Math.floor(+$('qty').value)||1),p=+$('mat').value,t=+$('zone').value;
+  var n=Math.max(1,Math.ceil(q/25)),m=q*p,d=n*t;
+  $('sum').textContent=nf.format(m+d)+' ₽';
+  $('det').textContent=n+' '+F[pr.select(n)]+'. Материал '+nf.format(m)+' ₽ + доставка '+nf.format(d)+' ₽. Цена ориентировочная, точную подтвердим за 15 минут.';
+ }
+ ['mat','qty','zone'].forEach(function(i){$(i).addEventListener('input',calc);$(i).addEventListener('change',calc)});
+ calc();
+ $('lead').addEventListener('submit',function(e){
+  e.preventDefault();
+  if($('ph').value.replace(/\D/g,'').length<10){$('err').textContent='Введите номер полностью, например +7 962 910-15-30';$('ph').focus();return}
+  $('err').textContent='';$('fbox').classList.add('done');
+ });
+})();
+</script>
+</body>
+</html>
