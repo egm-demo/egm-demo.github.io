@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<!--
+  Концепция: «Каталог-листинг как END. Clothing». Материалы = товары: сортировка, фильтры слева,
+  карточка в выезжающей панели, корзина-заявка справа с расчётом доставки.
+  Референс: endclothing.com (только сетка, капс, плотность, панель корзины; графика и тексты свои).
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ЕГМ НЕРУД. Каталог нерудных материалов с доставкой по Москве и МО</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="Щебень, песок, ПГС, грунт с доставкой собственными самосвалами. Ориентировочные цены, расчёт заявки онлайн.">
+<style>
+@font-face{font-family:"Golos Text";font-weight:400;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-400.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Golos Text";font-weight:400;font-display:swap;src:url(../_assets/fonts/golos-latin-400.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Golos Text";font-weight:500;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-500.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Golos Text";font-weight:500;font-display:swap;src:url(../_assets/fonts/golos-latin-500.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Golos Text";font-weight:600;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-600.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Golos Text";font-weight:600;font-display:swap;src:url(../_assets/fonts/golos-latin-600.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Golos Text";font-weight:700;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-700.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Golos Text";font-weight:700;font-display:swap;src:url(../_assets/fonts/golos-latin-700.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+:root{
+  --red:#E3120B; --ink:#141518; --paper:#fff; --g1:#f5f5f7; --g2:#f3f4f6; --line:#e2e3e7; --mut:#656870;
+  --ease:cubic-bezier(.23,1,.32,1); --drawer:cubic-bezier(.32,.72,0,1);
+  --hh:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:72px}
+body{font:400 13px/1.5 "Golos Text",system-ui,"Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--paper);overflow-wrap:anywhere;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;text-align:left}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.num,.price,td,.tot{font-variant-numeric:tabular-nums}
+.cap{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase}
+.mut{color:var(--mut)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;background:var(--ink);color:#fff;border:1px solid var(--ink);font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;text-align:center;transition:transform 140ms var(--ease),background-color 160ms,color 160ms,border-color 160ms}
+.btn:active{transform:scale(.97)}
+.btn--red{background:var(--red);border-color:var(--red)}
+.btn--ghost{background:transparent;color:var(--ink)}
+.btn[disabled]{opacity:.35;pointer-events:none}
+@media (hover:hover){.btn:hover{background:#000}.btn--red:hover{background:#c20e08;border-color:#c20e08}.btn--ghost:hover{background:var(--ink);color:#fff}}
+
+/* top strip + header */
+.strip{background:var(--ink);color:#fff;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.strip div{max-width:1680px;margin:auto;padding:8px 20px;display:flex;justify-content:space-between;gap:16px}
+.strip span:not(:first-child){display:none}
+.strip a{white-space:nowrap}
+@media(min-width:760px){.strip span:not(:first-child){display:inline}}
+header.hd{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid var(--line)}
+.hd__row{max-width:1680px;margin:auto;height:var(--hh);padding:0 20px;display:flex;align-items:center;gap:24px}
+.logo img{height:30px;width:auto}
+.nav{display:none;gap:26px;margin-left:12px}
+.nav a{padding:6px 0;border-bottom:1px solid transparent;transition:border-color 160ms}
+.hd__r{margin-left:auto;display:flex;align-items:center;gap:6px}
+.hd__phone{display:none;margin-right:14px;font-weight:600;font-size:13px;white-space:nowrap}
+.ibtn{position:relative;display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 10px;font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;transition:transform 140ms var(--ease)}
+.ibtn:active{transform:scale(.96)}
+.ibtn svg{width:20px;height:20px;flex:none}
+.badge{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--red);color:#fff;font-size:10px;line-height:18px;text-align:center;font-weight:700;transition:transform 300ms var(--ease)}
+.badge.pulse{transform:scale(1.35)}
+.navbar{display:flex;gap:22px;overflow-x:auto;padding:0 20px;border-top:1px solid var(--line);scrollbar-width:none}
+.navbar::-webkit-scrollbar{display:none}
+.navbar a{flex:none;padding:12px 0;font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase}
+@media(min-width:900px){.nav{display:flex}.navbar{display:none}.hd__phone{display:block}}
+@media (hover:hover){.nav a:hover{border-color:var(--ink)}}
+@media(max-width:899px){.hd__phone-ic{display:inline-flex}}
+@media(min-width:900px){.hd__phone-ic{display:none}}
+
+/* shell */
+.shell{max-width:1680px;margin:auto;display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:760px){.shell{grid-template-columns:208px minmax(0,1fr)}}
+@media(min-width:1180px){.shell{grid-template-columns:208px minmax(0,1fr) 340px}}
+
+/* filters */
+.filters{padding:20px;border-right:1px solid var(--line)}
+.filters h2{display:none}
+.fg{border-bottom:1px solid var(--line);padding:2px 0}
+.fg summary{list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:44px;cursor:pointer}
+.fg summary::-webkit-details-marker{display:none}
+.fg summary::after{content:"+";font-size:16px;font-weight:400;letter-spacing:0}
+.fg[open] summary::after{content:"\2212"}
+.fg__body{padding:0 0 14px;display:grid;gap:2px}
+.chk{display:flex;align-items:center;gap:10px;min-height:32px;cursor:pointer;font-size:13px}
+.chk input{appearance:none;width:16px;height:16px;border:1px solid var(--ink);margin:0;flex:none;display:grid;place-items:center;background:#fff;cursor:pointer}
+.chk input:checked{background:var(--ink)}
+.chk input:checked::after{content:"";width:8px;height:4px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+.chk span:last-child{margin-left:auto;color:var(--mut);font-size:11px}
+.range{width:100%;accent-color:var(--ink);height:28px}
+.range-v{display:flex;justify-content:space-between;font-size:12px}
+.filters__foot{display:none}
+.fclose{display:none}
+@media(max-width:759px){
+  .filters{position:fixed;z-index:70;left:0;top:0;bottom:0;width:min(340px,92vw);background:#fff;overflow:auto;transform:translateX(-102%);visibility:hidden;transition:transform 300ms var(--drawer),visibility 0s 300ms;padding-bottom:90px}
+  .filters.open{transform:none;visibility:visible;transition-delay:0s}
+  .filters h2{display:flex;justify-content:space-between;align-items:center;min-height:44px;margin-bottom:8px}
+  .fclose{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin-right:-12px}
+  .filters__foot{display:block;position:fixed;left:0;bottom:0;width:min(340px,92vw);padding:12px 20px;background:#fff;border-top:1px solid var(--line)}
+}
+
+/* listing */
+.list{padding:20px 20px 40px;min-width:0}
+.crumbs{font-size:11px;color:var(--mut);letter-spacing:.04em}
+.crumbs a{text-decoration:underline;text-underline-offset:3px}
+.list h1{font-size:clamp(22px,3.2vw,34px);line-height:1.1;font-weight:700;letter-spacing:-.01em;margin:10px 0 6px;text-transform:uppercase}
+.list h1 small{font-size:13px;letter-spacing:.04em;font-weight:400;color:var(--mut);margin-left:6px;white-space:nowrap}
+.lead{color:var(--mut);max-width:62ch;margin-bottom:16px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;padding:10px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--line);margin-bottom:12px}
+.bar__f{display:none}
+.search{flex:1 1 180px;min-width:0;display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:0 12px;min-height:44px}
+.search svg{width:16px;height:16px;flex:none}
+.search input{border:0;outline:0;background:none;width:100%;min-width:0;height:42px}
+.search:focus-within{border-color:var(--ink)}
+.sort{display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:0 0 0 12px;min-height:44px}
+.sort label{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;white-space:nowrap}
+.sort select{border:0;background:none;height:42px;padding:0 10px 0 4px;outline-offset:-2px;max-width:100%;min-width:0}
+@media(max-width:759px){.bar__f{display:inline-flex;border:1px solid var(--ink);min-height:44px;padding:0 14px;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase}.search{order:3;flex-basis:100%}.sort{flex:1}.sort label{display:none}.sort select{width:100%}.bar__f svg{width:16px;height:16px}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chips:empty{display:none}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:32px;padding:0 10px;background:var(--g1);font-size:12px}
+.chip b{font-weight:400;font-size:15px;line-height:1}
+.chip--clear{background:none;text-decoration:underline;text-underline-offset:3px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 12px}
+@media(min-width:760px){.grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}}
+.card{position:relative;display:flex;flex-direction:column;min-width:0}
+.card__open{display:block;width:100%;padding:0}
+.card__img{display:block;position:relative;aspect-ratio:4/5;background:var(--g2);overflow:hidden}
+.card__img img{width:100%;height:100%;object-fit:cover;transition:transform 500ms var(--ease)}
+.ph{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:16px;color:var(--mut);background:repeating-linear-gradient(135deg,var(--g2) 0 10px,#eceef1 10px 11px);font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase}
+.card__tag{position:absolute;left:0;top:0;background:#fff;padding:4px 8px;font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase}
+.card__name{display:block;margin-top:10px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;line-height:1.35}
+.card__meta{display:block;color:var(--mut);font-size:12px;margin-top:2px;min-height:1.5em}
+.card__price{display:block;margin-top:6px;font-weight:600;font-size:14px}
+.card__price small{font-weight:400;color:var(--mut);font-size:12px}
+.card__add{margin-top:10px;display:flex;align-items:center;justify-content:space-between;min-height:40px;padding:0 12px;border:1px solid var(--ink);font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;transition:transform 140ms var(--ease),background-color 160ms,color 160ms}
+.card__add:active{transform:scale(.97)}
+.card__add.in{background:var(--ink);color:#fff}
+@media (hover:hover){.card__open:hover .card__img img{transform:scale(1.04)}.card__open:hover .card__name{text-decoration:underline;text-underline-offset:3px}.card__add:hover{background:var(--ink);color:#fff}}
+.empty{padding:48px 0;text-align:left}
+.empty p{margin-bottom:14px}
+
+/* cart / request */
+.cart{display:flex;flex-direction:column;background:#fff;border-left:1px solid var(--line);z-index:80}
+.cart__hd{display:flex;align-items:center;justify-content:space-between;padding:0 20px;min-height:56px;border-bottom:1px solid var(--line);flex:none}
+.cart__hd .cap{display:flex;gap:8px;align-items:center}
+.cart__x{display:none;width:44px;height:44px;margin-right:-12px;align-items:center;justify-content:center}
+.cart__body{flex:1;overflow:auto;padding:0 20px 20px;overscroll-behavior:contain}
+.cart__empty{padding:24px 0;color:var(--mut)}
+.cart__empty b{display:block;color:var(--ink);font-size:12px;letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px}
+.line{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:4px 12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.line__img{grid-row:span 3;width:56px;height:70px;background:var(--g2);overflow:hidden;position:relative}
+.line__img img{width:100%;height:100%;object-fit:cover}
+.line__img .ph{font-size:0;padding:0}
+.line__name{font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em;line-height:1.35;text-align:left;padding:0}
+.line__rm{width:32px;height:32px;margin:-6px -6px 0 0;display:grid;place-items:center;color:var(--mut);font-size:18px;line-height:1}
+.line__sub{grid-column:2/4;color:var(--mut);font-size:12px}
+.line__q{grid-column:2/4;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.step{display:inline-flex;border:1px solid var(--line);align-items:center}
+.step button{width:36px;height:36px;display:grid;place-items:center;font-size:16px;text-align:center;transition:background-color 120ms}
+.step button:active{background:var(--g1)}
+.step input{width:58px;height:36px;border:0;border-left:1px solid var(--line);border-right:1px solid var(--line);text-align:center;background:none;min-width:0}
+.step span{padding:0 8px;font-size:12px;color:var(--mut)}
+.line__sum{font-weight:600;font-size:13px}
+.zone{margin-top:18px}
+.zone legend{padding:0;margin-bottom:6px}
+.zone label{display:flex;align-items:center;gap:10px;min-height:40px;border-bottom:1px solid var(--line);cursor:pointer;font-size:12px}
+.zone input{accent-color:var(--ink);width:16px;height:16px;flex:none}
+.zone label span:last-child{margin-left:auto;font-weight:600;white-space:nowrap}
+.zone label:has(input:checked){font-weight:600}
+.tot{margin-top:16px;display:grid;gap:6px}
+.tot div{display:flex;justify-content:space-between;gap:12px;font-size:13px}
+.tot div span:first-child{color:var(--mut)}
+.tot .grand{margin-top:6px;padding-top:12px;border-top:1px solid var(--ink);font-size:20px;font-weight:700;letter-spacing:-.01em}
+.tot .grand span:first-child{color:var(--ink);font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:600;align-self:center}
+.note{font-size:11px;color:var(--mut);margin-top:8px;line-height:1.45}
+.form{margin-top:18px;display:grid;gap:8px}
+.fld{display:block}
+.fld span{display:block;font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;margin-bottom:4px}
+.fld input{width:100%;height:44px;border:1px solid var(--line);padding:0 12px;background:#fff;border-radius:0}
+.fld input:focus{outline:0;border-color:var(--ink)}
+.fld input.bad{border-color:var(--red)}
+.err{color:var(--red);font-size:12px;min-height:0}
+.thanks{margin-top:18px;padding:18px;background:var(--g1)}
+.thanks b{display:block;font-size:16px;margin-bottom:4px}
+.thanks .btn{margin-top:12px}
+.dock{display:none}
+@media(min-width:1180px){.cart{position:sticky;top:var(--hh);height:calc(100vh - var(--hh));align-self:start}}
+@media(max-width:1179px){
+  .cart{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);transform:translateX(102%);visibility:hidden;transition:transform 320ms var(--drawer),visibility 0s 320ms;box-shadow:-20px 0 60px rgba(20,21,24,.12)}
+  .cart.open{transform:none;visibility:visible;transition-delay:0s}
+  .cart__x{display:inline-flex}
+  .dock{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:35;background:var(--ink);color:#fff;min-height:56px;align-items:center;justify-content:space-between;gap:12px;padding:0 20px;font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;width:100%;transition:transform 140ms var(--ease)}
+  .dock:active{transform:scale(.99)}
+  .dock .badge{background:var(--red)}
+  body{padding-bottom:56px}
+}
+@media(min-width:1180px){.ibtn--cart{display:none}}
+
+/* scrim & product panel */
+.scrim{position:fixed;inset:0;z-index:60;background:rgba(20,21,24,.45);opacity:0;visibility:hidden;transition:opacity 260ms var(--ease),visibility 0s 260ms}
+.scrim.on{opacity:1;visibility:visible;transition-delay:0s}
+.pp{position:fixed;z-index:90;top:0;right:0;bottom:0;width:min(500px,100%);background:#fff;display:flex;flex-direction:column;transform:translateX(102%);visibility:hidden;transition:transform 340ms var(--drawer),visibility 0s 340ms}
+.pp.open{transform:none;visibility:visible;transition-delay:0s}
+.pp__hd{display:flex;justify-content:space-between;align-items:center;min-height:56px;padding:0 20px;border-bottom:1px solid var(--line);flex:none}
+.pp__x{width:44px;height:44px;margin-right:-12px;display:grid;place-items:center}
+.pp__body{flex:1;overflow:auto;overscroll-behavior:contain}
+.pp__img{position:relative;aspect-ratio:4/3;background:var(--g2);overflow:hidden}
+.pp__img img{width:100%;height:100%;object-fit:cover}
+.pp__in{padding:20px}
+.pp h2{font-size:22px;line-height:1.15;font-weight:700;text-transform:uppercase;letter-spacing:.01em;margin-bottom:6px}
+.pp__price{font-size:22px;font-weight:700}
+.pp__price small{font-size:12px;font-weight:400;color:var(--mut)}
+.pp__desc{margin:10px 0 0;color:var(--mut);max-width:56ch}
+.spec{width:100%;border-collapse:collapse;margin:18px 0}
+.spec th,.spec td{padding:9px 0;border-top:1px solid var(--line);text-align:left;font-weight:400;font-size:13px}
+.spec th{color:var(--mut);width:42%}
+.spec tr:last-child th,.spec tr:last-child td{border-bottom:1px solid var(--line)}
+.opt{margin:18px 0}
+.opt>.cap{display:block;margin-bottom:8px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button,.seg label{min-height:40px;min-width:64px;padding:0 14px;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;text-align:center;transition:transform 140ms var(--ease),border-color 140ms}
+.seg button:active{transform:scale(.96)}
+.seg .on{border-color:var(--ink);background:var(--ink);color:#fff}
+.qrow{display:flex;gap:8px;align-items:stretch}
+.qrow input{flex:1;min-width:0;height:48px;border:1px solid var(--line);padding:0 14px;font-size:18px;font-weight:600}
+.qrow input:focus{outline:0;border-color:var(--ink)}
+.qrow .seg{flex-wrap:nowrap}
+.qrow .seg button{height:48px}
+.quick{margin-top:8px}
+.quick button{min-height:36px;font-size:12px;min-width:0;padding:0 12px}
+.calc{margin-top:10px;padding:12px 14px;background:var(--g1);font-size:13px;display:grid;gap:3px}
+.pp__ft{flex:none;padding:14px 20px;border-top:1px solid var(--line);background:#fff}
+.pp__ft .btn{width:100%;min-height:50px}
+.toast{position:fixed;left:50%;bottom:76px;z-index:100;transform:translate(-50%,12px);background:var(--ink);color:#fff;padding:12px 18px;font-size:12px;opacity:0;pointer-events:none;transition:opacity 220ms var(--ease),transform 260ms var(--ease);max-width:92vw}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* info sections */
+.sec{border-top:1px solid var(--ink)}
+.sec__in{max-width:1680px;margin:auto;padding:48px 20px}
+.sec h2{font-size:clamp(20px,2.6vw,30px);line-height:1.1;font-weight:700;text-transform:uppercase;letter-spacing:-.005em}
+.two{display:grid;gap:40px}
+@media(min-width:900px){.two{grid-template-columns:1fr 1fr;gap:64px}}
+table.t{width:100%;border-collapse:collapse;margin-top:18px}
+.t th,.t td{padding:12px 0;border-top:1px solid var(--line);text-align:left;font-weight:400;vertical-align:top}
+.t tr:last-child td,.t tr:last-child th{border-bottom:1px solid var(--line)}
+.t td:last-child{text-align:right;font-weight:600;white-space:nowrap}
+.steps{list-style:none;margin-top:18px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:4px 12px;padding:14px 0;border-top:1px solid var(--line);counter-increment:s}
+.steps li:last-child{border-bottom:1px solid var(--line)}
+.steps li::before{content:counter(s,decimal-leading-zero);font-size:11px;font-weight:600;letter-spacing:.09em;color:var(--mut);padding-top:3px}
+.steps b{display:block;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.steps span{color:var(--mut)}
+.about{display:grid;gap:0}
+@media(min-width:900px){.about{grid-template-columns:5fr 7fr}}
+.about__img{position:relative;min-height:320px;background:var(--g2);overflow:hidden}
+.about__img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 50%}
+.about__tx{padding:36px 20px;max-width:none}
+@media(min-width:900px){.about__tx{padding:56px 56px 56px 64px}}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:26px 0;border-top:1px solid var(--line)}
+.facts div{padding:16px 0;border-bottom:1px solid var(--line)}
+.facts div:nth-child(odd){padding-right:16px;border-right:1px solid var(--line)}
+.facts div:nth-child(even){padding-left:16px}
+@media(min-width:900px){.facts{grid-template-columns:repeat(4,minmax(0,1fr))}.facts div{padding:18px 16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.facts div:nth-child(odd){padding-right:16px}.facts div:nth-child(even){padding-left:16px}.facts div:first-child{padding-left:0}.facts div:last-child{border-right:0}}
+.facts b{display:block;font-size:clamp(28px,3.4vw,44px);line-height:1;font-weight:700;letter-spacing:-.02em}
+.facts span{display:block;margin-top:8px;font-size:12px;color:var(--mut)}
+blockquote{font-size:clamp(16px,1.7vw,20px);line-height:1.4;font-weight:500;max-width:46ch;border-left:2px solid var(--red);padding-left:16px}
+blockquote cite{display:block;margin-top:10px;font-style:normal;font-size:12px;color:var(--mut);font-weight:400}
+.faq{margin-top:18px}
+.faq details{border-top:1px solid var(--line)}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center;min-height:56px;cursor:pointer;font-weight:600;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:8px 0}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:18px;font-weight:400;flex:none}
+.faq details[open] summary::after{content:"\2212"}
+.faq p{padding:0 0 18px;color:var(--mut);max-width:62ch}
+.contacts{display:grid;gap:28px}
+@media(min-width:900px){.contacts{grid-template-columns:repeat(3,1fr)}}
+.contacts dt{margin-bottom:6px;color:var(--mut)}
+.contacts dd{font-size:clamp(16px,1.6vw,20px);font-weight:600;line-height:1.3}
+.contacts dd a{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:4px}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+footer.ft{background:var(--ink);color:#fff}
+.ft__in{max-width:1680px;margin:auto;padding:40px 20px 32px;display:grid;gap:32px}
+@media(min-width:900px){.ft__in{grid-template-columns:1fr 2fr}}
+.ft img{height:34px;width:auto}
+.ft__req{display:grid;gap:6px;color:#b9bcc4;font-size:12px}
+.ft__req b{color:#fff;font-weight:600}
+.ft__legal{max-width:1680px;margin:auto;padding:16px 20px;border-top:1px solid #2b2d33;color:#8c8f98;font-size:11px;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+@media (hover:hover){.contacts dd a:hover{text-decoration-color:var(--red)}.ibtn:hover{color:var(--red)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<div class="strip"><div><span>Подача самосвала от 24 часов</span><span>Цену подтверждаем в течение 15 минут</span><a href="tel:+79629101530">+7 (962) 910-15-30, 24/7</a></div></div>
+
+<header class="hd">
+  <div class="hd__row">
+    <a class="logo" href="#top" aria-label="ЕГМ НЕРУД, на главную"><img src="../_assets/logo-on-light.png" width="58" height="30" alt="ЕГМ НЕРУД"></a>
+    <nav class="nav cap" aria-label="Основная">
+      <a href="#catalog">Материалы</a><a href="#catalog" data-cat="svc">Услуги</a><a href="#delivery">Доставка</a><a href="#about">О компании</a><a href="#faq">Вопросы</a><a href="#contacts">Контакты</a>
+    </nav>
+    <div class="hd__r">
+      <a class="hd__phone" href="tel:+79629101530">+7 (962) 910-15-30</a>
+      <a class="ibtn hd__phone-ic" href="tel:+79629101530" aria-label="Позвонить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A15 15 0 0 1 4 5a1 1 0 0 1 1-1z"/></svg></a>
+      <button class="ibtn ibtn--cart" id="openCart" aria-label="Открыть заявку"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h16l-1.5 12h-13zM9 7V5a3 3 0 0 1 6 0v2"/></svg><span class="cap">Заявка</span><span class="badge" id="badgeTop">0</span></button>
+    </div>
+  </div>
+  <nav class="navbar" aria-label="Разделы"><a href="#catalog">Материалы</a><a href="#catalog" data-cat="svc">Услуги</a><a href="#delivery">Доставка</a><a href="#about">О компании</a><a href="#faq">Вопросы</a><a href="#contacts">Контакты</a></nav>
+</header>
+
+<main id="top">
+<div class="shell" id="catalog">
+
+  <aside class="filters" id="filters" aria-label="Фильтры">
+    <h2 class="cap">Фильтры <button class="fclose" id="closeF" aria-label="Закрыть фильтры"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5l14 14M19 5L5 19"/></svg></button></h2>
+    <details class="fg" open><summary class="cap">Категория</summary><div class="fg__body" id="fCat"></div></details>
+    <details class="fg" open><summary class="cap">Фракция щебня</summary><div class="fg__body" id="fFrac"></div></details>
+    <details class="fg" open><summary class="cap">Цена за тонну</summary><div class="fg__body"><input class="range" type="range" id="fPrice" min="650" max="2350" step="50" value="2350" aria-label="Максимальная цена за тонну"><div class="range-v num"><span>от 650 ₽</span><span>до <b id="fPriceV">2 350</b> ₽</span></div></div></details>
+    <div class="filters__foot"><button class="btn" style="width:100%" id="applyF">Показать <span id="applyN"></span></button></div>
+  </aside>
+
+  <section class="list" aria-labelledby="h1">
+    <div class="crumbs"><a href="#top">Главная</a> / Каталог</div>
+    <h1 id="h1">Нерудные материалы <small id="count">15</small></h1>
+    <p class="lead">Цены ориентировочные, за тонну, без доставки. Откройте карточку, укажите объём и добавьте в заявку: сумма с доставкой считается справа.</p>
+    <div class="bar">
+      <button class="bar__f" id="openF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16M7 12h10M10 17h4"/></svg>Фильтры</button>
+      <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="q" type="search" placeholder="Найти материал или услугу" aria-label="Поиск по каталогу" autocomplete="off"></label>
+      <div class="sort"><label for="sort">Сортировка</label><select id="sort"><option value="def">По умолчанию</option><option value="asc">Сначала дешевле</option><option value="desc">Сначала дороже</option><option value="name">По названию</option></select></div>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="grid" id="grid" aria-live="polite"></div>
+  </section>
+
+  <aside class="cart" id="cart" aria-label="Заявка">
+    <div class="cart__hd"><div class="cap">Заявка <span class="badge" id="badge">0</span></div><button class="cart__x" id="closeCart" aria-label="Закрыть заявку"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5l14 14M19 5L5 19"/></svg></button></div>
+    <div class="cart__body" id="cartBody"></div>
+  </aside>
+</div>
+
+<section class="sec" id="delivery"><div class="sec__in two">
+  <div>
+    <h2>Доставка</h2>
+    <p class="mut" style="margin-top:8px">Тариф за один самосвал (25 т). Возим собственными самосвалами, без посредников.</p>
+    <table class="t num"><tbody>
+      <tr><th scope="row">Москва, в пределах МКАД</th><td>7 500 ₽</td></tr>
+      <tr><th scope="row">До 30 км от МКАД</th><td>8 500 ₽</td></tr>
+      <tr><th scope="row">30–60 км от МКАД</th><td>10 500 ₽</td></tr>
+      <tr><th scope="row">60–100 км от МКАД</th><td>13 500 ₽</td></tr>
+      <tr><th scope="row">Вывоз грунта</th><td>от 400 ₽ за м³</td></tr>
+    </tbody></table>
+  </div>
+  <div>
+    <h2>Как работаем</h2>
+    <ol class="steps">
+      <li><div><b>Заявка</b><span>Звонок, форма или мессенджер.</span></div></li>
+      <li><div><b>Расчёт и договор</b><span>Подтверждаем цену в течение 15 минут. Работаем с юрлицами по договору.</span></div></li>
+      <li><div><b>Подача самосвала</b><span>От 24 часов.</span></div></li>
+      <li><div><b>Выгрузка и документы</b><span>Закрывающие документы после выгрузки.</span></div></li>
+    </ol>
+  </div>
+</div></section>
+
+<section class="sec" id="about"><div class="about">
+  <div class="about__img"><img src="../_assets/park.jpg" width="800" height="600" loading="lazy" alt="Самосвалы ЕГМ на площадке"></div>
+  <div class="about__tx">
+    <h2>Свои самосвалы, без посредников</h2>
+    <p class="mut" style="margin-top:10px;max-width:56ch">От одной машины до постоянной логистики стройплощадки. Подача техники от 24 часов.</p>
+    <div class="facts">
+      <div><b class="num">8+</b><span>лет в поставках</span></div>
+      <div><b class="num">7+</b><span>единиц собственной техники</span></div>
+      <div><b class="num">40+</b><span>объектов ежемесячно</span></div>
+      <div><b class="num">24/7</b><span>на связи</span></div>
+    </div>
+    <blockquote>«Главные ценности нашей компании — соблюдение договорённостей, верность принципам и победа вместе с заказчиком»<cite>Владимир Балабанов, генеральный директор ООО «ЕГМ»</cite></blockquote>
+  </div>
+</div></section>
+
+<section class="sec" id="faq"><div class="sec__in two">
+  <div><h2>Вопросы</h2><p class="mut" style="margin-top:8px;max-width:40ch">Не нашли ответ? Позвоните, мы на связи круглосуточно.</p><div class="cta-row"><a class="btn" href="tel:+79629101530">Позвонить</a></div></div>
+  <div class="faq">
+    <details><summary>Когда подадут самосвал</summary><p>Подача техники от 24 часов. Точное время называем при подтверждении заявки.</p></details>
+    <details><summary>Когда я узнаю точную цену</summary><p>Цену подтверждаем в течение 15 минут. В каталоге цены ориентировочные, за тонну, без доставки.</p></details>
+    <details><summary>Сколько материала в одном самосвале</summary><p>Расчёт идёт на самосвал 25 т. В кубометрах это зависит от плотности: гранитный щебень 1,4 т/м³ — примерно 17,9 м³, песок сеяный 1,6 т/м³ — примерно 15,6 м³.</p></details>
+    <details><summary>Работаете ли вы с юрлицами</summary><p>Да, по договору. Закрывающие документы передаём после выгрузки.</p></details>
+    <details><summary>Можно ли заказать меньше одной машины</summary><p>Объёмы у нас от одной машины. В расчёте минимум — один самосвал. Если нужно меньше, уточните по телефону.</p></details>
+    <details><summary>Какие материалы есть по запросу</summary><p>Галька, ЩПС и отсев. Цену называем по заявке, в сумму калькулятора они не входят.</p></details>
+  </div>
+</div></section>
+
+<section class="sec" id="contacts"><div class="sec__in">
+  <h2>Контакты</h2>
+  <dl class="contacts" style="margin-top:24px">
+    <div><dt class="cap">Телефон, 24/7</dt><dd><a href="tel:+79629101530">+7 (962) 910-15-30</a></dd></div>
+    <div><dt class="cap">Почта</dt><dd><a href="mailto:sale@egm-nerud.ru">sale@egm-nerud.ru</a></dd></div>
+    <div><dt class="cap">Адрес</dt><dd>г. Москва, пр-кт Мира, 102к1</dd></div>
+  </dl>
+  <div class="cta-row"><button class="btn btn--red" id="ctaCart">Открыть заявку</button><a class="btn btn--ghost" href="#catalog">В каталог</a></div>
+</div></section>
+</main>
+
+<footer class="ft">
+  <div class="ft__in">
+    <div><img src="../_assets/logo-on-dark.png" width="66" height="34" alt="ЕГМ НЕРУД"></div>
+    <div class="ft__req">
+      <b>ООО «ЕГМ»</b>
+      <span>ИНН 7727442967, ОГРН 1207700145850</span>
+      <span>г. Москва, пр-кт Мира, 102к1</span>
+      <span>sale@egm-nerud.ru, +7 (962) 910-15-30</span>
+    </div>
+  </div>
+  <div class="ft__legal"><span>Макет главной страницы. Цены ориентировочные, не являются публичной офертой.</span><span>Нерудные материалы, вывоз грунта и снега, аренда спецтехники</span></div>
+</footer>
+
+<button class="dock" id="dock"><span>Заявка <span id="dockN"></span></span><span class="num" id="dockSum">Пусто</span></button>
+
+<div class="scrim" id="scrim"></div>
+
+<aside class="pp" id="pp" role="dialog" aria-modal="true" aria-labelledby="ppT" aria-hidden="true">
+  <div class="pp__hd"><span class="cap" id="ppCat"></span><button class="pp__x" id="ppX" aria-label="Закрыть"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5l14 14M19 5L5 19"/></svg></button></div>
+  <div class="pp__body" id="ppBody"></div>
+  <div class="pp__ft"><button class="btn btn--red" id="ppAdd">В заявку</button></div>
+</aside>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var fmt=function(n){return Math.round(n).toLocaleString('ru-RU')};
+var num1=function(n){return (Math.round(n*10)/10).toLocaleString('ru-RU')};
+var PR=new Intl.PluralRules('ru');
+var plural=function(n,f){var c=PR.select(n);return f[c==='one'?0:c==='few'?1:2]};
+var TRUCK=['самосвал','самосвала','самосвалов'], POS=['позиция','позиции','позиций'];
+var TRUCK_T=25;
+var ZONES=[{id:'z0',n:'В пределах МКАД',p:7500},{id:'z1',n:'До 30 км от МКАД',p:8500},{id:'z2',n:'30–60 км',p:10500},{id:'z3',n:'60–100 км',p:13500}];
+var FR=['5–10','20–40','40–70'];
+var CATS={sheb:'Щебень',sand:'Песок, ПГС, галька',soil:'Грунт',svc:'Услуги'};
+
+/* kind: mat = цена и плотность; req = материал по запросу (т); gr = вывоз грунта (м³, от 400 ₽); svc = услуга без количества */
+var P=[
+ {id:'gr',cat:'sheb',kind:'mat',name:'Щебень гранитный',price:2350,dens:1.4,img:'sheben.jpg',fr:true,sub:'Фракции 5–10, 20–40, 40–70',desc:'Прочный щебень для фундаментов, бетона и дорожных оснований.'},
+ {id:'lm',cat:'sheb',kind:'mat',name:'Щебень известняковый',price:1450,dens:1.3,img:'sheben.jpg',fl:'sepia(.45) saturate(.7) brightness(1.1)',pos:'30% 60%',fr:true,sub:'Фракции 5–10, 20–40, 40–70',desc:'Экономичный вариант для подсыпок и оснований.'},
+ {id:'vt',cat:'sheb',kind:'mat',name:'Щебень вторичный',price:950,dens:1.35,img:'sheben.jpg',fl:'grayscale(1) contrast(1.15) brightness(.95)',pos:'70% 40%',fr:true,sub:'Фракции 5–10, 20–40, 40–70',desc:'Для временных дорог, площадок и обратных засыпок.'},
+ {id:'ps',cat:'sand',kind:'mat',name:'Песок сеяный',price:650,dens:1.6,img:'pesok.jpg',sub:'Плотность 1,6 т/м³',desc:'Для подушек, засыпки и планировки.'},
+ {id:'pm',cat:'sand',kind:'mat',name:'Песок мытый',price:900,dens:1.55,img:'pesok.jpg',fl:'brightness(1.12) saturate(1.15)',pos:'20% 50%',sub:'Плотность 1,55 т/м³',desc:'Очищенный песок для растворов и бетона.'},
+ {id:'pg',cat:'sand',kind:'mat',name:'ПГС',price:800,dens:1.65,img:'pgs.jpg',sub:'Плотность 1,65 т/м³',desc:'Песчано-гравийная смесь для оснований и обратной засыпки.'},
+ {id:'gn',cat:'soil',kind:'mat',name:'Грунт плодородный',price:700,dens:1.2,img:'grunt.jpg',sub:'Плотность 1,2 т/м³',desc:'Для газонов, клумб и благоустройства.'},
+ {id:'ga',cat:'sand',kind:'req',name:'Галька',sub:'По запросу',desc:'Цену и наличие называем по заявке.'},
+ {id:'sp',cat:'sheb',kind:'req',name:'ЩПС',sub:'По запросу',desc:'Щебёночно-песчаная смесь. Цену и наличие называем по заявке.'},
+ {id:'ot',cat:'sheb',kind:'req',name:'Отсев',sub:'По запросу',desc:'Цену и наличие называем по заявке.'},
+ {id:'sg',cat:'svc',kind:'gr',name:'Вывоз грунта',price:400,sub:'За кубометр',desc:'Вывозим грунт со стройплощадок. Цена от 400 ₽ за м³, точную называем после расчёта.',img:'pogruzka.jpg'},
+ {id:'sn',cat:'svc',kind:'svc',name:'Вывоз снега',sub:'Стройплощадки и коммерческая недвижимость',desc:'Вывоз снега со стройплощадок и коммерческой недвижимости. Стоимость считаем по заявке.',img:'sneg.jpg',pos:'60% 50%'},
+ {id:'ar',cat:'svc',kind:'svc',name:'Аренда спецтехники',sub:'Цена фиксируется на весь срок',desc:'Цена фиксируется на весь срок аренды. Состав техники и стоимость уточняем по заявке.',img:'park.jpg',pos:'55% 50%'},
+ {id:'ak',cat:'svc',kind:'svc',name:'Аренда контейнеров',sub:'Для строительных отходов',desc:'Контейнеры для строительных отходов. Стоимость считаем по заявке.'},
+ {id:'sv',cat:'svc',kind:'svc',name:'Самосвалы на объект',sub:'Подача от 24 часов',desc:'Ставим самосвалы на объект. Подача от 24 часов, стоимость считаем по заявке.',img:'park.jpg',pos:'20% 50%',fl:'grayscale(.15)'}
+];
+var byId={};P.forEach(function(p){byId[p.id]=p});
+
+var state={cats:{},fracs:{},max:2350,q:'',sort:'def'};
+var cart=[];             // {id,qty,unit,fr}
+var zone='z0';
+var sent=false;
+
+/* ---------- helpers ---------- */
+function tons(l){var p=byId[l.id];if(p.kind==='mat')return l.unit==='м³'?l.qty*p.dens:l.qty;if(p.kind==='req')return l.qty;return 0}
+function imgTag(p,cls){
+  if(!p.img)return '<span class="ph">Фото по запросу</span>';
+  return '<img src="../_assets/'+p.img+'" alt="'+p.name+'" loading="lazy"'+(p.pos||p.fl?' style="'+(p.pos?'object-position:'+p.pos+';':'')+(p.fl?'filter:'+p.fl:'')+'"':'')+'>';
+}
+function priceTxt(p){
+  if(p.kind==='mat')return '<span class="price">'+fmt(p.price)+' ₽</span> <small>/ т, ориентировочно</small>';
+  if(p.kind==='gr')return '<span class="price">от '+fmt(p.price)+' ₽</span> <small>/ м³</small>';
+  return '<small>Цена по запросу</small>';
+}
+function find(id){return cart.filter(function(l){return l.id===id})[0]}
+function parseQ(v){var n=parseFloat(String(v).replace(',','.').replace(/[^\d.]/g,''));return isFinite(n)&&n>0?n:0}
+
+/* ---------- filters + listing ---------- */
+function buildFilters(){
+  var counts={};P.forEach(function(p){counts[p.cat]=(counts[p.cat]||0)+1});
+  $('#fCat').innerHTML=Object.keys(CATS).map(function(k){return '<label class="chk"><input type="checkbox" data-cat="'+k+'"><span>'+CATS[k]+'</span><span class="num">'+counts[k]+'</span></label>'}).join('');
+  $('#fFrac').innerHTML=FR.map(function(f){return '<label class="chk"><input type="checkbox" data-fr="'+f+'"><span>'+f+' мм</span></label>'}).join('');
+}
+function visible(){
+  var q=state.q.trim().toLowerCase(), hasC=Object.keys(state.cats).length, hasF=Object.keys(state.fracs).length;
+  var r=P.filter(function(p){
+    if(hasC&&!state.cats[p.cat])return false;
+    if(hasF&&!p.fr)return false;
+    if(state.max<2350&&!(p.kind==='mat'&&p.price<=state.max))return false;
+    if(q&&(p.name+' '+p.sub+' '+CATS[p.cat]).toLowerCase().indexOf(q)<0)return false;
+    return true;
+  });
+  var price=function(p){return p.kind==='mat'?p.price:(p.kind==='gr'?p.price:null)};
+  if(state.sort==='asc'||state.sort==='desc'){
+    r=r.map(function(p,i){return {p:p,i:i}}).sort(function(a,b){
+      var x=price(a.p),y=price(b.p);
+      if(x===null&&y===null)return a.i-b.i;
+      if(x===null)return 1; if(y===null)return -1;
+      return state.sort==='asc'?x-y||a.i-b.i:y-x||a.i-b.i;
+    }).map(function(o){return o.p});
+  } else if(state.sort==='name'){
+    r=r.slice().sort(function(a,b){return a.name.localeCompare(b.name,'ru')});
+  }
+  return r;
+}
+function renderList(){
+  var r=visible();
+  $('#count').textContent=r.length+' '+plural(r.length,POS);
+  $('#applyN').textContent='('+r.length+')';
+  $('#grid').innerHTML=r.length?r.map(function(p){
+    var inCart=!!find(p.id);
+    return '<article class="card"><button class="card__open" data-open="'+p.id+'" aria-label="Открыть карточку: '+p.name+'"><span class="card__img">'+imgTag(p)+'<span class="card__tag">'+CATS[p.cat]+'</span></span><span class="card__name">'+p.name+'</span><span class="card__meta">'+p.sub+'</span><span class="card__price">'+priceTxt(p)+'</span></button><button class="card__add'+(inCart?' in':'')+'" data-quick="'+p.id+'"><span>'+(inCart?'В заявке':'В заявку')+'</span><span>'+(inCart?'\u2713':'+')+'</span></button></article>';
+  }).join(''):'<div class="empty"><p><b class="cap">Ничего не найдено</b></p><p class="mut">Измените запрос или снимите часть фильтров.</p><button class="btn btn--ghost" data-reset>Сбросить всё</button></div>';
+  var ch=[];
+  Object.keys(state.cats).forEach(function(k){ch.push('<button class="chip" data-rc="'+k+'">'+CATS[k]+' <b>×</b></button>')});
+  Object.keys(state.fracs).forEach(function(k){ch.push('<button class="chip" data-rf="'+k+'">Фракция '+k+' <b>×</b></button>')});
+  if(state.max<2350)ch.push('<button class="chip" data-rp>До '+fmt(state.max)+' ₽/т <b>×</b></button>');
+  if(ch.length)ch.push('<button class="chip chip--clear" data-reset>Сбросить всё</button>');
+  $('#chips').innerHTML=ch.join('');
+}
+function syncFilterUI(){
+  $$('#fCat input').forEach(function(i){i.checked=!!state.cats[i.dataset.cat]});
+  $$('#fFrac input').forEach(function(i){i.checked=!!state.fracs[i.dataset.fr]});
+  $('#fPrice').value=state.max;$('#fPriceV').textContent=fmt(state.max);
+  $('#q').value=state.q;
+}
+function resetAll(){state.cats={};state.fracs={};state.max=2350;state.q='';syncFilterUI();renderList()}
+
+/* ---------- cart ---------- */
+function totals(){
+  var t=0,mat=0,gr=0,req=[],svc=[];
+  cart.forEach(function(l){
+    var p=byId[l.id];
+    if(p.kind==='mat'){var tt=tons(l);t+=tt;mat+=tt*p.price}
+    else if(p.kind==='req'){t+=tons(l);req.push(p.name)}
+    else if(p.kind==='gr'){gr+=l.qty*p.price}
+    else svc.push(p.name);
+  });
+  var tr=t>0?Math.max(1,Math.ceil(Math.round(t*1e6)/1e6/TRUCK_T)):0;
+  var z=ZONES.filter(function(z){return z.id===zone})[0];
+  var del=tr*z.p;
+  return {t:t,mat:mat,gr:gr,tr:tr,del:del,total:mat+del+gr,req:req,svc:svc,z:z};
+}
+function renderCart(){
+  var tt=totals(), n=cart.length;
+  $('#badge').textContent=n;$('#badgeTop').textContent=n;
+  $('#dockN').textContent=n?'('+n+')':'';
+  $('#dockSum').textContent=n?(tt.total?fmt(tt.total)+' ₽':'Цена по запросу'):'Пусто';
+  var body=$('#cartBody');
+  var keepName=document.activeElement&&document.activeElement.closest&&document.activeElement.closest('#cartBody')?document.activeElement.getAttribute('name'):null;
+  if(!n){
+    body.innerHTML='<div class="cart__empty"><b>Заявка пуста</b>Откройте материал в каталоге, укажите объём и нажмите «В заявку». Сумму с доставкой покажем здесь. Цену подтверждаем в течение 15 минут.</div>'+zoneHTML()+'<p class="note">Расчёт ориентировочный.</p>';
+    return;
+  }
+  var lines=cart.map(function(l,i){
+    var p=byId[l.id], sum='', sub='';
+    if(p.kind==='mat'){var t=tons(l);sub=(l.fr?'Фракция '+l.fr+', ':'')+num1(t)+' т'+(l.unit==='м³'?' ('+num1(l.qty)+' м³)':'');sum=fmt(t*p.price)+' ₽'}
+    else if(p.kind==='req'){sub=num1(l.qty)+' т, цена по запросу';sum=''}
+    else if(p.kind==='gr'){sub=num1(l.qty)+' м³, от '+fmt(p.price)+' ₽ за м³';sum='от '+fmt(l.qty*p.price)+' ₽'}
+    else {sub='Стоимость уточним при расчёте';sum=''}
+    var hasQ=p.kind!=='svc', unit=p.kind==='gr'?'м³':(p.kind==='req'?'т':l.unit);
+    return '<div class="line"><span class="line__img">'+(p.img?'<img src="../_assets/'+p.img+'" alt=""'+(p.pos||p.fl?' style="'+(p.pos?'object-position:'+p.pos+';':'')+(p.fl?'filter:'+p.fl:'')+'"':'')+'>':'<span class="ph"></span>')+'</span>'
+     +'<button class="line__name" data-edit="'+p.id+'">'+p.name+'</button><button class="line__rm" data-rm="'+i+'" aria-label="Убрать: '+p.name+'">×</button>'
+     +'<span class="line__sub">'+sub+'</span>'
+     +'<div class="line__q">'+(hasQ?'<span class="step"><button data-dec="'+i+'" aria-label="Меньше">\u2212</button><input name="q'+i+'" inputmode="decimal" value="'+String(l.qty).replace('.',',')+'" data-qty="'+i+'" aria-label="Количество, '+unit+'"><span>'+unit+'</span><button data-inc="'+i+'" aria-label="Больше">+</button></span>':'<span></span>')+'<span class="line__sum num">'+sum+'</span></div></div>';
+  }).join('');
+  var rows='<div><span>Материалы, '+num1(tt.t)+' т</span><span class="num">'+fmt(tt.mat)+' ₽</span></div>';
+  if(!tt.t&&!tt.gr)rows='';
+  if(tt.tr)rows+='<div><span>Доставка, '+tt.tr+' '+plural(tt.tr,TRUCK)+' × '+fmt(tt.z.p)+' ₽</span><span class="num">'+fmt(tt.del)+' ₽</span></div>';
+  if(tt.gr)rows+='<div><span>Вывоз грунта, от</span><span class="num">'+fmt(tt.gr)+' ₽</span></div>';
+  var extra=[].concat(tt.req,tt.svc);
+  var form=sent?'<div class="thanks" role="status"><b>Спасибо</b>Заявка принята. Подтвердим цену в течение 15 минут.<br><button class="btn btn--ghost" data-newreq>Новая заявка</button></div>':
+   '<form class="form" id="form" novalidate><label class="fld"><span>Имя</span><input name="name" autocomplete="name" placeholder="Как к вам обращаться"></label><label class="fld"><span>Телефон</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7" required></label><div class="err" id="err" role="alert"></div><button class="btn btn--red" type="submit" style="min-height:50px">Отправить заявку</button><p class="note">Нажимая кнопку, вы соглашаетесь на обработку персональных данных. Макет: данные никуда не отправляются.</p></form>';
+  body.innerHTML=lines+zoneHTML()+'<div class="tot num">'+rows+'<div class="grand"><span>Итого, ориентировочно</span><span class="num" id="grand">'+fmt(tt.total)+' ₽</span></div></div>'
+   +(extra.length?'<p class="note">Цену уточним по заявке и добавим к расчёту: '+extra.join(', ')+'.</p>':'')
+   +'<p class="note">Цены ориентировочные, без учёта разгрузки. Окончательную цену подтверждаем в течение 15 минут.</p>'+form;
+  if(keepName){var el=$('[name="'+keepName+'"]',body);if(el){el.focus();try{el.setSelectionRange(el.value.length,el.value.length)}catch(e){}}}
+}
+function zoneHTML(){
+  return '<fieldset class="zone" style="border:0"><legend class="cap">Куда везти</legend>'+ZONES.map(function(z){return '<label><input type="radio" name="zone" value="'+z.id+'"'+(z.id===zone?' checked':'')+'><span>'+z.n+'</span><span class="num">'+fmt(z.p)+' ₽ / машина</span></label>'}).join('')+'</fieldset>';
+}
+function flash(msg){
+  var b=$('#badge'),b2=$('#badgeTop');[b,b2].forEach(function(x){x.classList.add('pulse');setTimeout(function(){x.classList.remove('pulse')},300)});
+  var t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(flash.t);flash.t=setTimeout(function(){t.classList.remove('on')},2200);
+}
+function defaultLine(id){
+  var p=byId[id];
+  if(p.kind==='mat')return {id:id,qty:TRUCK_T,unit:'т',fr:p.fr?'20–40':null};
+  if(p.kind==='req')return {id:id,qty:TRUCK_T,unit:'т'};
+  if(p.kind==='gr')return {id:id,qty:20,unit:'м³'};
+  return {id:id,qty:1,unit:''};
+}
+function addLine(l){
+  var ex=find(l.id);if(ex){ex.qty=l.qty;ex.unit=l.unit;ex.fr=l.fr}else cart.push(l);
+  sent=false;renderCart();renderList();flash('Добавлено в заявку: '+byId[l.id].name);
+}
+
+/* ---------- drawers ---------- */
+var lastFocus=null, openCount=0;
+function scrimUpdate(){$('#scrim').classList.toggle('on',!!($('#pp').classList.contains('open')||($('#cart').classList.contains('open'))||$('#filters').classList.contains('open')))}
+function openCart(){lastFocus=document.activeElement;$('#cart').classList.add('open');scrimUpdate();setTimeout(function(){$('#closeCart').focus()},60)}
+function closeCart(){$('#cart').classList.remove('open');scrimUpdate();if(lastFocus&&lastFocus.focus)lastFocus.focus()}
+function openFilters(){$('#filters').classList.add('open');scrimUpdate()}
+function closeFilters(){$('#filters').classList.remove('open');scrimUpdate()}
+
+var cur=null;
+function openProduct(id){
+  var p=byId[id], ex=find(id);
+  cur=ex?{id:id,qty:ex.qty,unit:ex.unit,fr:ex.fr}:defaultLine(id);
+  lastFocus=document.activeElement;
+  $('#ppCat').textContent=CATS[p.cat];
+  var rows='';
+  if(p.kind==='mat'){rows+='<tr><th>Цена</th><td class="num">'+fmt(p.price)+' ₽ за тонну</td></tr><tr><th>Плотность</th><td class="num">'+String(p.dens).replace('.',',')+' т/м³</td></tr><tr><th>В самосвале</th><td class="num">25 т, ≈ '+num1(TRUCK_T/p.dens)+' м³</td></tr>'}
+  if(p.kind==='gr')rows+='<tr><th>Цена</th><td class="num">от '+fmt(p.price)+' ₽ за м³</td></tr>';
+  if(p.kind==='req')rows+='<tr><th>Цена</th><td>По запросу</td></tr>';
+  if(p.kind==='svc')rows+='<tr><th>Цена</th><td>По запросу</td></tr>';
+  rows+='<tr><th>Подача</th><td>От 24 часов</td></tr>';
+  var opts='';
+  if(p.fr)opts+='<div class="opt"><span class="cap">Фракция, мм</span><div class="seg" id="ppFr">'+FR.map(function(f){return '<button type="button" data-fr="'+f+'" class="'+(cur.fr===f?'on':'')+'" aria-pressed="'+(cur.fr===f)+'">'+f+'</button>'}).join('')+'</div></div>';
+  if(p.kind==='mat'||p.kind==='req'||p.kind==='gr'){
+    var units=p.kind==='mat'?['т','м³']:[p.kind==='gr'?'м³':'т'];
+    opts+='<div class="opt"><label class="cap" for="ppQ">Объём</label><div class="qrow"><input id="ppQ" inputmode="decimal" autocomplete="off" value="'+String(cur.qty).replace('.',',')+'"><div class="seg" id="ppU">'+units.map(function(u){return '<button type="button" data-u="'+u+'" class="'+(cur.unit===u?'on':'')+'" aria-pressed="'+(cur.unit===u)+'">'+u+'</button>'}).join('')+'</div></div>'
+     +(p.kind==='mat'||p.kind==='req'?'<div class="seg quick" id="ppQuick"><button type="button" data-n="1">1 машина</button><button type="button" data-n="2">2 машины</button><button type="button" data-n="4">4 машины</button></div>':'')
+     +'<div class="calc num" id="ppCalc"></div></div>';
+  }
+  $('#ppBody').innerHTML='<div class="pp__img">'+imgTag(p)+'</div><div class="pp__in"><h2 id="ppT">'+p.name+'</h2><div class="pp__price">'+priceTxt(p)+'</div><p class="pp__desc">'+p.desc+'</p><table class="spec"><tbody>'+rows+'</tbody></table>'+opts+'</div>';
+  var pi=$('.pp__img img');
+  ppUpdate();
+  var pp=$('#pp');pp.classList.add('open');pp.setAttribute('aria-hidden','false');scrimUpdate();
+  setTimeout(function(){$('#ppX').focus()},60);
+}
+function closeProduct(){var pp=$('#pp');pp.classList.remove('open');pp.setAttribute('aria-hidden','true');scrimUpdate();if(lastFocus&&lastFocus.focus)lastFocus.focus()}
+function ppUpdate(){
+  var p=byId[cur.id], b=$('#ppAdd'), ex=find(cur.id), word=ex?'Обновить заявку':'В заявку';
+  if(p.kind==='mat'||p.kind==='req'||p.kind==='gr'){
+    var t=tons(cur), tr=Math.max(1,Math.ceil(Math.round(t*1e6)/1e6/TRUCK_T)), c=$('#ppCalc');
+    if(p.kind==='mat'){
+      c.innerHTML='<span>= '+num1(t)+' т, '+(cur.qty?tr+' '+plural(tr,TRUCK):'объём не указан')+'</span><span>Материал: <b>'+fmt(t*p.price)+' ₽</b>, без доставки</span>';
+      b.textContent=word+(cur.qty?', '+fmt(t*p.price)+' ₽':'');
+    } else if(p.kind==='req'){
+      c.innerHTML='<span>= '+num1(t)+' т, '+(cur.qty?tr+' '+plural(tr,TRUCK):'объём не указан')+'</span><span>Цену назовём по заявке</span>';
+      b.textContent=word;
+    } else {
+      c.innerHTML='<span>'+num1(cur.qty)+' м³ × от '+fmt(p.price)+' ₽</span><span>Вывоз: <b>от '+fmt(cur.qty*p.price)+' ₽</b></span>';
+      b.textContent=word+(cur.qty?', от '+fmt(cur.qty*p.price)+' ₽':'');
+    }
+    b.disabled=!cur.qty;
+  } else {b.textContent=word;b.disabled=false}
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-open],[data-quick],[data-rc],[data-rf],[data-rp],[data-reset],[data-edit],[data-rm],[data-dec],[data-inc],[data-newreq]');
+  if(!t)return;
+  if(t.dataset.open)return openProduct(t.dataset.open);
+  if(t.dataset.quick){var id=t.dataset.quick;return find(id)?openProduct(id):addLine(defaultLine(id))}
+  if(t.dataset.edit)return openProduct(t.dataset.edit);
+  if('rc' in t.dataset){delete state.cats[t.dataset.rc];syncFilterUI();return renderList()}
+  if('rf' in t.dataset){delete state.fracs[t.dataset.rf];syncFilterUI();return renderList()}
+  if('rp' in t.dataset){state.max=2350;syncFilterUI();return renderList()}
+  if('reset' in t.dataset)return resetAll();
+  if(t.dataset.rm!==undefined){cart.splice(+t.dataset.rm,1);renderCart();return renderList()}
+  if(t.dataset.dec!==undefined||t.dataset.inc!==undefined){
+    var i=+(t.dataset.dec!==undefined?t.dataset.dec:t.dataset.inc), l=cart[i], p=byId[l.id];
+    var step=(l.unit==='м³'||p.kind==='gr')?1:5, d=t.dataset.dec!==undefined?-step:step;
+    l.qty=Math.max(step,Math.round((l.qty+d)*10)/10);renderCart();return;
+  }
+  if('newreq' in t.dataset){sent=false;cart=[];renderCart();renderList()}
+});
+/* product panel */
+$('#pp').addEventListener('click',function(e){
+  var f=e.target.closest('[data-fr]'),u=e.target.closest('[data-u]'),q=e.target.closest('[data-n]');
+  if(f){cur.fr=f.dataset.fr;$$('#ppFr button').forEach(function(b){var on=b===f;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});}
+  if(u){cur.unit=u.dataset.u;$$('#ppU button').forEach(function(b){var on=b===u;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});ppUpdate()}
+  if(q){var n=+q.dataset.n,p=byId[cur.id];cur.qty=cur.unit==='м³'&&p.dens?Math.round(n*TRUCK_T/p.dens*10)/10:n*TRUCK_T;$('#ppQ').value=String(cur.qty).replace('.',',');ppUpdate()}
+});
+$('#pp').addEventListener('input',function(e){if(e.target.id==='ppQ'){cur.qty=parseQ(e.target.value);ppUpdate()}});
+$('#ppAdd').addEventListener('click',function(){addLine({id:cur.id,qty:cur.qty,unit:cur.unit,fr:cur.fr});closeProduct();if(window.innerWidth<1180)setTimeout(openCart,120)});
+$('#ppX').addEventListener('click',closeProduct);
+$('#scrim').addEventListener('click',function(){closeProduct();closeCart();closeFilters()});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){if($('#pp').classList.contains('open'))closeProduct();else if($('#cart').classList.contains('open')&&window.innerWidth<1180)closeCart();else closeFilters()}
+  if(e.key==='Tab'){
+    var box=$('#pp').classList.contains('open')?$('#pp'):($('#cart').classList.contains('open')&&window.innerWidth<1180?$('#cart'):null);
+    if(!box)return;
+    var f=$$('button:not([disabled]),input,a[href],select',box).filter(function(x){return x.offsetParent!==null});
+    if(!f.length)return;var a=f[0],z=f[f.length-1];
+    if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}
+  }
+});
+/* cart events */
+$('#cartBody').addEventListener('change',function(e){
+  if(e.target.name==='zone'){zone=e.target.value;renderCart()}
+});
+$('#cartBody').addEventListener('input',function(e){
+  var i=e.target.dataset.qty;if(i===undefined)return;
+  var v=parseQ(e.target.value);if(!v)return;cart[+i].qty=v;
+  // обновить без потери фокуса
+  var tt=totals();var g=$('#grand');renderCartKeepFocus();
+});
+function renderCartKeepFocus(){var el=document.activeElement,pos=el&&el.selectionStart;renderCart();}
+$('#cartBody').addEventListener('submit',function(e){
+  e.preventDefault();
+  var f=e.target,ph=f.phone.value.replace(/\D/g,''),err=$('#err');
+  if(ph.length<10){f.phone.classList.add('bad');err.textContent='Укажите телефон: минимум 10 цифр.';f.phone.focus();return}
+  sent=true;renderCart();
+});
+$('#openCart').addEventListener('click',openCart);$('#dock').addEventListener('click',openCart);$('#closeCart').addEventListener('click',closeCart);$('#ctaCart').addEventListener('click',function(){if(window.innerWidth<1180)openCart();else{$('#catalog').scrollIntoView();var c=$('#cart');c.animate([{backgroundColor:'#f5f5f7'},{backgroundColor:'#fff'}],{duration:800})}});
+/* filters events */
+$('#filters').addEventListener('change',function(e){
+  var t=e.target;
+  if(t.dataset.cat){t.checked?state.cats[t.dataset.cat]=1:delete state.cats[t.dataset.cat]}
+  if(t.dataset.fr){t.checked?state.fracs[t.dataset.fr]=1:delete state.fracs[t.dataset.fr]}
+  renderList();
+});
+$('#fPrice').addEventListener('input',function(e){state.max=+e.target.value;$('#fPriceV').textContent=fmt(state.max);renderList()});
+$('#q').addEventListener('input',function(e){state.q=e.target.value;renderList()});
+$('#sort').addEventListener('change',function(e){state.sort=e.target.value;renderList()});
+$('#openF').addEventListener('click',openFilters);$('#closeF').addEventListener('click',closeFilters);$('#applyF').addEventListener('click',function(){closeFilters();$('#catalog').scrollIntoView()});
+$$('[data-cat]').forEach(function(a){if(a.tagName==='A')a.addEventListener('click',function(){state.cats={};state.cats[a.dataset.cat]=1;syncFilterUI();renderList()})});
+$$('.nav a[href="#catalog"]:not([data-cat]),.navbar a[href="#catalog"]:not([data-cat])').forEach(function(a){a.addEventListener('click',function(){state.cats={};syncFilterUI();renderList()})});
+
+buildFilters();renderList();renderCart();
+})();
+</script>
+</body>
+</html>

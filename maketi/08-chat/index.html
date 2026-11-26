@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<!--
+  Концепция: 08-chat — «сайт-диалог». Вся главная — чат с ассистентом ЕГМ: кнопки-ответы ведут по заказу
+  (материал → объём → куда → телефон → расчёт), свободный текст тоже понимается. Справа (на мобилке снизу)
+  заявка собирается вживую. Остальное — в свёрнутых панелях.
+  Референс: интерфейсы мессенджеров (Telegram, MAX) и разговорные формы типа Typeform/Intercom; квитанция-заявка как чек.
+-->
+<link rel="icon" href="data:,">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ЕГМ НЕРУД: закажите щебень, песок или грунт в диалоге</title>
+<meta name="description" content="Щебень, песок, ПГС и грунт с доставкой собственными самосвалами по Москве и МО. Ответьте на несколько вопросов, и заявка соберётся сама.">
+<style>
+@font-face{font-family:"Golos Text";font-weight:400;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-400.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116,U+20BD}
+@font-face{font-family:"Golos Text";font-weight:400;font-display:swap;src:url(../_assets/fonts/golos-latin-400.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Golos Text";font-weight:500;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-500.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116,U+20BD}
+@font-face{font-family:"Golos Text";font-weight:500;font-display:swap;src:url(../_assets/fonts/golos-latin-500.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Golos Text";font-weight:600;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-600.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116,U+20BD}
+@font-face{font-family:"Golos Text";font-weight:600;font-display:swap;src:url(../_assets/fonts/golos-latin-600.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Golos Text";font-weight:700;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-700.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116,U+20BD}
+@font-face{font-family:"Golos Text";font-weight:700;font-display:swap;src:url(../_assets/fonts/golos-latin-700.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Golos Text";font-weight:800;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-800.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116,U+20BD}
+@font-face{font-family:"Golos Text";font-weight:800;font-display:swap;src:url(../_assets/fonts/golos-latin-800.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+:root{
+  --red:#E3120B; --ink:#141518; --bg:#f3f4f6; --bg2:#fff; --bg3:#eceef1;
+  --line:#dfe2e7; --line2:#c9cdd4; --mut:#5d636d; --dim:#8a909a;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Golos Text",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;overflow-wrap:anywhere}
+img,svg{display:block;max-width:100%}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums}
+.wrap{width:100%;max-width:1240px;margin:0 auto;padding:0 24px}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px;border-radius:6px}
+
+.top{background:var(--bg2);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:20px;height:64px}
+.top img{height:30px;width:auto}
+.top .tel{margin-left:auto;text-decoration:none;font-weight:600;white-space:nowrap;display:flex;align-items:center;gap:10px}
+.top .tel small{display:block;font-weight:400;color:var(--mut);font-size:12px;line-height:1.1}
+.top .tel span.col{text-align:right}
+
+.intro{padding:28px 0 18px}
+.intro h1{margin:0;font-size:clamp(28px,3.6vw,46px);line-height:1.05;letter-spacing:-.025em;font-weight:800;max-width:20ch}
+.intro p{margin:10px 0 0;color:var(--mut);max-width:60ch}
+
+.app{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start}
+
+/* чат */
+.chat{background:var(--bg2);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;overflow:hidden;height:min(640px,calc(100vh - 220px));min-height:520px}
+.chat-h{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--line)}
+.ava{width:36px;height:36px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:800;font-size:12px;letter-spacing:.02em;flex:none}
+.chat-h b{display:block;line-height:1.2}
+.chat-h small{color:var(--mut);font-size:13px;line-height:1.2;display:block}
+.chat-h .rs{white-space:nowrap;margin-left:auto;min-height:36px;padding:0 12px;border:1px solid var(--line2);border-radius:8px;background:transparent;cursor:pointer;font-size:14px;transition:transform .16s var(--ease),background-color .15s}
+.chat-h .rs:active{transform:scale(.97)}
+.log{flex:1;overflow-y:auto;padding:18px;justify-content:flex-start;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth;overscroll-behavior:contain}
+.msg{max-width:min(86%,520px);padding:10px 14px;border-radius:16px;line-height:1.45;animation:in .24s var(--ease);overflow-wrap:anywhere}
+.msg.bot{align-self:flex-start;background:var(--bg3);border-bottom-left-radius:5px}
+.msg.me{align-self:flex-end;background:var(--ink);color:#fff;border-bottom-right-radius:5px}
+.msg.bot b{font-weight:700}
+.msg.sum{background:var(--bg2);border:1px solid var(--line2);width:min(100%,420px);max-width:100%}
+.msg.sum .big{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin:2px 0 6px}
+.msg.sum p{margin:0;color:var(--mut);font-size:14px}
+@keyframes in{from{opacity:0;transform:translateY(8px) scale(.98)}}
+.typing{align-self:flex-start;background:var(--bg3);border-radius:16px;border-bottom-left-radius:5px;padding:14px 16px;display:flex;gap:5px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--dim);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+.chips{display:flex;flex-wrap:wrap;gap:8px;align-self:flex-start;max-width:100%}
+.chip{min-height:44px;padding:0 16px;border:1.5px solid var(--ink);border-radius:22px;background:var(--bg2);cursor:pointer;font-weight:500;transition:transform .16s var(--ease),background-color .15s,color .15s,border-color .15s;text-align:left}
+.chip small{color:#4a505a;font-weight:400;margin-left:6px}
+.chip:active{transform:scale(.97)}
+.chip.pri{background:var(--red);border-color:var(--red);color:#fff}
+.chip.pri small{color:rgba(255,255,255,.8)}
+.chip.dis{opacity:.45;pointer-events:none}
+@media (hover:hover) and (pointer:fine){.chip:hover{background:var(--ink);color:#fff}.chip:hover small{color:#ccc}.chip.pri:hover{background:#c20f09;border-color:#c20f09}}
+.composer{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);background:var(--bg2)}
+.composer input{flex:1;min-width:0;min-height:48px;padding:0 16px;border:1px solid var(--line2);border-radius:24px;background:var(--bg)}
+.composer input:focus{outline:none;border-color:var(--ink)}
+.send{width:48px;height:48px;flex:none;border-radius:50%;border:0;background:var(--red);color:#fff;cursor:pointer;display:grid;place-items:center;transition:transform .16s var(--ease)}
+.send:active{transform:scale(.94)}
+.hint{margin:0;padding:0 18px 10px;font-size:12.5px;color:var(--dim);background:var(--bg2)}
+
+/* карточка заявки */
+.card{position:sticky;top:16px;background:var(--bg2);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.card-h{padding:16px 20px;border-bottom:1px dashed var(--line2);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.card-h b{font-size:17px}
+.card-h span{font-size:13px;color:var(--mut)}
+.prog{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:12px 20px 0}
+.prog i{height:4px;border-radius:2px;background:var(--bg3);transition:background-color .3s}
+.prog i.on{background:var(--red)}
+.rows{margin:0;padding:6px 20px 4px}
+.rows div{display:grid;grid-template-columns:96px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);min-height:46px;align-items:start}
+.rows dt{color:var(--mut);font-size:14px;padding-top:1px}
+.rows dd{margin:0;font-weight:500;min-width:0}
+.rows dd.empty{color:var(--dim);font-weight:400}
+.rows dd small{display:block;color:var(--mut);font-weight:400;font-size:13px}
+.rows dd.flash{animation:flash .9s var(--ease)}
+@keyframes flash{from{background:rgba(227,18,11,.14)}to{background:transparent}}
+.rows button.ed{all:unset;cursor:pointer;color:var(--mut);font-size:13px;text-decoration:underline;text-underline-offset:3px;float:right;margin-left:8px}
+.rows button.ed:focus-visible{outline:2px solid var(--red)}
+.tot{padding:16px 20px 18px;background:var(--bg3);border-top:1px dashed var(--line2)}
+.tot .l{font-size:14px;color:var(--mut)}
+.tot .v{font-size:clamp(34px,3.4vw,44px);font-weight:800;letter-spacing:-.025em;line-height:1.1}
+.tot .s{font-size:13px;color:var(--mut);margin-top:4px}
+.sent{display:none;padding:14px 20px;background:var(--ink);color:#fff}
+.sent.on{display:block;animation:in .3s var(--ease)}
+.sent b{display:block;font-size:18px}
+.bots{padding:14px 20px;border-top:1px solid var(--line);font-size:14px;color:var(--mut)}
+.bots .bb{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.bots span.pill{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 14px;border:1px solid var(--line2);border-radius:18px;color:var(--ink);font-weight:500;font-size:14px}
+.bots span.pill svg{width:16px;height:16px}
+
+/* панели */
+.more{padding:56px 0 0}
+.more h2{margin:0 0 16px;font-size:clamp(22px,2.4vw,30px);letter-spacing:-.02em;font-weight:800}
+.acc{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+.acc details{background:var(--bg2);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.acc summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px;padding:14px 20px;font-weight:700;font-size:17px}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary::after{content:"";flex:none;width:9px;height:9px;border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);transform:rotate(45deg) translateY(-2px);transition:transform .2s var(--ease)}
+.acc details[open] summary::after{transform:rotate(-135deg)}
+.acc .body{padding:0 20px 20px;color:var(--mut);font-size:15px}
+.acc .body p{margin:0 0 10px}
+.acc .body ul{margin:0;padding:0;list-style:none}
+.acc .body li{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-top:1px solid var(--line);color:var(--ink)}
+.acc .body li span:last-child{white-space:nowrap;font-weight:600}
+.acc .body li small{display:block;color:var(--mut);font-size:13px}
+.acc ol.st{margin:0;padding:0;list-style:none;counter-reset:s}
+.acc ol.st li{display:block;border-top:1px solid var(--line);counter-increment:s;padding:10px 0 10px 34px;position:relative}
+.acc ol.st li::before{content:counter(s);position:absolute;left:0;top:10px;width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px;font-weight:600;display:grid;place-items:center}
+.acc ol.st b{display:block}
+.acc ol.st span{color:var(--mut)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px}
+.facts div b{display:block;font-size:30px;color:var(--ink);font-weight:800;line-height:1.1;letter-spacing:-.02em}
+.q{margin:14px 0 0;padding-left:14px;border-left:3px solid var(--red);color:var(--ink)}
+.q cite{display:block;color:var(--mut);font-style:normal;font-size:13px;margin-top:4px}
+.acc details.faq .body details{border:0;border-top:1px solid var(--line);border-radius:0;background:transparent}
+.acc details.faq summary{min-height:48px;padding:12px 0;font-size:15px;font-weight:600}
+.acc details.faq .body{padding-bottom:12px}
+.ph-link{display:inline-block;font-weight:800;font-size:24px;text-decoration:none;color:var(--ink);letter-spacing:-.01em}
+
+footer{margin-top:48px;padding:28px 0 90px;border-top:1px solid var(--line2);color:var(--mut);font-size:14px}
+footer p{margin:0 0 4px}
+
+/* мобильная липкая плашка итога */
+.mini{display:none}
+
+@media (max-width:980px){
+  .app{grid-template-columns:1fr}
+  .card{position:static}
+  .chat{height:min(620px,calc(100svh - 190px));min-height:420px}
+  .acc{grid-template-columns:1fr}
+  .mini{display:none}
+}
+@media (max-width:560px){
+  .wrap{padding:0 12px}
+  .top .tel small{display:none}
+  .top img{height:26px}
+  .intro{padding:18px 0 12px}
+  .intro p{font-size:15px}
+  .chat{border-radius:14px}
+  .log{padding:12px}
+  .msg{max-width:92%}
+  .chat-h{padding:10px 12px}
+  .composer{padding:8px}
+  .rows div{grid-template-columns:84px 1fr}
+  .facts div b{font-size:26px}
+  .mini{left:8px;right:8px}
+}
+@media (prefers-reduced-motion:reduce){
+  html,.log{scroll-behavior:auto}
+  .msg,.sent.on{animation:none}
+  .typing i{animation:none;opacity:.6}
+  .rows dd.flash{animation:none}
+}
+@media print{.mini{display:none}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a href="#top" aria-label="ЕГМ НЕРУД"><img src="../_assets/logo-on-light.png" alt="ЕГМ НЕРУД" width="120" height="30"></a>
+    <a class="tel" href="tel:+79629101530"><span class="col"><small>на связи 24/7</small><span class="num">+7 (962) 910-15-30</span></span></a>
+  </div>
+</header>
+
+<main id="top">
+<div class="wrap">
+  <div class="intro">
+    <h1>Закажите щебень или песок в диалоге</h1>
+    <p>Отвечайте кнопками или пишите своими словами. Заявка собирается по ходу разговора, цену подтверждаем в течение 15 минут.</p>
+  </div>
+
+  <div class="app">
+    <section class="chat" aria-label="Диалог с ассистентом ЕГМ">
+      <div class="chat-h">
+        <span class="ava" aria-hidden="true">ЕГМ</span>
+        <div><b>Ассистент ЕГМ</b><small>Тот же диалог в Telegram и MAX</small></div>
+        <button class="rs" id="reset" type="button">Начать заново</button>
+      </div>
+      <div class="log" id="log" role="log" aria-live="polite" aria-relevant="additions"></div>
+      <p class="hint" id="hint">Можно писать свободно, например: «гранитный щебень 50 тонн».</p>
+      <form class="composer" id="composer" autocomplete="off">
+        <input id="txt" type="text" placeholder="Напишите ответ" aria-label="Ваше сообщение" enterkeyhint="send">
+        <button class="send" type="submit" aria-label="Отправить"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h13M11 4l6 6-6 6"/></svg></button>
+      </form>
+    </section>
+
+    <aside class="card" id="card" aria-label="Заявка">
+      <div class="card-h"><b>Ваша заявка</b><span id="cardState">собирается</span></div>
+      <div class="prog" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <dl class="rows">
+        <div><dt>Материал</dt><dd id="rMat" class="empty">не выбран</dd></div>
+        <div><dt>Объём</dt><dd id="rVol" class="empty">не указан</dd></div>
+        <div><dt>Куда</dt><dd id="rZone" class="empty">не указано</dd></div>
+        <div><dt>Телефон</dt><dd id="rPh" class="empty num">не указан</dd></div>
+      </dl>
+      <div class="tot">
+        <div class="l">Ориентировочно, с доставкой</div>
+        <div class="v num" id="rTot">—</div>
+        <div class="s num" id="rSub">Выберите материал, объём и зону</div>
+      </div>
+      <div class="sent" id="sent" role="status"><b>Спасибо!</b>Заявка принята. Цену подтвердим в течение 15 минут.</div>
+      <div class="bots">
+        Тот же диалог работает в ботах Telegram и MAX: начните там, продолжите здесь, заявка не потеряется.
+        <div class="bb">
+          <span class="pill"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M14 2 1.5 7l4 1.5L7 13l2.2-2.8L12.5 13 14 2Z"/></svg>Telegram</span>
+          <span class="pill"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M8 1.8c-3.6 0-6.2 2.6-6.2 5.8 0 1.2.4 2.300 1 3.200L2.500 14l3.200-.9c.7.3 1.500.5 2.300.5 3.600 0 6.200-2.600 6.200-5.800S11.600 1.800 8 1.800Z"/></svg>MAX</span>
+        </div>
+        <p style="margin:8px 0 0;font-size:12.5px;color:var(--mut)">Ссылки на ботов появятся после запуска.</p>
+      </div>
+    </aside>
+  </div>
+
+  <section class="more" id="more">
+    <h2>Всё остальное</h2>
+    <div class="acc">
+      <details><summary>Цены на материалы и доставку</summary>
+        <div class="body"><p>Цена за тонну без доставки, ориентировочно.</p><ul id="priceList"></ul>
+        <p style="margin-top:12px">Доставка за один самосвал (25 т):</p><ul id="zoneList"></ul>
+        <p style="margin-top:12px">Фракции щебня: 5–10, 20–40, 40–70. Галька, ЩПС и отсев по запросу.</p></div></details>
+      <details><summary>Услуги</summary>
+        <div class="body"><ul>
+          <li><span>Вывоз грунта</span><span>от 400 ₽/м³</span></li>
+          <li><span>Вывоз снега<small>стройплощадки и коммерческая недвижимость</small></span><span>по запросу</span></li>
+          <li><span>Аренда спецтехники<small>цена фиксируется на весь срок</small></span><span>по запросу</span></li>
+          <li><span>Аренда контейнеров<small>строительные отходы</small></span><span>по запросу</span></li>
+          <li><span>Самосвалы на объект</span><span>по запросу</span></li>
+        </ul></div></details>
+      <details><summary>Почему ЕГМ</summary>
+        <div class="body"><div class="facts">
+          <div><b class="num">8+</b>лет в поставках</div><div><b class="num">7+</b>единиц своей техники</div>
+          <div><b class="num">40+</b>объектов ежемесячно</div><div><b class="num">24/7</b>на связи</div></div>
+          <p style="margin-top:14px">Возим собственными самосвалами, без посредников. Работаем с юрлицами по договору. От одной машины до постоянной логистики стройплощадки.</p>
+          <blockquote class="q" style="margin-left:0">«Главные ценности нашей компании — соблюдение договорённостей, верность принципам и победа вместе с заказчиком».<cite>Владимир Балабанов, генеральный директор ООО «ЕГМ»</cite></blockquote></div></details>
+      <details><summary>Как работаем</summary>
+        <div class="body"><ol class="st">
+          <li><b>Заявка</b><span>Звонок, форма или мессенджер.</span></li>
+          <li><b>Расчёт и договор</b><span>Цену подтверждаем в течение 15 минут.</span></li>
+          <li><b>Подача самосвала</b><span>От 24 часов.</span></li>
+          <li><b>Выгрузка и закрывающие документы</b><span>Всё на объекте и по договору.</span></li>
+        </ol></div></details>
+      <details class="faq"><summary>Вопросы</summary>
+        <div class="body">
+          <details><summary>Как считается цена?</summary><div class="body" style="padding:0 0 8px"><p>Тонны умножаем на цену за тонну и добавляем доставку за каждый самосвал в 25 т. Если вы указали м³, переводим в тонны по плотности материала.</p></div></details>
+          <details><summary>Сколько ждать машину?</summary><div class="body" style="padding:0 0 8px"><p>Подача техники от 24 часов. Время называем вместе с ценой.</p></div></details>
+          <details><summary>Можно заказать одну машину?</summary><div class="body" style="padding:0 0 8px"><p>Да, объём от одного самосвала. Для стройплощадки можем организовать постоянную логистику.</p></div></details>
+          <details><summary>Работаете ли вы с юрлицами?</summary><div class="body" style="padding:0 0 8px"><p>Да, по договору, с закрывающими документами. Частных заказчиков тоже возим.</p></div></details>
+          <details><summary>Возите сами или через посредников?</summary><div class="body" style="padding:0 0 8px"><p>Только собственными самосвалами, без посредников.</p></div></details>
+        </div></details>
+      <details><summary>Контакты и реквизиты</summary>
+        <div class="body"><a class="ph-link num" href="tel:+79629101530">+7 (962) 910-15-30</a>
+          <p style="margin-top:8px"><a href="mailto:sale@egm-nerud.ru">sale@egm-nerud.ru</a><br>г. Москва, пр-кт Мира, 102к1</p>
+          <p>ООО «ЕГМ», ИНН 7727442967, ОГРН 1207700145850</p></div></details>
+    </div>
+  </section>
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>ООО «ЕГМ», ИНН 7727442967, ОГРН 1207700145850. г. Москва, пр-кт Мира, 102к1.</p>
+    <p>Цены ориентировочные, окончательную стоимость подтверждает менеджер. Отправляя заявку, вы соглашаетесь на обработку персональных данных. Макет: данные никуда не отправляются.</p>
+  </div>
+</footer>
+
+<a class="mini" id="mini" href="#card" aria-label="К заявке"><span>Заявка</span><b class="num" id="miniTot">—</b><i>Показать</i></a>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const fmt = n => Math.round(n).toLocaleString('ru-RU');
+  const fmt1 = n => (Math.round(n * 10) / 10).toLocaleString('ru-RU');
+  const pr = new Intl.PluralRules('ru-RU');
+  const tw = n => ({one: 'самосвал', few: 'самосвала', many: 'самосвалов', other: 'самосвала'})[pr.select(n)];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const MATS = [
+    {id: 'gr', name: 'Щебень гранитный', price: 2350, dens: 1.4, k: /гранит/},
+    {id: 'li', name: 'Щебень известняковый', price: 1450, dens: 1.3, k: /известня/},
+    {id: 're', name: 'Щебень вторичный', price: 950, dens: 1.35, k: /вторичн/},
+    {id: 'ss', name: 'Песок сеяный', price: 650, dens: 1.6, k: /сеян/},
+    {id: 'sw', name: 'Песок мытый', price: 900, dens: 1.55, k: /мыт/},
+    {id: 'pg', name: 'ПГС|', price: 800, dens: 1.65, k: /пгс|гравийн/},
+    {id: 'gt', name: 'Грунт плодородный', price: 700, dens: 1.2, k: /грунт|чернозем|чернозём|земл/}
+  ];
+  MATS[5].name = 'ПГС';
+  const ZONES = [
+    {name: 'Москва, в пределах МКАД', short: 'в пределах МКАД', fee: 7500},
+    {name: 'До 30 км от МКАД', short: 'до 30 км от МКАД', fee: 8500},
+    {name: '30–60 км от МКАД', short: '30–60 км от МКАД', fee: 10500},
+    {name: '60–100 км от МКАД', short: '60–100 км от МКАД', fee: 13500}
+  ];
+  const MAT_BTNS = [0, 1, 2, 3, 4, 5, 6];
+
+  const S = {step: 'material', mat: null, tons: null, volLabel: '', zone: null, addr: '', phone: '', sent: false, busy: false};
+  const log = $('#log'), txt = $('#txt');
+
+  /* --- карточка --- */
+  const flash = el => { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); };
+  function setRow(el, val, sub) {
+    const was = el.dataset.v || '';
+    const now = val ? val + '|' + (sub || '') : '';
+    if (val) { el.classList.remove('empty'); el.innerHTML = ''; el.append(val); if (sub) { const s = document.createElement('small'); s.textContent = sub; el.append(s); } }
+    else { el.classList.add('empty'); el.textContent = el.dataset.empty; }
+    if (was !== now && val) flash(el);
+    el.dataset.v = now;
+  }
+  ['#rMat', '#rVol', '#rZone', '#rPh'].forEach(s => $(s).dataset.empty = $(s).textContent);
+  function calc() {
+    if (!S.mat || !S.tons) return null;
+    const n = Math.max(1, Math.ceil(S.tons / 25));
+    const mc = S.tons * S.mat.price;
+    const z = S.zone != null ? ZONES[S.zone] : null;
+    const dl = z ? n * z.fee : null;
+    return {n, mc, dl, total: dl == null ? null : mc + dl};
+  }
+  function renderCard() {
+    const c = calc();
+    setRow($('#rMat'), S.mat ? S.mat.name : '', S.mat ? fmt(S.mat.price) + ' ₽ за тонну' : '');
+    setRow($('#rVol'), S.tons ? fmt1(S.tons) + ' т' : '', c ? c.n + ' ' + tw(c.n) + (S.volLabel ? ', ' + S.volLabel : '') : '');
+    setRow($('#rZone'), S.zone != null ? ZONES[S.zone].name : '', S.addr || (S.zone != null ? fmt(ZONES[S.zone].fee) + ' ₽ за самосвал' : ''));
+    setRow($('#rPh'), S.phone, '');
+    const tot = $('#rTot'), sub = $('#rSub');
+    if (c && c.total != null) {
+      tot.textContent = fmt(c.total) + ' ₽';
+      sub.textContent = fmt(c.mc) + ' ₽ материал + ' + fmt(c.dl) + ' ₽ доставка (' + c.n + ' ' + tw(c.n) + ')';
+    } else if (c) {
+      tot.textContent = fmt(c.mc) + ' ₽';
+      sub.textContent = 'Только материал. Доставку посчитаем после выбора зоны';
+    } else { tot.textContent = '—'; sub.textContent = 'Выберите материал, объём и зону'; }
+    $('#miniTot').textContent = tot.textContent;
+    const done = [S.mat, S.tons, S.zone != null, S.phone, S.sent].map(Boolean);
+    document.querySelectorAll('.prog i').forEach((e, i) => e.classList.toggle('on', done[i]));
+    $('#sent').classList.toggle('on', S.sent);
+    $('#cardState').textContent = S.sent ? 'отправлена' : 'собирается';
+  }
+
+  /* --- сообщения --- */
+  function scroll() { log.scrollTop = log.scrollHeight; }
+  function add(cls, html, isText) {
+    const d = document.createElement('div'); d.className = 'msg ' + cls;
+    if (isText) d.textContent = html; else d.innerHTML = html;
+    log.appendChild(d); scroll(); return d;
+  }
+  function clearChips() { log.querySelectorAll('.chips').forEach(c => c.remove()); }
+  function chips(list) {
+    const w = document.createElement('div'); w.className = 'chips'; w.setAttribute('role', 'group'); w.setAttribute('aria-label', 'Варианты ответа');
+    list.forEach(o => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (o.pri ? ' pri' : '');
+      b.append(o.t); if (o.s) { const s = document.createElement('small'); s.className = 'num'; s.textContent = o.s; b.append(s); }
+      b.addEventListener('click', () => { if (S.busy) return; userSay(o.say || o.t); o.f(); });
+      w.appendChild(b);
+    });
+    log.appendChild(w); scroll(); return w;
+  }
+  function userSay(t) { clearChips(); add('me', t, true); }
+  const wait = ms => new Promise(r => setTimeout(r, reduce ? 0 : ms));
+  async function say(html, ms) {
+    S.busy = true;
+    const t = document.createElement('div'); t.className = 'typing'; t.setAttribute('aria-hidden', 'true'); t.innerHTML = '<i></i><i></i><i></i>';
+    log.appendChild(t); scroll();
+    await wait(ms == null ? 450 : ms);
+    t.remove(); const m = add('bot', html); S.busy = false; return m;
+  }
+
+  /* --- шаги --- */
+  async function askMaterial() {
+    S.step = 'material';
+    await say('Что нужно привезти?');
+    chips(MAT_BTNS.map(i => ({t: MATS[i].name, s: fmt(MATS[i].price) + ' ₽/т', f: () => pickMat(MATS[i])})));
+    hint('Можно писать свободно, например: «гранитный щебень 50 тонн».');
+  }
+  async function pickMat(m) {
+    S.mat = m; renderCard();
+    await askVolume(true);
+  }
+  async function askVolume(first) {
+    S.step = 'volume';
+    await say(first ? `<b>${S.mat.name}</b>, ориентировочно ${fmt(S.mat.price)} ₽ за тонну без доставки. Сколько нужно?` : 'Сколько нужно?');
+    chips([
+      {t: '1 самосвал', s: '25 т', f: () => pickTons(25, '1 самосвал')},
+      {t: '2 самосвала', s: '50 т', f: () => pickTons(50, '2 самосвала')},
+      {t: '4 самосвала', s: '100 т', f: () => pickTons(100, '4 самосвала')}
+    ]);
+    hint('Напишите свой объём: «80 тонн», «30 м³» или «5 машин».');
+  }
+  async function pickTons(t, label) {
+    S.tons = t; S.volLabel = ''; renderCard();
+    const c = calc();
+    await say(`Принято: ${fmt1(t)} т, это ${c.n} ${tw(c.n)}.`, 300);
+    await askZone();
+  }
+  async function askZone() {
+    S.step = 'zone';
+    await say('Куда везти? Выберите зону или напишите адрес объекта.');
+    chips(ZONES.map((z, i) => ({t: z.name, s: fmt(z.fee) + ' ₽', f: () => pickZone(i)})));
+    hint('Адрес можно написать текстом, например: «Мытищи, ул. Мира, 5».');
+  }
+  async function pickZone(i) {
+    S.zone = i; renderCard();
+    const c = calc();
+    await say(`Доставка: ${fmt(ZONES[i].fee)} ₽ за самосвал, всего ${fmt(c.dl)} ₽. Итого ориентировочно <b class="num">${fmt(c.total)} ₽</b>.`, 350);
+    await askPhone();
+  }
+  async function askPhone() {
+    S.step = 'phone';
+    await say('Оставьте телефон, и менеджер подтвердит цену в течение 15 минут. Нажимая «Отправить», вы соглашаетесь на обработку персональных данных.');
+    hint('Телефон в любом формате: «+7 962 910 15 30» или «89629101530».');
+    txt.focus({preventScroll: true});
+  }
+  function fmtPhone(d) {
+    if (d.length === 11) d = d.slice(1); else if (d.length === 10) d = d; 
+    return '+7 (' + d.slice(0, 3) + ') ' + d.slice(3, 6) + '-' + d.slice(6, 8) + '-' + d.slice(8, 10);
+  }
+  async function finish(ph) {
+    S.phone = ph; S.sent = true; S.step = 'done'; renderCard();
+    const c = calc();
+    await say(`<b>Спасибо!</b> Заявка принята, позвоним на ${ph}.`, 350);
+    const m = add('bot sum', `<div class="l" style="color:var(--mut);font-size:14px">Ориентировочно, с доставкой</div><div class="big num">${fmt(c.total)} ₽</div><p class="num">${S.mat.name}, ${fmt1(S.tons)} т: ${fmt(c.mc)} ₽. Доставка, ${c.n} ${tw(c.n)} ${ZONES[S.zone].short}: ${fmt(c.dl)} ₽.</p>`);
+    await say('Цену подтвердим в течение 15 минут, подача техники от 24 часов. Этот же диалог работает в Telegram и MAX: можно продолжить там.', 350);
+    chips([
+      {t: 'Новый расчёт', pri: true, f: () => restart(true)},
+      {t: 'Изменить объём', f: () => { S.sent = false; S.phone = ''; renderCard(); askVolume(false); }},
+      {t: 'Позвонить', f: () => { location.href = 'tel:+79629101530'; }}
+    ]);
+    hint('Заявка отправлена. Можно начать новый расчёт.');
+  }
+  function hint(t) { $('#hint').textContent = t; }
+
+  /* --- разбор свободного текста --- */
+  const norm = s => s.toLowerCase().replace(/ё/g, 'е');
+  function parseMat(s) {
+    s = norm(s);
+    const hit = MATS.find(m => m.k.test(s));
+    if (hit) return hit;
+    if (/щебен/.test(s)) return 'sheben';
+    if (/песок|песк/.test(s)) return 'pesok';
+    return null;
+  }
+  function parseVol(s) {
+    s = norm(s).replace(/(\d)\s+(\d{3})(?!\d)/g, '$1$2');
+    const m = s.match(/(\d+(?:[.,]\d+)?)\s*(м3|м³|куб\w*|т\b|тонн\w*|тн|машин\w*|самосвал\w*|фур\w*)?/);
+    if (!m) return null;
+    const v = parseFloat(m[1].replace(',', '.')); if (!(v > 0)) return null;
+    const u = m[2] || '';
+    if (/м3|м³|куб/.test(u)) return {tons: v * S.mat.dens, label: fmt1(v) + ' м³'};
+    if (/машин|самосвал|фур/.test(u)) return {tons: v * 25, label: fmt1(v) + ' ' + (Number.isInteger(v) ? tw(v) : 'самосвала')};
+    return {tons: v, label: ''};
+  }
+  function parseZone(s) {
+    s = norm(s);
+    const km = s.match(/(\d+)\s*км/);
+    if (km) { const k = +km[1]; return k <= 30 ? 1 : k <= 60 ? 2 : k <= 100 ? 3 : -1; }
+    if (/в пределах мкад|внутри мкад|в мкад|в черте мкад|в москве|по москве/.test(s) && !/област|\bмо\b|подмоск/.test(s)) return 0;
+    return null;
+  }
+  async function onText(raw) {
+    const t = raw.trim(); if (!t || S.busy) return;
+    userSay(t);
+    if (S.step === 'done') {
+      await say('Заявка уже отправлена. Начнём новый расчёт?'); chips([{t: 'Новый расчёт', pri: true, f: () => restart(true)}]); return;
+    }
+    // быстрый путь: в одном сообщении материал и объём
+    const pm = parseMat(t);
+    if (S.step === 'material') {
+      if (pm && typeof pm === 'object') {
+        S.mat = pm; renderCard();
+        const v = parseVol(t.replace(/\d+(?:[.,]\d+)?\s*(мм)/g, ''));
+        if (v && /\d/.test(t) && !/^\s*\d+\s*[-–]\s*\d+\s*$/.test(t) && /(м3|м³|куб|т\b|тонн|тн|машин|самосвал|фур)/i.test(t)) {
+          S.tons = v.tons; S.volLabel = v.label; renderCard();
+          await say(`Понял: <b>${pm.name}</b>, ${fmt1(v.tons)} т.`, 300);
+          return askZone();
+        }
+        return askVolume(true);
+      }
+      if (pm === 'sheben') { await say('Какой щебень: гранитный, известняковый или вторичный?'); return chips([0, 1, 2].map(i => ({t: MATS[i].name, s: fmt(MATS[i].price) + ' ₽/т', f: () => pickMat(MATS[i])}))); }
+      if (pm === 'pesok') { await say('Какой песок: сеяный или мытый?'); return chips([3, 4].map(i => ({t: MATS[i].name, s: fmt(MATS[i].price) + ' ₽/т', f: () => pickMat(MATS[i])}))); }
+      await say('Не нашёл такого материала. Есть щебень, песок, ПГС и грунт. Галька, ЩПС и отсев по запросу, их посчитает менеджер: <a href="tel:+79629101530" class="num">+7 (962) 910-15-30</a>.');
+      return chips(MAT_BTNS.map(i => ({t: MATS[i].name, s: fmt(MATS[i].price) + ' ₽/т', f: () => pickMat(MATS[i])})));
+    }
+    if (S.step === 'volume') {
+      const v = parseVol(t);
+      if (!v) { await say('Не разобрал объём. Напишите число и единицу: «60 тонн», «40 м³» или «3 машины».'); return; }
+      S.tons = v.tons; S.volLabel = v.label; renderCard();
+      const c = calc();
+      await say(`Принято: ${fmt1(v.tons)} т, это ${c.n} ${tw(c.n)}.` + (/\d\s*$/.test(t.trim()) && !v.label ? ' Если вы имели в виду м³, напишите «м³» после числа.' : ''), 300);
+      return askZone();
+    }
+    if (S.step === 'zone') {
+      const z = parseZone(t);
+      if (z === -1) { await say('Дальше 100 км от МКАД тариф считаем отдельно. Оставьте телефон, менеджер назовёт цену. Пока выберем ближайшую зону для расчёта:'); S.addr = t; return chips(ZONES.map((zz, i) => ({t: zz.name, s: fmt(zz.fee) + ' ₽', f: () => pickZone(i)}))); }
+      if (z != null) { S.addr = /\d+\s*км/.test(norm(t)) ? '' : t; return pickZone(z); }
+      S.addr = t; renderCard();
+      await say('Адрес записал. Как далеко это от МКАД? От зоны зависит стоимость доставки.');
+      return chips(ZONES.map((zz, i) => ({t: zz.name, s: fmt(zz.fee) + ' ₽', f: () => pickZone(i)})));
+    }
+    if (S.step === 'phone') {
+      let d = t.replace(/\D/g, '');
+      if (d.length === 11 && /^[78]/.test(d)) return finish(fmtPhone(d));
+      if (d.length === 10) return finish(fmtPhone(d));
+      await say('Не похоже на телефон. Нужно 10 цифр после +7, например 962 910 15 30.'); return;
+    }
+  }
+  $('#composer').addEventListener('submit', e => { e.preventDefault(); const v = txt.value; txt.value = ''; onText(v); });
+
+  async function restart(keepBots) {
+    Object.assign(S, {step: 'material', mat: null, tons: null, volLabel: '', zone: null, addr: '', phone: '', sent: false, busy: false});
+    log.innerHTML = ''; renderCard();
+    await askMaterial();
+  }
+  $('#reset').addEventListener('click', () => restart());
+
+  /* --- справочные панели --- */
+  $('#priceList').innerHTML = MATS.map(m => `<li><span>${m.name}<small>плотность ${m.dens.toLocaleString('ru-RU')} т/м³</small></span><span class="num">${fmt(m.price)} ₽/т</span></li>`).join('');
+  $('#zoneList').innerHTML = ZONES.map(z => `<li><span>${z.name}</span><span class="num">${fmt(z.fee)} ₽</span></li>`).join('');
+
+  /* --- старт --- */
+  renderCard();
+  (async () => {
+    await say('Здравствуйте! Рассчитаю доставку нерудных материалов за минуту.', 300);
+    await askMaterial();
+  })();
+})();
+</script>
+</body>
+</html>

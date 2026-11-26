@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<!--
+  Концепция: «Редакционный журнал». ЕГМ НЕРУД как печатный номер: обложка, номер выпуска, оглавление, статьи со смешанной сеткой.
+  Референс: Farfetch (редакционная подача, крупный сериф, плотная журнальная сетка, подписи и номера страниц).
+  Главное взаимодействие: материалы и заказ вплетены в статьи: вкладки фракций, строки прайса подставляются во врезку-калькулятор, расчёт уходит в заявку.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>ЕГМ НЕРУД: журнал материалов. Щебень, песок, ПГС и грунт с доставкой по Москве и МО</title>
+<meta name="description" content="Выпуск 01: какой щебень для фундамента, как работает вывоз снега, песок, ПГС и грунт. Расчёт рейса с доставкой самосвалами ЕГМ.">
+<style>
+@font-face{font-family:"Golos Text";font-weight:400;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-400.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116,U+20BD}
+@font-face{font-family:"Golos Text";font-weight:400;font-display:swap;src:url(../_assets/fonts/golos-latin-400.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Golos Text";font-weight:500;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-500.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116,U+20BD}
+@font-face{font-family:"Golos Text";font-weight:500;font-display:swap;src:url(../_assets/fonts/golos-latin-500.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Golos Text";font-weight:600;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-600.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116,U+20BD}
+@font-face{font-family:"Golos Text";font-weight:600;font-display:swap;src:url(../_assets/fonts/golos-latin-600.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Golos Text";font-weight:700;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-700.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116,U+20BD}
+@font-face{font-family:"Golos Text";font-weight:700;font-display:swap;src:url(../_assets/fonts/golos-latin-700.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+:root{
+  --red:#E3120B;--red-d:#c40e08;--ink:#141518;--ink2:#464a53;--mute:#7c818c;
+  --paper:#f4f2ed;--paper2:#ebe8e0;--line:#d9d5ca;--white:#fff;
+  --serif:Georgia,"Times New Roman",serif;--sans:"Golos Text",system-ui,sans-serif;
+  --ease:cubic-bezier(.23,1,.32,1);
+  --pad:clamp(16px,3.4vw,48px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);font-size:16px;line-height:1.6;color:var(--ink);background:var(--paper);overflow-x:hidden;overflow-wrap:anywhere}
+img{display:block;max-width:100%}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1360px;margin:0 auto;padding:0 var(--pad)}
+.kick{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+.serif{font-family:var(--serif)}
+body{font-variant-numeric:lining-nums}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+
+/* --- верхняя полоса и шапка --- */
+.strip{background:var(--ink);color:#d8dae0;font-size:13px}
+.strip .wrap{display:flex;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px;flex-wrap:wrap}
+.strip a{text-decoration:none;font-weight:600;color:#fff}
+.strip .tt{color:#9aa0ab}
+.mast{border-bottom:3px double var(--ink)}
+.mast .wrap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px;padding-top:12px;padding-bottom:12px}
+.mast .logo img{height:40px;width:auto}
+.mast .issue{font-family:var(--serif);font-size:13px;letter-spacing:.2em;text-transform:uppercase;text-align:center;color:var(--ink2)}
+.mast .issue b{display:block;font-size:clamp(22px,3vw,32px);letter-spacing:.02em;text-transform:none;color:var(--ink);font-weight:700}
+.mast .call{justify-self:end;text-align:right;font-size:13px;color:var(--ink2);line-height:1.3}
+.mast .call a{display:block;font-size:18px;font-weight:700;text-decoration:none;color:var(--ink);white-space:nowrap}
+.nav{border-bottom:1px solid var(--ink);background:var(--paper);position:sticky;top:0;z-index:30}
+.nav ul{list-style:none;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;max-width:1360px;margin:0 auto;padding:0 var(--pad)}
+.nav ul::-webkit-scrollbar{display:none}
+.nav li{flex:none}
+.nav a{display:flex;gap:8px;align-items:baseline;padding:12px 18px 12px 0;margin-right:18px;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px}
+.nav a i{font-style:normal;font-family:var(--serif);color:var(--red);font-size:12px}
+.nav a.on{border-bottom-color:var(--red)}
+@media (hover:hover){.nav a:hover{border-bottom-color:var(--ink)}}
+
+/* --- обложка --- */
+.cover{padding:clamp(22px,3vw,40px) 0 0}
+.cover .grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:0 28px}
+.cover h1{grid-column:1/8;font-family:var(--serif);font-weight:700;font-size:clamp(42px,6.4vw,92px);line-height:1;letter-spacing:-.03em}
+.cover h1 em{font-style:italic;color:var(--red);font-weight:400}
+.cover .dek{grid-column:1/7;margin-top:20px;font-size:clamp(17px,1.6vw,21px);line-height:1.5;color:var(--ink2);max-width:34em}
+.cover .cta{grid-column:1/8;display:flex;gap:14px;flex-wrap:wrap;margin-top:22px}
+.cover .fig{grid-column:8/13;grid-row:1/4;position:relative;align-self:start}
+.duo{position:relative;background:var(--ink);overflow:hidden}
+.duo img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.15);mix-blend-mode:luminosity}
+.duo::after{content:"";position:absolute;inset:0;background:var(--red);mix-blend-mode:multiply;opacity:.55;pointer-events:none}
+.cover .fig .duo{aspect-ratio:1/1;max-height:560px;width:100%}
+.cover .fig .big{position:absolute;left:14px;bottom:10px;font-family:var(--serif);font-size:clamp(80px,9vw,140px);line-height:.8;font-weight:700;color:var(--paper);letter-spacing:-.05em}
+.cover figcaption{font-size:12px;color:var(--mute);margin-top:10px;text-align:right}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 24px;background:var(--red);color:#fff;border:0;font-weight:700;font-size:15px;text-decoration:none;cursor:pointer;transition:transform .16s var(--ease),background .16s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+@media (hover:hover){.btn:hover{background:var(--red-d)}.btn.ghost:hover{background:var(--ink);color:#fff}}
+.lines{margin-top:clamp(36px,5vw,64px);border-top:1px solid var(--ink);display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.lines a{display:block;text-decoration:none;padding:18px 20px 22px 0;border-right:1px solid var(--line);margin-right:20px;transition:transform .2s var(--ease)}
+.lines a:last-child{border-right:0;margin-right:0}
+.lines small{font-family:var(--serif);font-style:italic;color:var(--red);font-size:15px}
+.lines b{display:block;font-family:var(--serif);font-size:clamp(19px,1.7vw,24px);line-height:1.15;margin:6px 0 8px}
+.lines span{font-size:14px;color:var(--ink2);display:block}
+@media (hover:hover){.lines a:hover b{color:var(--red)}}
+.lines a:active{transform:translateY(1px)}
+
+/* --- статья-раздел --- */
+.art{padding:clamp(48px,7vw,104px) 0 0}
+.art-h{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:0 28px;border-top:3px solid var(--ink);padding-top:14px}
+.art-h .meta{grid-column:1/4;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);display:flex;flex-direction:column;gap:4px}
+.art-h .meta b{font-family:var(--serif);font-size:44px;line-height:1;color:var(--red);letter-spacing:0;text-transform:none}
+.art-h h2{grid-column:4/13;font-family:var(--serif);font-weight:700;font-size:clamp(34px,5.4vw,78px);line-height:.98;letter-spacing:-.025em}
+.art-h .lede{grid-column:4/12;margin-top:20px;font-family:var(--serif);font-size:clamp(18px,1.8vw,23px);line-height:1.45;color:var(--ink2)}
+.body{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:36px 28px;margin-top:40px}
+.text{grid-column:4/9;font-size:16.5px;line-height:1.7}
+.text p+p{margin-top:1em}
+.text p.first::first-letter{font-family:var(--serif);float:left;font-size:4.6em;line-height:.8;padding:6px 10px 0 0;color:var(--red);font-weight:700}
+.text h3{font-family:var(--serif);font-size:22px;margin:1.4em 0 .4em;line-height:1.2}
+.side{grid-column:9/13}
+.side.l{grid-column:1/4;grid-row:1}
+.aside{background:var(--white);border-top:3px solid var(--ink);padding:20px}
+.aside h4{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);margin-bottom:12px}
+
+/* вкладки фракций */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--ink);margin-bottom:14px}
+.tabs button{flex:1;padding:10px 4px;background:none;border:0;border-bottom:3px solid transparent;margin-bottom:-1px;font-family:var(--serif);font-size:19px;font-weight:700;cursor:pointer;color:var(--mute);font-variant-numeric:tabular-nums;transition:color .15s}
+.tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--red)}
+.tabs button:active{transform:scale(.97)}
+@media (hover:hover){.tabs button:hover{color:var(--ink)}}
+.tp h5{font-family:var(--serif);font-size:20px;line-height:1.2;margin-bottom:6px}
+.tp p{font-size:14.5px;line-height:1.55;color:var(--ink2)}
+.tp ul{list-style:none;margin-top:10px;font-size:14px;border-top:1px solid var(--line)}
+.tp li{padding:6px 0;border-bottom:1px solid var(--line)}
+
+/* прайс */
+.price{width:100%;border-collapse:collapse;font-size:14.5px}
+.price th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-align:left;color:var(--mute);font-weight:600;padding:0 0 8px}
+.price td{padding:0;border-top:1px solid var(--line)}
+.price button{width:100%;display:grid;grid-template-columns:1fr auto;gap:2px 12px;text-align:left;background:none;border:0;padding:10px 0;cursor:pointer;align-items:baseline}
+.price button span:first-child{font-weight:600}
+.price button small{grid-column:1/3;color:var(--mute);font-size:12px}
+.price button b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.price button:active{transform:scale(.99)}
+.price tr.sel button span:first-child{color:var(--red)}
+@media (hover:hover){.price button:hover span:first-child{color:var(--red)}}
+.note{font-size:12px;color:var(--mute);margin-top:10px;line-height:1.45}
+
+/* врезка-калькулятор */
+.calc{grid-column:1/13;background:var(--ink);color:#fff;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:28px;padding:clamp(22px,3.4vw,44px)}
+.calc .ch{grid-column:1/5}
+.calc .ch h3{font-family:var(--serif);font-size:clamp(26px,3vw,38px);line-height:1.05;margin:8px 0 12px}
+.calc .ch p{color:#b6bac3;font-size:15px}
+.calc form{grid-column:5/9;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.calc label{display:flex;flex-direction:column;gap:6px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#9aa0ab;min-width:0}
+.calc .full{grid-column:1/3}
+.calc select,.calc input[type=number]{background:#1f2126;border:1px solid #3a3d45;color:#fff;min-height:46px;padding:0 12px;font-size:16px;border-radius:0;width:100%;min-width:0}
+.seg{display:flex;border:1px solid #3a3d45}
+.seg label{flex:1;flex-direction:row;justify-content:center;align-items:center;min-height:44px;cursor:pointer;font-size:14px;letter-spacing:0;text-transform:none;color:#d8dae0;position:relative}
+.seg input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.seg label:has(input:checked){background:#fff;color:var(--ink);font-weight:700}
+.seg label:has(input:focus-visible){outline:2px solid var(--red)}
+.res{grid-column:9/13;background:var(--paper);color:var(--ink);padding:22px;align-self:start}
+.res .tot{font-family:var(--serif);font-size:clamp(36px,4vw,54px);line-height:1;font-weight:700;margin:6px 0 14px;font-variant-numeric:tabular-nums}
+.res dl{display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-size:14px;border-top:1px solid var(--line);padding-top:12px}
+.res dd{font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.res dt{color:var(--ink2)}
+.res .btn{width:100%;justify-content:center;margin-top:16px}
+.res .note{margin-top:10px}
+
+/* пулквот */
+.pq{padding:clamp(56px,8vw,120px) 0 0}
+.pq blockquote{border-top:3px solid var(--ink);border-bottom:1px solid var(--ink);padding:clamp(32px,5vw,72px) 0;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px 28px}
+.pq .mk{grid-column:1/3;font-family:var(--serif);font-size:clamp(100px,14vw,200px);line-height:.7;color:var(--red)}
+.pq p{grid-column:3/12;font-family:var(--serif);font-size:clamp(26px,4vw,56px);line-height:1.12;letter-spacing:-.015em;font-style:italic}
+.pq footer{grid-column:3/12;font-size:14px;color:var(--ink2)}
+.pq footer b{color:var(--ink)}
+
+/* вторая статья: снег */
+.snow{grid-column:1/13;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:36px 28px;margin-top:40px}
+.snow .ph{grid-column:1/6}
+.snow .ph img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.snow .ph figcaption,.ph2 figcaption{font-size:12px;color:var(--mute);margin-top:8px}
+.snow .text{grid-column:6/13;columns:2;column-gap:28px}
+.snow .text p{break-inside:avoid-column}
+.steps{grid-column:1/13;list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--ink)}
+.steps li{padding:18px 20px 8px 0;margin-right:20px;border-right:1px solid var(--line)}
+.steps li:last-child{border-right:0;margin-right:0}
+.steps i{font-family:var(--serif);font-size:clamp(48px,6vw,84px);line-height:1;font-style:italic;color:var(--red);display:block}
+.steps b{display:block;font-family:var(--serif);font-size:21px;line-height:1.15;margin:6px 0}
+.steps span{font-size:14.5px;color:var(--ink2);display:block}
+
+/* мозаика: песок, ПГС, грунт */
+.mosaic{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:36px 28px;margin-top:40px;align-items:start}
+.card{display:flex;flex-direction:column;gap:12px;min-width:0}
+.card .ph{position:relative;overflow:hidden;background:var(--ink)}
+.card .ph img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.08);transition:filter .4s,transform .6s var(--ease)}
+@media (hover:hover){.card:hover .ph img{filter:none;transform:scale(1.03)}}
+.card h3{font-family:var(--serif);font-size:clamp(24px,2.6vw,36px);line-height:1.05;letter-spacing:-.01em}
+.card p{font-size:15.5px;color:var(--ink2);line-height:1.6}
+.card .row{display:flex;justify-content:space-between;gap:12px;align-items:baseline;border-top:1px solid var(--ink);padding-top:8px;font-size:14px}
+.card .row b{font-family:var(--serif);font-size:20px;font-variant-numeric:tabular-nums}
+.card .to{align-self:flex-start;background:none;border:0;border-bottom:2px solid var(--red);padding:2px 0;font-weight:700;font-size:14px;cursor:pointer}
+.card .to:active{transform:translateY(1px)}
+.c1{grid-column:1/8}.c1 .ph{aspect-ratio:16/10}
+.c2{grid-column:8/13;margin-top:64px}.c2 .ph{aspect-ratio:1/1}
+.c3{grid-column:3/10}.c3 .ph{aspect-ratio:2/1}
+.c3b{grid-column:10/13}
+.tbox{background:var(--white);border-top:3px solid var(--ink);padding:18px}
+.tbox table{width:100%;border-collapse:collapse;font-size:14px}
+.tbox td{padding:8px 0;border-top:1px solid var(--line);vertical-align:baseline}
+.tbox td:last-child{text-align:right;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* рубрика техника */
+.tech{grid-column:1/13;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:28px;border-top:1px solid var(--ink)}
+.tech article{padding-top:18px;min-width:0}
+.tech article:nth-child(1){grid-column:1/6}
+.tech article:nth-child(2){grid-column:6/10}
+.tech article:nth-child(3){grid-column:10/13}
+.tech article:nth-child(4){grid-column:1/13;border-top:1px solid var(--line);display:flex;gap:20px;align-items:baseline;flex-wrap:wrap}
+.tech h3{font-family:var(--serif);font-size:24px;line-height:1.15;margin:6px 0}
+.tech p{font-size:15px;color:var(--ink2)}
+.tech .big{font-family:var(--serif);font-size:clamp(34px,4vw,52px);font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+
+/* цифры */
+.facts{margin-top:clamp(56px,8vw,112px);background:var(--ink);color:#fff;padding:clamp(40px,6vw,80px) 0}
+.facts .wrap{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:32px 28px}
+.facts h2{grid-column:1/5;font-family:var(--serif);font-size:clamp(32px,4vw,56px);line-height:1;letter-spacing:-.02em}
+.facts h2 em{color:var(--red);font-style:italic;font-weight:400}
+.facts p.s{margin-top:16px;color:#b6bac3;font-size:15.5px;max-width:28em;font-family:var(--sans)}
+.facts ul{grid-column:6/13;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:0 28px}
+.facts li{border-top:1px solid #3a3d45;padding:16px 0 22px}
+.facts li b{display:block;font-family:var(--serif);font-size:clamp(54px,7vw,104px);line-height:.95;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.facts li span{font-size:14px;color:#b6bac3}
+
+/* вопросы */
+.faq{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px 28px;margin-top:40px}
+.faq .l{grid-column:1/4;font-size:14px;color:var(--ink2)}
+.faq .list{grid-column:4/13;border-top:1px solid var(--ink)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:20px 40px 20px 0;font-family:var(--serif);font-size:clamp(19px,2vw,26px);line-height:1.2;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:4px;top:14px;font-size:30px;color:var(--red);font-family:var(--sans);font-weight:400;transition:transform .25s var(--ease)}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{padding:0 0 22px;max-width:44em;color:var(--ink2);font-size:16px}
+@media (hover:hover){.faq summary:hover{color:var(--red)}}
+
+/* заявка */
+.order{margin-top:clamp(56px,8vw,112px);border-top:3px solid var(--ink);padding:clamp(28px,4vw,56px) 0 clamp(56px,7vw,96px)}
+.order .wrap{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:28px}
+.order .ol{grid-column:1/6}
+.order h2{font-family:var(--serif);font-size:clamp(36px,5vw,70px);line-height:.98;letter-spacing:-.025em;margin:10px 0 18px}
+.order .ol p{color:var(--ink2);max-width:26em}
+.order ul{list-style:none;margin-top:28px;border-top:1px solid var(--ink)}
+.order ul li{padding:12px 0;border-bottom:1px solid var(--line);display:flex;gap:16px;justify-content:space-between;flex-wrap:wrap}
+.order ul li span{color:var(--mute);font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.order ul a{font-weight:700;text-decoration:none}
+.order ul a.ph{font-family:var(--serif);font-size:26px;white-space:nowrap}
+.order form{grid-column:7/13;background:var(--white);padding:clamp(20px,3vw,36px);display:grid;grid-template-columns:1fr 1fr;gap:16px;align-content:start}
+.order label{display:flex;flex-direction:column;gap:6px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);min-width:0}
+.order .full{grid-column:1/3}
+.order input,.order select,.order textarea{border:0;border-bottom:1.5px solid var(--ink);background:var(--paper);min-height:48px;padding:10px 12px;font-size:16px;border-radius:0;width:100%;min-width:0;text-transform:none;letter-spacing:0}
+.order textarea{min-height:90px;resize:vertical}
+.order .fine{font-size:12px;color:var(--mute);line-height:1.5;text-transform:none;letter-spacing:0}
+.order .btn{justify-self:start}
+.thanks{grid-column:7/13;background:var(--white);padding:clamp(28px,4vw,56px);display:none;border-top:3px solid var(--red)}
+.thanks h3{font-family:var(--serif);font-size:clamp(30px,4vw,48px);line-height:1;margin-bottom:12px}
+.order.sent form{display:none}.order.sent .thanks{display:block}
+
+/* подвал */
+footer.ft{background:var(--ink);color:#b6bac3;padding:40px 0 32px;font-size:14px}
+footer.ft .wrap{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px 28px}
+footer.ft .a{grid-column:1/5}.footer-b{grid-column:5/9}.footer-c{grid-column:9/13}
+footer.ft img{height:36px;width:auto;margin-bottom:14px}
+footer.ft b{color:#fff;font-weight:600}
+footer.ft a{color:#fff;text-decoration:none}
+footer.ft .cp{grid-column:1/13;border-top:1px solid #3a3d45;padding-top:16px;font-size:12px;color:#8a8f9a}
+
+/* появление */
+@media (prefers-reduced-motion:no-preference){
+  .cover h1,.cover .dek,.cover .cta,.cover .fig{animation:up .8s var(--ease) both}
+  .cover .dek{animation-delay:.08s}.cover .cta{animation-delay:.16s}.cover .fig{animation-delay:.12s}
+  @keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+
+/* --- планшет --- */
+@media (max-width:1040px){
+  .cover h1{grid-column:1/13}.cover .dek,.cover .cta{grid-column:1/13}
+  .cover .fig{grid-column:1/13;grid-row:auto;margin-top:36px}
+  .cover .fig .duo{aspect-ratio:16/10}
+  .cover .fig .big{bottom:8px}
+  .lines{grid-template-columns:1fr 1fr}
+  .lines a:nth-child(2){border-right:0;margin-right:0}
+  .lines a:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .art-h .meta{grid-column:1/13;flex-direction:row;align-items:baseline;gap:14px;margin-bottom:10px}
+  .art-h .meta b{font-size:34px}
+  .art-h h2,.art-h .lede{grid-column:1/13}
+  .text,.side,.side.l{grid-column:1/13;grid-row:auto}
+  .body{margin-top:28px}
+  .calc .ch,.calc form,.res{grid-column:1/13}
+  .snow .ph,.snow .text{grid-column:1/13}
+  .steps{grid-template-columns:1fr 1fr}
+  .steps li:nth-child(2){border-right:0;margin-right:0}
+  .steps li:nth-child(-n+2){border-bottom:1px solid var(--line);margin-bottom:12px}
+  .c1,.c2,.c3,.c3b{grid-column:1/13;margin-top:0}
+  .tech article:nth-child(n){grid-column:1/13}
+  .facts h2,.facts ul{grid-column:1/13}
+  .faq .l,.faq .list{grid-column:1/13}
+  .pq .mk{grid-column:1/13;height:60px}.pq p,.pq footer{grid-column:1/13}
+  .order .ol,.order form,.thanks{grid-column:1/13}
+  footer.ft .a,.footer-b,.footer-c{grid-column:1/13}
+}
+@media (max-width:1040px){
+  .cover .grid,.art-h,.body,.snow,.mosaic,.calc,.tech,.facts .wrap,.faq,.order .wrap,.pq blockquote,footer.ft .wrap{column-gap:0}
+  .calc{gap:24px 0}.tech{gap:0}
+}
+@media (max-width:640px){
+  .mast .wrap{grid-template-columns:1fr auto;gap:10px}
+  .mast .issue{display:none}
+  .mast .logo img{height:32px}
+  .mast .call{font-size:12px}.mast .call a{font-size:16px}
+  .strip .tt{display:none}
+  .lines{grid-template-columns:1fr}
+  .lines a,.lines a:nth-child(2){border-right:0;margin-right:0;border-bottom:1px solid var(--line)}
+  .text{columns:1;font-size:16px}
+  .snow .text{columns:1}
+  .steps{grid-template-columns:1fr}
+  .steps li,.steps li:nth-child(2){border-right:0;margin-right:0;border-bottom:1px solid var(--line)}
+  .calc form{grid-template-columns:1fr}.calc .full{grid-column:1}
+  .facts ul{grid-template-columns:1fr}
+  .order form{grid-template-columns:1fr}.order .full{grid-column:1}
+  .cover .cta .btn{width:100%;justify-content:center}
+  .tech article:nth-child(4){display:block}
+}
+</style>
+</head>
+<body>
+
+<div class="strip"><div class="wrap">
+  <span class="tt">Подача техники от 24 часов · цену подтверждаем в течение 15 минут</span>
+  <a href="tel:+79629101530" class="num">На связи 24/7: +7 (962) 910-15-30</a>
+</div></div>
+
+<header class="mast"><div class="wrap">
+  <a class="logo" href="#top" aria-label="ЕГМ НЕРУД"><img src="../_assets/logo-on-light.png" alt="ЕГМ НЕРУД" width="150" height="40"></a>
+  <div class="issue">Журнал материалов<b>Выпуск № 01</b></div>
+  <div class="call">Заказ и расчёт<a href="tel:+79629101530" class="num">+7 (962) 910-15-30</a></div>
+</div></header>
+
+<nav class="nav" aria-label="Оглавление"><ul>
+  <li><a href="#a1" class="on"><i>01</i>Щебень</a></li>
+  <li><a href="#a2"><i>02</i>Снег</a></li>
+  <li><a href="#a3"><i>03</i>Песок и грунт</a></li>
+  <li><a href="#a4"><i>04</i>Техника</a></li>
+  <li><a href="#a5"><i>05</i>Как работаем</a></li>
+  <li><a href="#a6"><i>06</i>Вопросы</a></li>
+  <li><a href="#order"><i>07</i>Заказать</a></li>
+</ul></nav>
+
+<main id="top">
+<section class="cover"><div class="wrap">
+  <div class="grid">
+    <h1>Что везём на&nbsp;вашу <em>стройку</em></h1>
+    <p class="dek">В этом номере: какая фракция щебня нужна под фундамент, как устроен вывоз снега и почему песок бывает сеяным и мытым. Прямо в статьях можно посчитать рейс и отправить заявку.</p>
+    <div class="cta"><a class="btn" href="#calc">Посчитать рейс</a><a class="btn ghost" href="#order">Оставить заявку</a></div>
+    <figure class="fig">
+      <div class="duo"><img src="../_assets/sheben.jpg" alt="Щебень в кузове самосвала" width="760" height="480"></div>
+      <span class="big" aria-hidden="true">01</span>
+      <figcaption>На обложке: щебень. Цена от 950 ₽/т, ориентировочно</figcaption>
+    </figure>
+  </div>
+  <div class="lines">
+    <a href="#a1"><small>стр. 02</small><b>Какой щебень для фундамента</b><span>Три фракции и три породы</span></a>
+    <a href="#a2"><small>стр. 06</small><b>Вывоз снега: как работает</b><span>От заявки до полигона</span></a>
+    <a href="#a3"><small>стр. 08</small><b>Песок, ПГС и грунт</b><span>Что куда сыпать</span></a>
+    <a href="#calc"><small>стр. 05</small><b>Врезка: калькулятор рейса</b><span>Тонны, самосвалы, доставка</span></a>
+  </div>
+</div></section>
+
+<!-- СТАТЬЯ 01 -->
+<section class="art" id="a1"><div class="wrap">
+  <header class="art-h">
+    <div class="meta"><b>01</b>Материалы · стр. 02</div>
+    <h2>Какой щебень для фундамента</h2>
+    <p class="lede">Фракция и порода решают больше, чем цена за тонну. Разбираем, что брать под бетон, а что под подушку и дренаж.</p>
+  </header>
+  <div class="body">
+    <aside class="side l">
+      <div class="aside">
+        <h4>Фракция в справке</h4>
+        <div class="tabs" role="tablist" aria-label="Фракция щебня">
+          <button role="tab" aria-selected="true" data-t="0">5–10</button>
+          <button role="tab" aria-selected="false" data-t="1">20–40</button>
+          <button role="tab" aria-selected="false" data-t="2">40–70</button>
+        </div>
+        <div class="tp" id="tp"></div>
+      </div>
+    </aside>
+    <div class="text">
+      <p class="first">Начнём с главного: «щебень для фундамента» — это два разных материала. Один идёт в бетон, который заливают в опалубку. Другой уходит под фундамент: в подушку, которую укладывают слоями и трамбуют. Фракции у них разные.</p>
+      <p>В бетон берут мелкую и среднюю фракции: 5–10 и 20–40 мм. Чем гуще арматура и уже опалубка, тем мельче должен быть щебень, иначе смесь не заполнит пространство. Для подушки и дренажа подходит крупнее: 20–40 и 40–70 мм. Крупные зёрна дают устойчивый каркас, а между ними уходит вода.</p>
+      <h3>Гранит, известняк или вторичный</h3>
+      <p>Гранитный щебень самый прочный: его берут для бетона несущих конструкций и там, где нагрузка высокая. Известняковый мягче и дешевле, он хорош для оснований, засыпки и подсыпки под дорожки. Вторичный щебень получают из дроблёного бетона и кирпича. Его используют для временных дорог, площадок и подсыпки, но не для ответственного бетона.</p>
+      <p>Если сомневаетесь, называйте задачу, а не материал. Мы подскажем породу и фракцию, а цену подтвердим в течение 15 минут.</p>
+    </div>
+    <aside class="side">
+      <div class="aside">
+        <h4>Прайс-колонка · ₽/т, ориентировочно</h4>
+        <table class="price" id="price"><tbody></tbody></table>
+        <p class="note">Без доставки. Нажмите строку, и материал встанет во врезку ниже. Галька, ЩПС и отсев — по запросу.</p>
+      </div>
+    </aside>
+
+    <!-- калькулятор -->
+    <div class="calc" id="calc">
+      <div class="ch">
+        <span class="kick" style="color:#ff6b64">Врезка · стр. 05</span>
+        <h3>Посчитайте рейс до того, как позвоните</h3>
+        <p>Один самосвал везёт 25 т. Объём в кубометрах переводим в тонны по плотности материала.</p>
+      </div>
+      <form id="cf" autocomplete="off" onsubmit="return false">
+        <label class="full">Материал<select id="cm"></select></label>
+        <div class="full seg" role="radiogroup" aria-label="Единица объёма">
+          <label><input type="radio" name="u" value="t" checked>тонны</label>
+          <label><input type="radio" name="u" value="m3">кубометры</label>
+        </div>
+        <label>Количество<input type="number" id="cq" min="1" step="1" value="25" inputmode="decimal"></label>
+        <label>Зона доставки<select id="cz">
+          <option value="7500">Москва, в пределах МКАД</option>
+          <option value="8500">До 30 км от МКАД</option>
+          <option value="10500">30–60 км от МКАД</option>
+          <option value="13500">60–100 км от МКАД</option>
+        </select></label>
+      </form>
+      <div class="res" aria-live="polite">
+        <span class="kick">Итого, ориентировочно</span>
+        <div class="tot" id="ct">66 250 ₽</div>
+        <dl>
+          <dt>Масса</dt><dd id="cw">25 т</dd>
+          <dt>Рейсов</dt><dd id="cn">1 самосвал</dd>
+          <dt>Материал</dt><dd id="cmat">58 750 ₽</dd>
+          <dt>Доставка</dt><dd id="cdl">7 500 ₽</dd>
+        </dl>
+        <button class="btn" type="button" id="toOrder">В заявку</button>
+        <p class="note">Точную цену подтвердим в течение 15 минут после заявки.</p>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- СТАТЬЯ 02 -->
+<section class="art" id="a2"><div class="wrap">
+  <header class="art-h">
+    <div class="meta"><b>02</b>Услуги · стр. 06</div>
+    <h2>Вывоз снега: как работает</h2>
+    <p class="lede">Снег со стройплощадки или коммерческой территории вывозят самосвалами. Всё держится на порядке и времени подачи.</p>
+  </header>
+  <div class="snow">
+    <figure class="ph"><img src="../_assets/sneg.jpg" alt="Погрузка снега в самосвал" width="960" height="680" loading="lazy"><figcaption>Погрузка снега на объекте</figcaption></figure>
+    <div class="text">
+      <p class="first">Снег нельзя оставлять там, где он мешает: у въездов, на площадках для техники, на парковках коммерческой недвижимости. Если не убрать вовремя, он уплотняется и превращается в наледь, а её убирать дольше и дороже.</p>
+      <p>Принцип простой. Снег сгребают в валы, погрузчик грузит его в самосвалы, самосвалы вывозят его в разрешённое место. Чем ближе подача и чем меньше простоя машины на площадке, тем быстрее площадка свободна.</p>
+      <p>Мы вывозим снег со строительных площадок и с территорий коммерческой недвижимости. Самосвалы свои, без посредников, поэтому время подачи называем сами и сами за него отвечаем. Работаем по договору, закрывающие документы выдаём.</p>
+      <p>Чтобы быстро рассчитать, пришлите адрес, примерную площадь территории и желаемое время. Остальное уточним по телефону.</p>
+    </div>
+    <ol class="steps">
+      <li><i>1</i><b>Заявка</b><span>Звонок, форма или мессенджер.</span></li>
+      <li><i>2</i><b>Расчёт и договор</b><span>Цену подтверждаем в течение 15 минут.</span></li>
+      <li><i>3</i><b>Подача самосвала</b><span>От 24 часов с момента согласования.</span></li>
+      <li><i>4</i><b>Выгрузка и документы</b><span>Закрывающие документы по итогам.</span></li>
+    </ol>
+  </div>
+</div></section>
+
+<section class="pq"><div class="wrap">
+  <blockquote>
+    <div class="mk" aria-hidden="true">«</div>
+    <p>Главные ценности нашей компании — соблюдение договорённостей, верность принципам и победа вместе с заказчиком.</p>
+    <footer><b>Владимир Балабанов</b>, генеральный директор ООО «ЕГМ»</footer>
+  </blockquote>
+</div></section>
+
+<!-- СТАТЬЯ 03 -->
+<section class="art" id="a3"><div class="wrap">
+  <header class="art-h">
+    <div class="meta"><b>03</b>Материалы · стр. 08</div>
+    <h2>Песок, ПГС и грунт: что куда сыпать</h2>
+    <p class="lede">Три материала, которые путают чаще всего. Коротко, по задачам.</p>
+  </header>
+  <div class="mosaic">
+    <article class="card c1">
+      <div class="ph"><img src="../_assets/pesok.jpg" alt="Песок" width="760" height="480" loading="lazy"></div>
+      <h3>Песок сеяный и мытый</h3>
+      <p>Сеяный — карьерный песок, пропущенный через сито, с небольшой долей глины. Подходит для подсыпки, обратной засыпки и оснований. Мытый очищают от пылевидных частиц и глины, поэтому его берут для бетона, растворов и стяжек. Плотность: сеяный 1,6 т/м³, мытый 1,55 т/м³.</p>
+      <div class="row"><span>Сеяный от <b>650 ₽/т</b></span><span>Мытый от <b>900 ₽/т</b></span></div>
+      <button class="to" type="button" data-pick="Песок сеяный">Посчитать песок</button>
+    </article>
+    <article class="card c2">
+      <div class="ph"><img src="../_assets/pgs.jpg" alt="ПГС" width="760" height="480" loading="lazy"></div>
+      <h3>ПГС</h3>
+      <p>Песчано-гравийная смесь: песок и мелкий гравий в одной куче. Её сыпют в основание под площадки и дороги, засыпают траншеи и котлованы. Для бетона без обогащения она не годится.</p>
+      <div class="row"><span>Плотность 1,65 т/м³</span><span>от <b>800 ₽/т</b></span></div>
+      <button class="to" type="button" data-pick="ПГС">Посчитать ПГС</button>
+    </article>
+    <article class="card c3">
+      <div class="ph"><img src="../_assets/grunt.jpg" alt="Плодородный грунт" width="760" height="480" loading="lazy"></div>
+      <h3>Грунт плодородный</h3>
+      <p>Для газонов, клумб и благоустройства. Это не основание: он оседает и впитывает воду, поэтому под дорожки и площадки его не кладут. Плотность около 1,2 т/м³. А если грунт нужно вывезти, вывоз от 400 ₽ за м³.</p>
+      <div class="row"><span>Плодородный от <b>700 ₽/т</b></span><span>Вывоз от <b>400 ₽/м³</b></span></div>
+      <button class="to" type="button" data-pick="Грунт плодородный">Посчитать грунт</button>
+    </article>
+    <aside class="c3b">
+      <div class="tbox">
+        <h4 class="kick" style="margin-bottom:8px">Доставка за самосвал, 25 т</h4>
+        <table>
+          <tr><td>В пределах МКАД</td><td>7 500 ₽</td></tr>
+          <tr><td>До 30 км от МКАД</td><td>8 500 ₽</td></tr>
+          <tr><td>30–60 км</td><td>10 500 ₽</td></tr>
+          <tr><td>60–100 км</td><td>13 500 ₽</td></tr>
+        </table>
+      </div>
+    </aside>
+  </div>
+</div></section>
+
+<!-- СТАТЬЯ 04 -->
+<section class="art" id="a4"><div class="wrap">
+  <header class="art-h">
+    <div class="meta"><b>04</b>Техника · стр. 10</div>
+    <h2>Свои самосвалы и всё, что к ним прилагается</h2>
+    <p class="lede">Возим собственным парком, без посредников. Объёмы от одной машины до постоянной логистики стройплощадки.</p>
+  </header>
+  <div class="body" style="margin-top:32px">
+    <div class="tech">
+      <article>
+        <span class="kick">Аренда</span>
+        <h3>Спецтехника с фиксированной ценой</h3>
+        <p>Цена фиксируется на весь срок аренды. Не придётся пересчитывать бюджет посреди работ.</p>
+      </article>
+      <article>
+        <span class="kick">Отходы</span>
+        <h3>Контейнеры под строительный мусор</h3>
+        <p>Ставим, забираем, вывозим строительные отходы.</p>
+      </article>
+      <article>
+        <span class="kick">На объект</span>
+        <h3>Самосвалы под ваш график</h3>
+        <p>Одна машина или постоянный поток.</p>
+      </article>
+      <article>
+        <span class="big">от 400 ₽/м³</span>
+        <p><b>Вывоз грунта.</b> Считаем по объёму, подаём самосвал от 24 часов.</p>
+      </article>
+    </div>
+  </div>
+</div></section>
+
+<section class="facts"><div class="wrap">
+  <div>
+    <h2>Цифры <em>номера</em></h2>
+    <p class="s">Не рекламный слоган, а то, что можно проверить по договору и по звонку.</p>
+  </div>
+  <ul style="grid-column:6/13">
+    <li><b>8+</b><span>лет в поставках</span></li>
+    <li><b>7+</b><span>единиц собственной техники</span></li>
+    <li><b>40+</b><span>объектов ежемесячно</span></li>
+    <li><b>24/7</b><span>на связи</span></li>
+  </ul>
+</div></section>
+
+<!-- Как работаем -->
+<section class="art" id="a5"><div class="wrap">
+  <header class="art-h">
+    <div class="meta"><b>05</b>Порядок · стр. 11</div>
+    <h2>Как работаем: четыре шага</h2>
+    <p class="lede">Работаем с юридическими лицами по договору. Частным заказчикам тоже поможем, позвоните.</p>
+  </header>
+  <div class="body" style="margin-top:32px">
+    <ol class="steps">
+      <li><i>1</i><b>Заявка</b><span>Звонок, форма или мессенджер.</span></li>
+      <li><i>2</i><b>Расчёт и договор</b><span>Цену подтверждаем в течение 15 минут.</span></li>
+      <li><i>3</i><b>Подача самосвала</b><span>От 24 часов.</span></li>
+      <li><i>4</i><b>Выгрузка и документы</b><span>Закрывающие документы по итогам.</span></li>
+    </ol>
+  </div>
+</div></section>
+
+<!-- Вопросы -->
+<section class="art" id="a6"><div class="wrap">
+  <header class="art-h">
+    <div class="meta"><b>06</b>Письма · стр. 12</div>
+    <h2>Вопросы читателей</h2>
+  </header>
+  <div class="faq">
+    <p class="l">Не нашли свой вопрос? Позвоните, мы на связи круглосуточно.</p>
+    <div class="list">
+      <details><summary>Сколько тонн в кубометре щебня?</summary><p>Зависит от породы. Гранитный щебень весит около 1,4 т/м³, известняковый 1,3, вторичный 1,35. Поэтому в калькуляторе можно считать и в тоннах, и в кубометрах.</p></details>
+      <details><summary>Сколько стоит доставка?</summary><p>За один самосвал на 25 т: в пределах МКАД 7 500 ₽, до 30 км от МКАД 8 500 ₽, 30–60 км 10 500 ₽, 60–100 км 13 500 ₽. Цены ориентировочные, точную подтверждаем в течение 15 минут.</p></details>
+      <details><summary>Как быстро приедет самосвал?</summary><p>Подача техники от 24 часов с момента согласования заявки.</p></details>
+      <details><summary>Работаете ли вы по договору?</summary><p>Да. Основные клиенты — строительные компании и подрядчики, работаем по договору и выдаём закрывающие документы.</p></details>
+      <details><summary>Какой песок брать для бетона?</summary><p>Мытый: в нём меньше глины и пыли. Сеяный лучше оставить для подсыпки и засыпки.</p></details>
+      <details><summary>Что нужно для расчёта?</summary><p>Материал, объём (в тоннах или кубометрах), адрес разгрузки и телефон. Остальное уточним сами.</p></details>
+    </div>
+  </div>
+</div></section>
+
+<!-- Заявка -->
+<section class="order" id="order"><div class="wrap">
+  <div class="ol">
+    <span class="kick">Последняя страница</span>
+    <h2>Оставьте заявку</h2>
+    <p>Материал, объём и адрес. Подтвердим цену в течение 15 минут и скажем, когда приедет самосвал.</p>
+    <ul>
+      <li><span>Телефон 24/7</span><a class="ph num" href="tel:+79629101530">+7 (962) 910-15-30</a></li>
+      <li><span>Email</span><a href="mailto:sale@egm-nerud.ru">sale@egm-nerud.ru</a></li>
+      <li><span>Адрес</span><b style="font-weight:600">г. Москва, пр-кт Мира, 102к1</b></li>
+    </ul>
+  </div>
+  <form id="of" autocomplete="on">
+    <label>Имя<input name="name" required autocomplete="name"></label>
+    <label>Телефон<input name="tel" type="tel" required autocomplete="tel" placeholder="+7"></label>
+    <label class="full">Что нужно<textarea name="msg" id="om" placeholder="Например: щебень гранитный, 25 т, Москва"></textarea></label>
+    <button class="btn full" type="submit">Отправить заявку</button>
+    <p class="fine full">Нажимая кнопку, вы соглашаетесь на обработку персональных данных. Форма-макет: данные никуда не отправляются.</p>
+  </form>
+  <div class="thanks" role="status">
+    <h3>Спасибо</h3>
+    <p>Заявка принята. Перезвоним и подтвердим цену в течение 15 минут. Если срочно, звоните: <a href="tel:+79629101530" class="num"><b>+7 (962) 910-15-30</b></a>.</p>
+  </div>
+</div></section>
+</main>
+
+<footer class="ft"><div class="wrap">
+  <div class="a"><img src="../_assets/logo-on-dark.png" alt="ЕГМ НЕРУД" width="150" height="36"><p>Нерудные материалы с доставкой собственными самосвалами по Москве и МО.</p></div>
+  <div class="footer-b"><b>Реквизиты</b><br>ООО «ЕГМ»<br>ИНН 7727442967<br>ОГРН 1207700145850</div>
+  <div class="footer-c"><b>Контакты</b><br>г. Москва, пр-кт Мира, 102к1<br><a href="tel:+79629101530" class="num">+7 (962) 910-15-30</a><br><a href="mailto:sale@egm-nerud.ru">sale@egm-nerud.ru</a></div>
+  <p class="cp">Журнал материалов ЕГМ НЕРУД, выпуск 01. Все цены ориентировочные, без доставки. Макет сайта.</p>
+</div></footer>
+
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var M=[
+    {n:'Щебень гранитный',p:2350,d:1.4},
+    {n:'Щебень известняковый',p:1450,d:1.3},
+    {n:'Щебень вторичный',p:950,d:1.35},
+    {n:'Песок сеяный',p:650,d:1.6},
+    {n:'Песок мытый',p:900,d:1.55},
+    {n:'ПГС',p:800,d:1.65},
+    {n:'Грунт плодородный',p:700,d:1.2}
+  ];
+  var fmt=function(n){return Math.round(n).toLocaleString('ru-RU')};
+  var pr=new Intl.PluralRules('ru-RU');
+  var trucks=function(n){var f=pr.select(n);return n+' '+(f==='one'?'самосвал':f==='few'?'самосвала':'самосвалов')};
+
+  /* фракции */
+  var T=[
+    {h:'5–10 мм: мелкая',p:'Заполняет узкие места между арматурой. Идёт в бетонные смеси, стяжки и мелкие изделия.',l:['Бетон для фундамента','Стяжки и дорожки','Декоративная отсыпка']},
+    {h:'20–40 мм: универсальная',p:'Самая ходовая фракция. Подходит и для бетона, и для подушки под фундамент и основания под дороги.',l:['Бетон фундаментов и плит','Подушка под фундамент','Основание площадок']},
+    {h:'40–70 мм: крупная',p:'Для оснований, где нужен прочный каркас и отвод воды. В тонкий бетон не идёт.',l:['Дренажные слои','Основание под дорогу','Отсыпка подъездов']}
+  ];
+  var tp=$('#tp');
+  function tab(i){
+    document.querySelectorAll('.tabs button').forEach(function(b,k){b.setAttribute('aria-selected',k===i)});
+    var t=T[i];tp.innerHTML='<h5>'+t.h+'</h5><p>'+t.p+'</p><ul>'+t.l.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>';
+  }
+  document.querySelectorAll('.tabs button').forEach(function(b){b.addEventListener('click',function(){tab(+b.dataset.t)})});
+  tab(0);
+
+  /* прайс и калькулятор */
+  var cm=$('#cm'),cq=$('#cq'),cz=$('#cz'),pb=$('#price tbody');
+  M.forEach(function(m,i){
+    cm.insertAdjacentHTML('beforeend','<option value="'+i+'">'+m.n+'</option>');
+    pb.insertAdjacentHTML('beforeend','<tr data-i="'+i+'"><td><button type="button"><span>'+m.n+'</span><b>от '+fmt(m.p)+'</b><small>плотность '+String(m.d).replace('.',',')+' т/м³</small></button></td></tr>');
+  });
+  function unit(){return document.querySelector('input[name=u]:checked').value}
+  function calc(){
+    var m=M[+cm.value],q=Math.max(0,parseFloat(cq.value)||0);
+    var tons=unit()==='m3'?q*m.d:q;
+    tons=Math.round(tons*100)/100;
+    var n=Math.max(1,Math.ceil(tons/25-1e-9));
+    var mat=tons*m.p,dl=n*(+cz.value),tot=mat+dl;
+    $('#ct').textContent=fmt(tot)+' ₽';
+    $('#cw').textContent=tons.toLocaleString('ru-RU')+' т';
+    $('#cn').textContent=trucks(n);
+    $('#cmat').textContent=fmt(mat)+' ₽';
+    $('#cdl').textContent=fmt(dl)+' ₽';
+    document.querySelectorAll('#price tr').forEach(function(r){r.classList.toggle('sel',+r.dataset.i===+cm.value)});
+  }
+  [cm,cq,cz].forEach(function(e){e.addEventListener('input',calc)});
+  document.querySelectorAll('input[name=u]').forEach(function(e){e.addEventListener('change',calc)});
+  function pick(name){
+    M.forEach(function(m,i){if(m.n===name)cm.value=i});
+    calc();$('#calc').scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  pb.addEventListener('click',function(e){var r=e.target.closest('tr');if(r){cm.value=r.dataset.i;calc();$('#calc').scrollIntoView({behavior:'smooth',block:'center'})}});
+  document.querySelectorAll('.to').forEach(function(b){b.addEventListener('click',function(){pick(b.dataset.pick)})});
+  calc();
+
+  /* в заявку */
+  $('#toOrder').addEventListener('click',function(){
+    var m=M[+cm.value],q=cq.value,u=unit()==='m3'?'м³':'т';
+    var z=cz.options[cz.selectedIndex].text;
+    $('#om').value=m.n+', '+q+' '+u+', '+z+'. Расчёт: '+$('#ct').textContent+' (ориентировочно)';
+    $('#order').scrollIntoView({behavior:'smooth'});
+  });
+  $('#of').addEventListener('submit',function(e){e.preventDefault();$('#order').classList.add('sent')});
+
+  /* подсветка раздела в навигации */
+  var links=[].slice.call(document.querySelectorAll('.nav a'));
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){
+      if(en.isIntersecting){links.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+en.target.id)})}
+    })},{rootMargin:'-40% 0px -55% 0px'});
+    links.forEach(function(a){var s=document.querySelector(a.getAttribute('href'));if(s)io.observe(s)});
+  }
+})();
+</script>
+</body>
+</html>

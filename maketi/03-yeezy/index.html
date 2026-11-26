@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>ЕГМ НЕРУД — щебень, песок, ПГС, грунт</title>
+<meta name="description" content="Нерудные материалы с доставкой собственными самосвалами по Москве и МО.">
+<!--
+  Концепция: 03-yeezy — пустой белый экран, материалы как артикулы (GR-20/40, SND-W, PGS-01), почти без текста,
+  меню скрыто, карточка материала открывается оверлеем с объёмом и кнопкой «Заказать».
+  Референс: yeezy.com (белое поле, мелкий капс с разрядкой, продукт без рамок).
+-->
+<style>
+@font-face{font-family:"Golos Text";font-weight:400;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-400.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Golos Text";font-weight:400;font-display:swap;src:url(../_assets/fonts/golos-latin-400.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Golos Text";font-weight:500;font-display:swap;src:url(../_assets/fonts/golos-cyrillic-500.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Golos Text";font-weight:500;font-display:swap;src:url(../_assets/fonts/golos-latin-500.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+:root{
+  --ink:#141518; --mute:#585b62; --line:#e4e5e8; --soft:#f5f5f7; --red:#E3120B;
+  --ease:cubic-bezier(.23,1,.32,1);
+  --pad:clamp(16px,3.2vw,44px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font:400 14px/1.55 "Golos Text",system-ui,sans-serif;color:var(--ink);background:#fff;overflow-x:hidden;font-variant-numeric:tabular-nums}
+body.lock{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer;text-align:left}
+img{display:block}
+:focus-visible{outline:1px solid var(--ink);outline-offset:3px}
+.caps{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:500}
+.mute{color:var(--mute)}
+.tn{font-variant-numeric:tabular-nums}
+.wrap{padding-inline:var(--pad)}
+.press{transition:transform .16s var(--ease),opacity .2s}
+.press:active{transform:scale(.97)}
+
+/* header */
+.hd{position:fixed;inset:0 0 auto 0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:20px var(--pad);mix-blend-mode:normal;pointer-events:none}
+.hd>*{pointer-events:auto}
+.hd img{height:20px;width:auto}
+.hd .r{display:flex;gap:28px;align-items:center}
+.hd .ph{white-space:nowrap}
+.menu-btn{padding:8px 0}
+@media(max-width:560px){.hd .ph{display:none}}
+@media(hover:hover){.hd a:hover,.menu-btn:hover{opacity:.55}}
+
+/* hero */
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 var(--pad) 34px}
+.hero .t{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.hl{font-weight:400;font-size:clamp(20px,2.6vw,34px);letter-spacing:-.03em;line-height:1.12;max-width:26ch}.hr{display:grid;gap:18px;justify-items:end;text-align:right}@media(max-width:560px){.hr{justify-items:start;text-align:left}}
+.hero .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);margin-right:10px;vertical-align:1px}
+.hero .prod{flex:1;display:grid;place-items:center;align-content:center;gap:18px;margin:84px 0 28px}
+.hero .prod img{width:min(560px,78vw);aspect-ratio:3/2;object-fit:cover;filter:grayscale(1) contrast(1.15) brightness(1.08);mix-blend-mode:multiply;-webkit-mask:radial-gradient(closest-side,#000 62%,transparent 100%);mask:radial-gradient(closest-side,#000 62%,transparent 100%)}
+.hero .prod figcaption{font-size:11px;letter-spacing:.14em}
+.hero .in{animation:rise .9s .1s var(--ease) both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}}
+
+/* grid */
+.sec{padding:clamp(72px,11vw,160px) var(--pad) 0}
+.sec-h{display:flex;justify-content:space-between;margin-bottom:clamp(28px,4vw,56px)}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(40px,6vw,88px) clamp(14px,2vw,28px)}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.it{display:block;width:100%}
+.it .ph{position:relative;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center}
+.it .ph i{position:absolute;left:50%;top:50%;width:92%;aspect-ratio:760/480;transform:translate(-50%,-50%);overflow:hidden}
+.it img{width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;filter:grayscale(1) contrast(1.08) brightness(1.06);
+  transform:scale(var(--s,1));object-position:var(--p,50% 50%);transition:filter .5s var(--ease),transform .6s var(--ease)}
+.it .meta{display:grid;gap:3px;margin-top:6px}
+.it .code{font-size:11px;letter-spacing:.16em;font-weight:500}
+.it .nm{color:var(--mute);font-size:13px}
+.it .pr{font-size:13px}
+@media(hover:hover){.it:hover img{filter:grayscale(0) contrast(1.02) brightness(1.02);transform:scale(calc(var(--s,1) + .06))}.it:hover .code{color:var(--red)}}
+.it:active .ph{transform:scale(.98)}
+.it .ph{transition:transform .16s var(--ease)}
+.it.txt .ph{display:none}.it.txt{align-self:end}
+.it.txt{cursor:default}
+.note{color:var(--mute);font-size:11px;margin-top:40px}
+
+/* split */
+@media(min-width:901px){.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);column-gap:var(--pad)}.split .sec-h{display:block;margin:0}.split .sec-h span{display:block;margin-top:6px}}
+/* rows */
+.rows{border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:90px minmax(0,1.1fr) minmax(0,1.4fr) auto;gap:16px;padding:18px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.row .a{overflow-wrap:anywhere}
+@media(max-width:700px){.row{grid-template-columns:62px minmax(0,1fr) auto}.row .c{grid-column:2/4;grid-row:2}}
+.lnk{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;border-bottom:1px solid var(--ink);padding-bottom:2px;white-space:nowrap}
+@media(hover:hover){.lnk:hover{color:var(--red);border-color:var(--red)}}
+
+/* numbers */
+.nums{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px 16px}
+.nums b{display:block;font-weight:400;font-size:clamp(34px,5.4vw,76px);line-height:1;letter-spacing:-.04em}
+.nums span{display:block;margin-top:12px}
+@media(max-width:700px){.nums{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.lead{margin-top:48px;max-width:46ch;font-size:15px;line-height:1.5}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.steps li{list-style:none;border-top:1px solid var(--ink);padding-top:12px}
+.steps .n{display:block;margin-bottom:28px}
+@media(max-width:700px){.steps{grid-template-columns:1fr}.steps .n{margin-bottom:8px}}
+
+/* tariffs */
+.tar{max-width:520px}
+.tar div{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}
+.tar div:first-child{border-top:1px solid var(--line)}
+
+/* quote */
+.q{max-width:34ch;font-size:clamp(17px,2vw,22px);line-height:1.35;letter-spacing:-.01em}
+
+/* faq */
+details{border-bottom:1px solid var(--line)}
+details:first-of-type{border-top:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;padding:16px 0;display:flex;justify-content:space-between;gap:16px;align-items:baseline}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:15px;line-height:1;transition:transform .2s var(--ease)}
+details[open] summary::after{transform:rotate(45deg)}
+details p{padding:0 0 18px;max-width:60ch;color:var(--mute)}
+.faq{max-width:none}
+
+/* form */
+.form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,6vw,96px)}
+@media(max-width:800px){.form{grid-template-columns:1fr}}
+.f{display:grid;gap:22px;max-width:440px}
+.fld{display:grid;gap:6px}
+.fld input,.fld select{border:0;border-bottom:1px solid var(--ink);padding:8px 0;background:transparent;border-radius:0;font-size:16px;width:100%;outline:none}
+.fld input:focus-visible{outline:none;border-color:var(--red)}
+.fld input[aria-invalid=true]{border-color:var(--red)}
+.btn{display:inline-flex;justify-content:center;align-items:center;background:var(--ink);color:#fff;padding:15px 28px;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;transition:transform .16s var(--ease),background .2s;min-height:46px;text-align:center}
+@media(hover:hover){.btn:hover{background:var(--red)}}
+.btn:active{transform:scale(.97)}
+.btn[disabled]{opacity:.35;pointer-events:none}
+.fine{font-size:11px;color:var(--mute);max-width:44ch}
+.err{color:var(--red);font-size:11px;min-height:1.4em}
+.thx{display:none;font-size:15px;line-height:1.4}
+.done .f,.done .po-f{display:none}.done .thx{display:block}
+.ct{display:grid;gap:10px;align-content:start}
+.ct a{border-bottom:1px solid transparent;width:fit-content}
+@media(hover:hover){.ct a:hover{border-color:var(--ink)}}
+.big-ph{font-size:clamp(22px,3.2vw,40px);letter-spacing:-.03em;line-height:1.1;white-space:nowrap}
+
+/* footer */
+footer{margin-top:clamp(80px,11vw,160px);padding:28px var(--pad) 40px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;color:var(--mute);font-size:11px}
+footer span{overflow-wrap:anywhere}
+
+/* overlays */
+.ov{position:fixed;inset:0;z-index:50;background:#fff;overflow-y:auto;overscroll-behavior:contain;visibility:hidden;opacity:0;transform:translateY(10px);transition:opacity .22s var(--ease),transform .26s var(--ease),visibility 0s .26s}
+.ov.on{visibility:visible;opacity:1;transform:none;transition:opacity .22s var(--ease),transform .26s var(--ease)}
+.ov-hd{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:20px var(--pad);background:#fff;z-index:2}
+.ov-hd img{height:20px;width:auto}
+.mn{padding:clamp(20px,6vh,80px) var(--pad) 60px;display:grid;gap:4px}
+.mn a{font-size:clamp(28px,5.6vw,72px);letter-spacing:-.04em;line-height:1.12;width:fit-content;transition:opacity .2s}
+@media(hover:hover){.mn:hover a{opacity:.3}.mn a:hover{opacity:1}}
+.mn-ft{padding:0 var(--pad) 40px;display:grid;gap:6px}
+.po{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,5vw,96px);padding:clamp(8px,4vh,48px) var(--pad) 56px;align-items:start;max-width:1280px;margin-inline:auto}
+@media(max-width:800px){.po{grid-template-columns:1fr}}
+.po-ph{position:relative;aspect-ratio:760/480;max-width:560px;width:100%}
+.po-ph i{position:absolute;left:50%;top:50%;width:100%;aspect-ratio:760/480;transform:translate(-50%,-50%);overflow:hidden}
+.po-ph img{width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;filter:grayscale(1) contrast(1.08) brightness(1.06);transform:scale(var(--s,1));object-position:var(--p,50% 50%)}
+@media(max-width:800px){.po-ph{max-width:320px}}
+.po h2{font-weight:400;font-size:clamp(26px,3.4vw,44px);letter-spacing:-.035em;line-height:1.05;margin:10px 0 6px;overflow-wrap:anywhere}
+.po .grp{margin-top:26px;display:grid;gap:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);padding:9px 14px;font-size:12px;min-height:38px;transition:border-color .2s,background .2s,color .2s,transform .16s var(--ease)}
+.chip:active{transform:scale(.97)}
+.chip[aria-pressed=true],.chip[aria-checked=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+@media(hover:hover){.chip:hover{border-color:var(--ink)}}
+.vol{display:flex;gap:12px;align-items:flex-end}
+.vol input{border:0;border-bottom:1px solid var(--ink);font-size:28px;letter-spacing:-.03em;width:7ch;padding:2px 0;background:transparent;border-radius:0;outline:none;font-variant-numeric:tabular-nums;min-width:0}
+.vol input:focus-visible{border-color:var(--red)}
+.zones{display:grid;gap:0}
+.zones button{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:12px}
+.zones button[aria-checked=true]{font-weight:500}
+.zones button[aria-checked=true]::before{content:"";width:6px;height:6px;background:var(--red);border-radius:50%;margin:6px 10px 0 0;flex:none}
+.zones button span:first-of-type{flex:1}
+.res{margin-top:28px;padding-top:18px;border-top:1px solid var(--ink)}
+.res .tot{font-size:clamp(34px,4.4vw,56px);letter-spacing:-.04em;line-height:1;margin:6px 0 8px}
+.po-f{margin-top:22px;display:grid;gap:12px;max-width:420px}
+.po-f .row2{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.po-f .fld{flex:1 1 180px}
+.x{padding:8px 0}
+@media(hover:hover){.x:hover{opacity:.55}}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .ov{transform:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hd">
+  <a href="#top" aria-label="ЕГМ НЕРУД, наверх"><img src="../_assets/logo-on-light.png" alt="ЕГМ НЕРУД" width="39" height="20"></a>
+  <div class="r">
+    <a class="caps ph tn" href="tel:+79629101530">+7 (962) 910-15-30</a>
+    <button class="caps menu-btn" id="menuBtn" aria-haspopup="dialog" aria-controls="menu">Меню</button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <figure class="prod in"><img src="../_assets/sheben.jpg" alt="Щебень гранитный 20–40" width="900" height="600"><figcaption class="caps mute">GR-20/40 · щебень гранитный · от 2 350 ₽/т</figcaption></figure>
+    <div class="t in">
+      <h1 class="hl">Щебень, песок, ПГС, грунт.<br><span class="mute">Свои самосвалы по Москве и МО.</span></h1>
+      <div class="hr"><p class="caps mute"><span class="dot"></span>Цену подтверждаем за 15 минут</p><a class="lnk press" href="#materials">Материалы</a></div>
+    </div>
+  </section>
+
+  <section class="sec" id="materials" aria-labelledby="h-mat">
+    <div class="sec-h"><h2 class="caps" id="h-mat">Материалы</h2><span class="caps mute">Цена за тонну, ориентировочно</span></div>
+    <div class="grid" id="grid"></div>
+    <p class="note">Цены без доставки. Фракции щебня: 5–10, 20–40, 40–70.</p>
+  </section>
+
+  <section class="sec" id="services" aria-labelledby="h-srv">
+    <div class="sec-h"><h2 class="caps" id="h-srv">Услуги</h2></div>
+    <div class="rows">
+      <div class="row"><span class="caps mute">SV-01</span><span class="a">Вывоз грунта</span><span class="c mute">от 400 ₽ за м³</span><button class="lnk press" data-srv="Вывоз грунта">Запросить</button></div>
+      <div class="row"><span class="caps mute">SV-02</span><span class="a">Вывоз снега</span><span class="c mute">Стройплощадки и коммерческая недвижимость</span><button class="lnk press" data-srv="Вывоз снега">Запросить</button></div>
+      <div class="row"><span class="caps mute">SV-03</span><span class="a">Аренда спецтехники</span><span class="c mute">Цена фиксируется на весь срок</span><button class="lnk press" data-srv="Аренда спецтехники">Запросить</button></div>
+      <div class="row"><span class="caps mute">SV-04</span><span class="a">Аренда контейнеров</span><span class="c mute">Для строительных отходов</span><button class="lnk press" data-srv="Аренда контейнеров">Запросить</button></div>
+      <div class="row"><span class="caps mute">SV-05</span><span class="a">Самосвалы на объект</span><span class="c mute">Подача от 24 часов</span><button class="lnk press" data-srv="Самосвалы на объект">Запросить</button></div>
+    </div>
+  </section>
+
+  <section class="sec split" id="delivery" aria-labelledby="h-del">
+    <div class="sec-h"><h2 class="caps" id="h-del">Доставка</h2><span class="caps mute">Один самосвал, 25 т</span></div>
+    <div class="tar tn" id="tar"></div>
+  </section>
+
+  <section class="sec" id="why" aria-labelledby="h-why">
+    <div class="sec-h"><h2 class="caps" id="h-why">ЕГМ</h2></div>
+    <div class="nums">
+      <div><b>8+</b><span class="caps mute">лет в поставках</span></div>
+      <div><b>7+</b><span class="caps mute">единиц своей техники</span></div>
+      <div><b>40+</b><span class="caps mute">объектов в месяц</span></div>
+      <div><b>24/7</b><span class="caps mute">на связи</span></div>
+    </div>
+    <p class="lead">Возим собственными самосвалами, без посредников. Работаем с юрлицами по договору. От одной машины до постоянной логистики стройплощадки.</p>
+    <blockquote class="q" style="margin-top:72px">«Главные ценности нашей компании — соблюдение договорённостей, верность принципам и победа вместе с заказчиком».
+      <footer style="all:unset;display:block;margin-top:18px;font-size:11px;color:var(--mute)">Владимир Балабанов, генеральный директор ООО «ЕГМ»</footer></blockquote>
+  </section>
+
+  <section class="sec split" id="how" aria-labelledby="h-how">
+    <div class="sec-h"><h2 class="caps" id="h-how">Как работаем</h2></div>
+    <ol class="steps">
+      <li><span class="caps mute n">1</span>Заявка<br><span class="mute">звонок, форма, мессенджер</span></li>
+      <li><span class="caps mute n">2</span>Расчёт и договор</li>
+      <li><span class="caps mute n">3</span>Подача самосвала<br><span class="mute">от 24 часов</span></li>
+      <li><span class="caps mute n">4</span>Выгрузка и закрывающие документы</li>
+    </ol>
+  </section>
+
+  <section class="sec split" id="faq" aria-labelledby="h-faq">
+    <div class="sec-h"><h2 class="caps" id="h-faq">Вопросы</h2></div>
+    <div class="faq">
+      <details><summary>Сколько стоит доставка?</summary><p>За один самосвал (25 т): в пределах МКАД 7 500 ₽, до 30 км от МКАД 8 500 ₽, 30–60 км 10 500 ₽, 60–100 км 13 500 ₽.</p></details>
+      <details><summary>Как быстро подаёте машину?</summary><p>От 24 часов с момента согласования. Цену подтверждаем в течение 15 минут после заявки.</p></details>
+      <details><summary>Можно заказать одну машину?</summary><p>Да. Объёмы от одной машины до постоянной логистики стройплощадки.</p></details>
+      <details><summary>С кем работаете: с юрлицами или с частными?</summary><p>В основном со строительными компаниями и подрядчиками по договору. Частным заказчикам тоже возим, условия уточняйте по телефону.</p></details>
+      <details><summary>Вы производитель или посредник?</summary><p>Возим собственными самосвалами, без посредников.</p></details>
+      <details><summary>Как перевести м³ в тонны?</summary><p>Умножьте объём на плотность: гранитный щебень 1,4 т/м³, известняковый 1,3, вторичный 1,35, песок сеяный 1,6, мытый 1,55, ПГС 1,65, плодородный грунт 1,2. Калькулятор в карточке материала делает это сам.</p></details>
+    </div>
+  </section>
+
+  <section class="sec" id="order" aria-labelledby="h-ord">
+    <div class="sec-h"><h2 class="caps" id="h-ord">Заявка</h2></div>
+    <div class="form" id="formBox">
+      <form class="f" id="mainForm" novalidate>
+        <div class="fld"><label class="caps mute" for="fSubj">Что нужно</label><input id="fSubj" name="subj" autocomplete="off" placeholder="Щебень, 25 т, Одинцово"></div>
+        <div class="fld"><label class="caps mute" for="fName">Имя</label><input id="fName" name="name" autocomplete="name"></div>
+        <div class="fld"><label class="caps mute" for="fTel">Телефон</label><input id="fTel" name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7" aria-describedby="fErr"><span class="err" id="fErr" role="alert"></span></div>
+        <button class="btn" type="submit">Отправить заявку</button>
+        <p class="fine">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
+      </form>
+      <p class="thx" id="thx">Спасибо. Подтвердим цену в течение 15 минут.</p>
+      <div class="ct">
+        <a class="big-ph tn" href="tel:+79629101530">+7 (962) 910-15-30</a>
+        <a href="mailto:sale@egm-nerud.ru">sale@egm-nerud.ru</a>
+        <span class="mute">г. Москва, пр-кт Мира, 102к1</span>
+        <span class="mute caps" style="margin-top:8px">24/7</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>ООО «ЕГМ», ИНН 7727442967, ОГРН 1207700145850</span>
+  <span>г. Москва, пр-кт Мира, 102к1</span>
+  <span>Макет сайта</span>
+</footer>
+
+<!-- меню -->
+<div class="ov" id="menu" role="dialog" aria-modal="true" aria-label="Меню" aria-hidden="true">
+  <div class="ov-hd"><img src="../_assets/logo-on-light.png" alt="ЕГМ НЕРУД" width="39" height="20"><button class="caps x" data-close>Закрыть</button></div>
+  <nav class="mn">
+    <a href="#materials">Материалы</a>
+    <a href="#services">Услуги</a>
+    <a href="#delivery">Доставка</a>
+    <a href="#why">ЕГМ</a>
+    <a href="#how">Как работаем</a>
+    <a href="#faq">Вопросы</a>
+    <a href="#order">Заявка</a>
+  </nav>
+  <div class="mn-ft"><a class="tn" href="tel:+79629101530">+7 (962) 910-15-30</a><a href="mailto:sale@egm-nerud.ru">sale@egm-nerud.ru</a><span class="mute">г. Москва, пр-кт Мира, 102к1</span></div>
+</div>
+
+<!-- карточка материала -->
+<div class="ov" id="po" role="dialog" aria-modal="true" aria-label="Материал" aria-hidden="true">
+  <div class="ov-hd"><span class="caps mute" id="poCode2"></span><button class="caps x" data-close>Закрыть</button></div>
+  <div class="po">
+    <div class="po-ph"><i><img id="poImg" alt="" width="760" height="480"></i></div>
+    <div>
+      <div class="caps mute" id="poCode"></div>
+      <h2 id="poName"></h2>
+      <div class="tn" id="poPrice"></div>
+
+      <div class="grp" id="frBox"><span class="caps mute">Фракция, мм</span><div class="chips" id="frChips"></div></div>
+
+      <div class="grp"><span class="caps mute" id="volL">Объём</span>
+        <div class="vol"><input id="vol" type="number" inputmode="decimal" min="0" step="any" value="25" aria-labelledby="volL">
+          <div class="chips" id="unit"><button class="chip" data-u="t" aria-pressed="true">т</button><button class="chip" data-u="m3" aria-pressed="false">м³</button></div></div>
+      </div>
+
+      <div class="grp"><span class="caps mute">Доставка</span><div class="zones" id="zones" role="radiogroup" aria-label="Зона доставки"></div></div>
+
+      <div class="res" aria-live="polite">
+        <div class="caps mute">Итого, ориентировочно</div>
+        <div class="tot tn" id="tot">—</div>
+        <div class="mute tn" id="brk"></div>
+      </div>
+
+      <form class="po-f" id="poForm" novalidate>
+        <div class="row2">
+          <div class="fld"><label class="caps mute" for="poTel">Телефон</label><input id="poTel" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7"></div>
+          <button class="btn" type="submit" id="poGo">Заказать</button>
+        </div>
+        <span class="err" id="poErr" role="alert"></span>
+        <p class="fine">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
+      </form>
+      <p class="thx" id="poThx">Спасибо. Подтвердим цену в течение 15 минут.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(()=>{
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const fmt=n=>Math.round(n).toLocaleString('ru-RU');
+const fmtT=n=>(Math.round(n*10)/10).toLocaleString('ru-RU');
+const pr=new Intl.PluralRules('ru-RU');
+const trucksWord=n=>({one:'самосвал',few:'самосвала',many:'самосвалов',other:'самосвала'}[pr.select(n)]);
+const FR=['5–10','20–40','40–70'];
+const MATS=[
+ {id:'gr',code:'GR',name:'Щебень гранитный',price:2350,d:1.4,img:'sheben',pos:'50% 50%',s:1,fr:1},
+ {id:'ls',code:'LS',name:'Щебень известняковый',price:1450,d:1.3,img:'sheben',pos:'75% 85%',s:2.1,fr:1},
+ {id:'rc',code:'RC',name:'Щебень вторичный',price:950,d:1.35,img:'sheben',pos:'25% 40%',s:2.3,fr:1},
+ {id:'ss',code:'SND-S',name:'Песок сеяный',price:650,d:1.6,img:'pesok',pos:'50% 50%',s:1},
+ {id:'sw',code:'SND-W',name:'Песок мытый',price:900,d:1.55,img:'pesok',pos:'50% 50%',s:1},
+ {id:'pgs',code:'PGS-01',name:'ПГС',price:800,d:1.65,img:'pgs',pos:'50% 50%',s:1},
+ {id:'soil',code:'SOIL-01',name:'Грунт плодородный',price:700,d:1.2,img:'grunt',pos:'50% 50%',s:1}
+];
+const ZONES=[['В пределах МКАД',7500],['До 30 км от МКАД',8500],['30–60 км от МКАД',10500],['60–100 км от МКАД',13500]];
+const TRUCK=25;
+
+/* grid */
+const grid=$('#grid');
+grid.innerHTML=MATS.map((m,i)=>`<button class="it press" data-i="${i}" aria-label="${m.name}, открыть"><span class="ph"><i><img src="../_assets/${m.img}.jpg" alt="" width="760" height="480" loading="lazy" style="--p:${m.pos};--s:${m.s}"></i></span>
+<span class="meta"><span class="code">${m.fr?m.code+'-20/40':m.code}</span><span class="nm">${m.name}</span><span class="pr tn">от ${fmt(m.price)} ₽/т</span></span></button>`).join('')+
+`<div class="it txt"><span class="ph"></span><span class="meta"><span class="code mute">По запросу</span><span class="nm">Галька, ЩПС, отсев</span><a class="pr lnk" style="width:fit-content;margin-top:6px" href="#order" data-ask="Галька / ЩПС / отсев">Запросить</a></span></div>`;
+$('#tar').innerHTML=ZONES.map(z=>`<div><span>${z[0]}</span><span>${fmt(z[1])} ₽</span></div>`).join('');
+
+/* overlays */
+let lastFocus=null;
+function open(el){lastFocus=document.activeElement;el.classList.add('on');el.setAttribute('aria-hidden','false');document.body.classList.add('lock');el.scrollTop=0;setTimeout(()=>{const f=$('[data-close]',el);f&&f.focus({preventScroll:true})},30)}
+function close(el){el.classList.remove('on');el.setAttribute('aria-hidden','true');if(!$('.ov.on'))document.body.classList.remove('lock');lastFocus&&lastFocus.focus&&lastFocus.focus({preventScroll:true})}
+$('#menuBtn').addEventListener('click',()=>open($('#menu')));
+$$('.ov').forEach(o=>{
+  o.addEventListener('click',e=>{if(e.target.closest('[data-close]'))close(o)});
+  o.addEventListener('keydown',e=>{ if(e.key==='Tab'){const f=$$('button,a[href],input',o).filter(x=>x.offsetParent!==null||x===document.activeElement);if(!f.length)return;const a=f[0],b=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();b.focus()}else if(!e.shiftKey&&document.activeElement===b){e.preventDefault();a.focus()}}});
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const o=$('.ov.on');o&&close(o)}});
+$$('#menu .mn a').forEach(a=>a.addEventListener('click',()=>{const o=$('#menu');o.classList.remove('on');o.setAttribute('aria-hidden','true');document.body.classList.remove('lock');lastFocus=null}));
+
+/* product */
+const st={m:MATS[0],fr:1,u:'t',z:0};
+const volI=$('#vol');
+function code(){return st.m.fr?`${st.m.code}-${FR[st.fr].replace('–','/')}`:st.m.code}
+function calc(){
+  const v=parseFloat(volI.value);
+  if(!(v>0)||!isFinite(v)){return null}
+  const t=st.u==='m3'?v*st.m.d:v;
+  const n=Math.max(1,Math.ceil(t/TRUCK-1e-9));
+  const mat=t*st.m.price, dl=n*ZONES[st.z][1];
+  return {t,n,mat,dl,total:mat+dl};
+}
+function render(){
+  const c=calc();
+  $('#poCode').textContent=code(); $('#poCode2').textContent=code();
+  $('#poPrice').textContent=`от ${fmt(st.m.price)} ₽/т, ориентировочно, без доставки · ${String(st.m.d).replace('.',',')} т/м³`;
+  if(!c){$('#tot').textContent='—';$('#brk').textContent='Укажите объём';$('#poGo').disabled=true;return}
+  $('#poGo').disabled=false;
+  $('#tot').textContent=fmt(c.total)+' ₽';
+  $('#brk').textContent=`${fmtT(c.t)} т · ${c.n} ${trucksWord(c.n)} · материал ${fmt(c.mat)} ₽ + доставка ${fmt(c.dl)} ₽`;
+}
+function renderFr(){$('#frChips').innerHTML=FR.map((f,i)=>`<button class="chip" aria-pressed="${i===st.fr}" data-f="${i}">${f}</button>`).join('')}
+function renderZ(){$('#zones').innerHTML=ZONES.map((z,i)=>`<button role="radio" aria-checked="${i===st.z}" data-z="${i}"><span>${z[0]}</span><span class="tn">${fmt(z[1])} ₽</span></button>`).join('')}
+function openMat(i){
+  st.m=MATS[i];st.fr=1;
+  const img=$('#poImg');img.src=`../_assets/${st.m.img}.jpg`;img.style.setProperty('--p',st.m.pos);img.style.setProperty('--s',st.m.s);
+  $('#poName').textContent=st.m.name;
+  $('#frBox').style.display=st.m.fr?'':'none';
+  $('#po').classList.remove('done');$('#poErr').textContent='';$('#poTel').value='';
+  renderFr();renderZ();render();open($('#po'));
+}
+grid.addEventListener('click',e=>{const b=e.target.closest('.it[data-i]');if(b)openMat(+b.dataset.i)});
+$('#frChips').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;st.fr=+b.dataset.f;renderFr();render()});
+$('#zones').addEventListener('click',e=>{const b=e.target.closest('[data-z]');if(!b)return;st.z=+b.dataset.z;renderZ();render();$('#zones [aria-checked=true]').focus()});
+$('#unit').addEventListener('click',e=>{const b=e.target.closest('[data-u]');if(!b)return;st.u=b.dataset.u;$$('#unit .chip').forEach(x=>x.setAttribute('aria-pressed',x===b));render()});
+volI.addEventListener('input',render);
+$('#poForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  if($('#poTel').value.replace(/\D/g,'').length<10){$('#poErr').textContent='Укажите телефон: 10 цифр и больше.';$('#poTel').focus();return}
+  $('#poErr').textContent='';$('#po').classList.add('done');
+});
+
+/* services + ask links */
+function toForm(text){$('#fSubj').value=text;document.getElementById('order').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});setTimeout(()=>$('#fName').focus({preventScroll:true}),400)}
+$$('[data-srv]').forEach(b=>b.addEventListener('click',()=>toForm(b.dataset.srv)));
+$$('[data-ask]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();toForm(a.dataset.ask)}));
+
+/* main form */
+$('#mainForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  if($('#fTel').value.replace(/\D/g,'').length<10){$('#fTel').setAttribute('aria-invalid','true');$('#fErr').textContent='Укажите телефон: 10 цифр и больше.';$('#fTel').focus();return}
+  $('#fTel').removeAttribute('aria-invalid');$('#fErr').textContent='';$('#formBox').classList.add('done');
+});
+})();
+</script>
+</body>
+</html>
