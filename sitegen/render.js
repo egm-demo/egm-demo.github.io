@@ -2,6 +2,7 @@
 window.RENDER = (function () {
   const G = window.GEN;
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const nb = t => String(t).replace(/(^|\s)(\S{1,2}|\d+)\s+/g, (m, a, b) => a + b + '\u00a0');
   const fmt = n => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u2009');
 
   // "Профгигиена — от 4500 ₽/ч"  -> {name, from, price, unit}
@@ -44,7 +45,7 @@ window.RENDER = (function () {
         for (let i = 0; i < 14; i++) s += `<rect x="0" y="${i * h / 14}" width="${w * (0.3 + rnd() * 0.7)}" height="${h / 14 - 6}" fill="${i === 5 ? a : f}" fill-opacity="${i === 5 ? 1 : .07 + (i % 3) * .03}"/>`;
         break;
       case 3: // буква
-        s += `<text x="50%" y="58%" text-anchor="middle" dominant-baseline="middle" font-family="var(--fh)" font-weight="800" font-size="${h * 1.05}" fill="${f}" fill-opacity=".08">${esc(letter)}</text><circle cx="${w * .72}" cy="${h * .3}" r="${h * .08}" fill="${a}"/>`;
+        s += `<text x="50%" y="58%" text-anchor="middle" dominant-baseline="middle" font-family="var(--fh)" font-weight="800" font-size="${h * 1.05}" fill="${f}" fill-opacity=".14">${esc(letter)}</text><circle cx="${w * .72}" cy="${h * .3}" r="${h * .08}" fill="${a}"/>`;
         break;
       case 4: { // блоки
         const cols = [[0, 0, .55, .62], [.58, 0, .42, .3], [.58, .33, .42, .29], [0, .65, .3, .35], [.33, .65, .67, .35]];
@@ -72,12 +73,13 @@ window.RENDER = (function () {
     const R = c.rad;
     return `
 :root{--bg:${P.bg};--fg:${P.fg};--mut:${P.mut};--card:${P.card};--line:${P.line};--acc:${P.acc};--af:${P.af};--r:${R}px;--rs:${Math.min(R, 10)}px;--fh:'${F.h}',${F.serif ? 'Georgia,serif' : 'system-ui,sans-serif'};--fb:'${F.b}',system-ui,-apple-system,'Segoe UI',sans-serif;--hw:${F.hw};--ls:${F.ls}}
-*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+${F.h==='Unbounded'?'.hero h1{font-size:clamp(34px,6vw,80px)!important}h2{font-size:clamp(26px,3.6vw,44px)}':''}
+*{box-sizing:border-box;margin:0;padding:0}html{color-scheme:${P.dark ? 'dark' : 'light'};scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--fb);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit;color:inherit}
 img,svg{display:block;max-width:100%}
 .w{max-width:1200px;margin:0 auto;padding:0 24px}
-h1,h2,h3{font-family:var(--fh);font-weight:var(--hw);letter-spacing:var(--ls);line-height:1.04}
+h1,h2,h3{overflow-wrap:break-word;hyphens:auto;-webkit-hyphens:auto;min-width:0;font-family:var(--fh);font-weight:var(--hw);letter-spacing:var(--ls);line-height:1.04}
 ${c.caps ? `h2{text-transform:uppercase;font-size:13px!important;letter-spacing:.16em!important;font-weight:600;font-family:var(--fb)}` : ''}
 h2{font-size:clamp(30px,4.4vw,52px);margin-bottom:12px}
 .lead{color:var(--mut);font-size:18px;max-width:560px}
@@ -85,7 +87,7 @@ section{padding:clamp(64px,9vw,120px) 0}
 .sh{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:44px;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 26px;border-radius:${R >= 14 ? 999 : R}px;background:var(--acc);color:var(--af);font-weight:600;border:0;cursor:pointer;transition:opacity .2s,transform .2s;white-space:nowrap}
 .btn:hover{opacity:.86}.btn:active{transform:scale(.98)}
-.btn.o{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.o{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--fg) 28%,transparent)}
 .btn.o:hover{box-shadow:inset 0 0 0 1.5px var(--fg);opacity:1}
 :focus-visible{outline:2px solid var(--acc);outline-offset:3px}
 /* nav */
@@ -98,7 +100,7 @@ section{padding:clamp(64px,9vw,120px) 0}
 .tel{font-weight:600;font-size:14px;white-space:nowrap}
 /* hero */
 .hero{padding:clamp(48px,8vw,110px) 0 clamp(56px,8vw,100px)}
-.hero h1{font-size:clamp(42px,7.2vw,96px);max-width:14ch}
+.hero h1{font-size:clamp(42px,7.2vw,96px);max-width:14ch;text-wrap:balance;padding-bottom:.06em}
 .hero .tag{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-bottom:22px;font-weight:600}
 .hero .lead{margin:24px 0 34px}
 .cta{display:flex;gap:12px;flex-wrap:wrap}
@@ -113,7 +115,7 @@ section{padding:clamp(64px,9vw,120px) 0}
 .h-word .row{display:flex;justify-content:space-between;align-items:end;gap:32px;margin-top:40px;border-top:1px solid var(--line);padding-top:28px;flex-wrap:wrap}
 .h-word .row p{font-size:clamp(20px,2.2vw,28px);max-width:22ch;font-family:var(--fh);font-weight:600;letter-spacing:var(--ls);line-height:1.15}
 .h-calc .w{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
-.h-edit h1{font-size:clamp(46px,9vw,132px);max-width:16ch}.h-edit .row{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:36px;align-items:end}.h-edit .art{aspect-ratio:21/7;margin-top:56px}
+.h-edit h1{font-size:clamp(42px,8.4vw,124px);max-width:16ch}.h-edit .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:40px;margin-top:36px;align-items:end}.h-edit .art{aspect-ratio:21/7;margin-top:56px}
 .h-air{text-align:center;padding-top:clamp(80px,12vw,160px)}.h-air h1{font-size:clamp(38px,5.6vw,72px);margin:0 auto;max-width:16ch}.h-air .lead{margin:20px auto 30px}.h-air .cta{justify-content:center}.h-air .art{aspect-ratio:16/7;margin-top:72px}
 .h-marq h1{font-size:clamp(44px,8vw,112px);max-width:13ch}
 .marq{overflow:hidden;border-block:1px solid var(--line);margin-top:56px;padding:22px 0;white-space:nowrap}
@@ -131,7 +133,7 @@ section{padding:clamp(64px,9vw,120px) 0}
 .pr{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
 .add{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);background:none;cursor:pointer;font-size:20px;line-height:1;transition:.2s}
 .add:hover,.add.on{background:var(--acc);color:var(--af);border-color:var(--acc)}
-.s-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.s-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .s-tiles .it{background:var(--card);border-radius:var(--r);padding:28px;min-height:230px;display:flex;flex-direction:column;justify-content:space-between;gap:24px}
 .s-tiles .it:first-child{grid-column:span 2;background:var(--acc);color:var(--af)}.s-tiles .it:first-child .add{border-color:currentColor;color:inherit}
 .s-tiles .it h3{font-size:24px}.s-tiles .ft{display:flex;justify-content:space-between;align-items:center}
@@ -140,7 +142,7 @@ section{padding:clamp(64px,9vw,120px) 0}
 .s-price h3{font-size:18px;font-family:var(--fb);font-weight:500;letter-spacing:0;flex:1}
 .s-price .dot{flex:1;border-bottom:1px dotted var(--mut);opacity:.5;margin:0 8px;transform:translateY(-4px)}
 .s-large .it{display:flex;align-items:baseline;gap:20px;padding:18px 0;border-top:1px solid var(--line);transition:padding .3s}
-.s-large .it:hover{padding-left:14px}.s-large .it h3{font-size:clamp(30px,5vw,68px);flex:1}.s-large .n{color:var(--mut);font-size:14px;width:36px}
+.s-large .it:hover{padding-left:14px}.s-large .it h3{font-size:clamp(28px,5vw,68px);flex:1;min-width:0}.s-large .n{color:var(--mut);font-size:14px;width:36px}
 .s-feed{display:grid;grid-auto-flow:column;grid-auto-columns:min(320px,80%);gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px;scrollbar-width:thin}
 .s-feed .it{scroll-snap-align:start;border-radius:var(--r);overflow:hidden;background:var(--card)}
 .s-feed .art{aspect-ratio:4/3;border-radius:0}.s-feed .bd{padding:22px}.s-feed h3{font-size:21px;margin-bottom:14px}.s-feed .ft{display:flex;justify-content:space-between;align-items:center}
@@ -217,17 +219,19 @@ footer{padding:40px 0 60px;color:var(--mut);font-size:14px}footer .w{display:fle
 @media (max-width:900px){
  .nav nav,.tel{display:none}.nav .btn{margin-left:auto}
  .h-split .w,.h-calc .w,.about .w,.faq .w,.form .in,.calc,.book,.h-edit .row{grid-template-columns:1fr}
- .h-split .art{aspect-ratio:4/3}.s-tiles{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr 1fr;row-gap:36px}
+ .h-split .art{aspect-ratio:4/3}.s-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.steps{grid-template-columns:1fr 1fr;row-gap:36px}
  .revs,.cont .w{grid-template-columns:1fr}.gal{grid-template-columns:1fr 1fr;grid-template-rows:180px 180px 180px}.gal .art:first-child{grid-column:span 2;grid-row:auto}
 }
 @media (max-width:560px){
  .w{padding:0 18px}body{font-size:15px}.lead{font-size:16px}
- .s-tiles{grid-template-columns:1fr}.s-tiles .it:first-child{grid-column:auto}.s-tiles .it{min-height:180px}
+ .s-tiles{grid-template-columns:minmax(0,1fr)}.s-tiles .it{padding:22px}.s-tiles .it:first-child{grid-column:auto}.s-tiles .it{min-height:180px}
  .s-rows .it{grid-template-columns:1fr auto;gap:8px 16px}.s-rows .it .pr{grid-column:1;grid-row:2;color:var(--mut)}.s-rows .it .add{grid-row:1/3;grid-column:2}
  .s-price .it{padding:16px 18px;gap:12px}.s-price .dot{display:none}.s-price h3{font-size:16px}
  .qopts{grid-template-columns:1fr}.slots{grid-template-columns:repeat(3,1fr)}.days{grid-template-columns:repeat(4,1fr)}
  .cd div{min-width:60px}.cd b{font-size:24px}.cta .btn{flex:1}.fab span{display:none}.fab{padding:0;width:56px;justify-content:center}
  .h-word .row .cta{width:100%}
+ .s-large .it{display:grid;grid-template-columns:28px 1fr auto;gap:4px 12px;align-items:center}.s-large .it h3{font-size:26px}.s-large .it .pr{grid-column:2;color:var(--mut);font-size:14px}.s-large .it .add{grid-row:1/3;grid-column:3}.s-large .n{grid-row:1/3}
+ .hero h1{font-size:clamp(34px,10.5vw,56px)}.h-word h1.big{font-size:clamp(48px,17vw,96px)}
 }`;
   }
 
@@ -243,8 +247,8 @@ footer{padding:40px 0 60px;color:var(--mut);font-size:14px}footer .w{display:fle
     const A = (t, k, w, h) => `<div class="art">${art(t, P, seed + (k || 0), letter, w, h)}</div>`;
     const cta = `<div class="cta"><a class="btn" href="#${M.calc ? 'calc' : 'form'}">${esc(c.ctaText || (M.calc ? 'Рассчитать стоимость' : 'Оставить заявку'))}</a><a class="btn o" href="#services">Услуги и цены</a></div>`;
     const tag = `<div class="tag">${esc(c.tagline || ind.tag)}</div>`;
-    const H1 = esc(c.headline || ind.heads[0]);
-    const sub = esc(c.sub || ind.sub);
+    const H1 = esc(nb(c.headline || ind.heads[0]));
+    const sub = esc(nb(c.sub || ind.sub));
     const S = {};
 
     // ---- hero ----
