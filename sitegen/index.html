@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Генератор сайтов · 100 пресетов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23000'/%3E%3Crect x='8' y='8' width='7' height='16' fill='%23fff'/%3E%3Crect x='17' y='8' width='7' height='7' fill='%23fff'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#f5f5f7;--fg:#1d1d1f;--mut:#6e6e73;--line:#e3e3e8;--card:#fff;--acc:#0071e3}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:14px/1.45 Inter,system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;height:100vh;overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:380px 1fr;height:100vh}
+/* sidebar */
+aside{background:var(--card);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.top{padding:18px 20px 14px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;justify-content:space-between}
+.brand b{font-size:15px;font-weight:700;letter-spacing:-.01em}
+.brand small{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.tabs{display:flex;gap:4px;margin-top:14px;background:var(--bg);padding:3px;border-radius:10px}
+.tabs button{flex:1;border:0;background:none;padding:7px 4px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--mut)}
+.tabs button.on{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.scroll{overflow-y:auto;flex:1;padding:6px 20px 24px}
+.pane{display:none}.pane.on{display:block}
+.st{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:600;margin:22px 0 10px;display:flex;justify-content:space-between;align-items:center}
+.st span{letter-spacing:0;text-transform:none;font-weight:500}
+.inds{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.inds button{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px 10px;text-align:left;cursor:pointer;font-size:13px;display:flex;gap:8px;align-items:center;transition:.15s;min-width:0}
+.inds button i{font-style:normal;font-size:10px;letter-spacing:.08em;color:var(--mut);font-weight:600;flex:none}
+.inds button span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inds button:hover{border-color:#c7c7cc}
+.inds button.on{background:var(--fg);color:#fff;border-color:var(--fg)}.inds button.on i{color:#aaa}
+.pres{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.pres button{border:1.5px solid var(--line);border-radius:10px;padding:0;cursor:pointer;overflow:hidden;background:none;aspect-ratio:1;position:relative}
+.pres button.on{border-color:var(--fg);box-shadow:0 0 0 2px var(--fg)}
+.pres button div{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:6px}
+.pres button b{font-size:10px;font-weight:600;letter-spacing:.04em}
+.pres button em{position:absolute;top:6px;right:6px;width:9px;height:9px;border-radius:50%}
+label.f{display:block;margin-bottom:10px}
+label.f span{display:block;font-size:12px;color:var(--mut);margin-bottom:5px;font-weight:500}
+input[type=text],input[type=tel],input[type=email],input[type=number],select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--card);outline:none;transition:border-color .15s}
+textarea{resize:vertical;min-height:70px;line-height:1.5}
+input:focus,select:focus,textarea:focus{border-color:var(--fg)}
+.hint{font-size:12px;color:var(--mut);margin:-4px 0 12px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tg{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.tg:last-child{border:0}.tg div b{display:block;font-weight:500}.tg div small{color:var(--mut);font-size:12px}
+.sw{appearance:none;width:40px;height:24px;border-radius:12px;background:#d1d1d6;position:relative;cursor:pointer;transition:.2s;flex:none}
+.sw::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.2s}
+.sw:checked{background:#34c759}.sw:checked::after{left:18px}
+.seg{display:flex;flex-wrap:wrap;gap:5px}
+.seg button{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:12.5px}
+.seg button.on{background:var(--fg);color:#fff;border-color:var(--fg)}
+.pals{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
+.pals button{aspect-ratio:1;border-radius:8px;border:1px solid var(--line);cursor:pointer;position:relative;overflow:hidden;padding:0}
+.pals button i{position:absolute;right:3px;bottom:3px;width:8px;height:8px;border-radius:50%}
+.pals button.on{box-shadow:0 0 0 2px var(--fg)}
+.bot{border-top:1px solid var(--line);padding:12px 20px;display:flex;gap:8px}
+.b{height:40px;border-radius:10px;border:0;padding:0 14px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.b.p{background:var(--fg);color:#fff;flex:1}.b.p:hover{background:#000}
+.b.s{background:var(--bg);color:var(--fg)}.b.s:hover{background:#e8e8ed}
+/* main */
+main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.bar{height:60px;display:flex;align-items:center;gap:12px;padding:0 20px;border-bottom:1px solid var(--line);background:var(--bg)}
+.bar .code{font-weight:700;letter-spacing:.06em;font-size:13px}
+.bar .meta{color:var(--mut);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .sp{flex:1}
+.dev{display:flex;background:#e8e8ed;padding:3px;border-radius:9px}
+.dev button{border:0;background:none;padding:6px 12px;border-radius:7px;cursor:pointer;font-size:13px;color:var(--mut);font-weight:500}
+.dev button.on{background:#fff;color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.stage{flex:1;display:flex;justify-content:center;padding:20px;min-height:0;overflow:hidden}
+.frame{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px var(--line),0 20px 50px rgba(0,0,0,.06);width:100%;height:100%;transition:width .35s cubic-bezier(.2,.7,.2,1)}
+.frame.m{width:390px;border-radius:30px;box-shadow:0 0 0 10px #1d1d1f,0 30px 60px rgba(0,0,0,.18);height:min(100%,844px);align-self:center}
+.frame iframe{width:100%;height:100%;border:0;display:block}
+/* gallery */
+.gal{position:fixed;inset:0;background:var(--bg);z-index:100;display:none;flex-direction:column}
+.gal.on{display:flex}
+.gal header{height:64px;display:flex;align-items:center;gap:16px;padding:0 28px;border-bottom:1px solid var(--line);flex:none}
+.gal header b{font-size:17px;font-weight:700;letter-spacing:-.01em}
+.gal header .sp{flex:1}
+.gal .flt{display:flex;gap:5px;overflow-x:auto;padding:12px 28px;border-bottom:1px solid var(--line);flex:none;scrollbar-width:none}
+.gal .flt button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:12.5px;white-space:nowrap}
+.gal .flt button.on{background:var(--fg);color:#fff;border-color:var(--fg)}
+.grid{overflow-y:auto;padding:24px 28px 60px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;align-content:start}
+.card{cursor:pointer}
+.th{aspect-ratio:16/11;border-radius:12px;overflow:hidden;position:relative;box-shadow:0 0 0 1px var(--line);background:#fff;transition:box-shadow .2s,transform .2s}
+.card:hover .th{box-shadow:0 0 0 2px var(--fg);transform:translateY(-2px)}
+.th iframe{position:absolute;top:0;left:0;width:1280px;height:880px;border:0;transform-origin:0 0;pointer-events:none}
+.card .cm{display:flex;justify-content:space-between;margin-top:9px;font-size:12.5px}
+.card .cm b{font-weight:600;letter-spacing:.04em}.card .cm span{color:var(--mut)}
+.x{width:36px;height:36px;border-radius:50%;border:0;background:#e8e8ed;cursor:pointer;font-size:18px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--fg);color:#fff;padding:12px 18px;border-radius:12px;opacity:0;transition:.3s;pointer-events:none;z-index:200;font-weight:500}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (max-width:860px){
+  body{height:auto;overflow:auto}
+  .app{grid-template-columns:1fr;height:auto}
+  aside{border-right:0;border-bottom:1px solid var(--line)}
+  .scroll{overflow:visible}
+  main{height:90vh}
+  .frame.m{width:100%;box-shadow:0 0 0 1px var(--line);border-radius:14px}
+  .bar .meta{display:none}
+  .grid{padding:16px;gap:14px;grid-template-columns:1fr 1fr}
+  .gal header,.gal .flt{padding-left:16px;padding-right:16px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="top">
+    <div class="brand"><b>Генератор сайтов</b><small>20 ниш · 100 пресетов</small></div>
+    <div class="tabs" id="tabs">
+      <button class="on" data-t="0">Шаблон</button>
+      <button data-t="1">Контент</button>
+      <button data-t="2">Механики</button>
+      <button data-t="3">Стиль</button>
+    </div>
+  </div>
+  <div class="scroll">
+    <!-- 1. шаблон -->
+    <div class="pane on" data-p="0">
+      <div class="st">Направление <span id="indName"></span></div>
+      <div class="inds" id="inds"></div>
+      <div class="st">Пресет <span><a href="#" id="openGal" style="color:var(--acc);text-decoration:none">Все 100 →</a></span></div>
+      <div class="pres" id="pres"></div>
+      <p class="hint" style="margin-top:12px">Пресет задаёт дизайн и набор блоков. Смена пресета не сбрасывает ваш текст.</p>
+    </div>
+    <!-- 2. контент -->
+    <div class="pane" data-p="1">
+      <div class="st">Компания</div>
+      <label class="f"><span>Название сайта</span><input type="text" id="name" maxlength="40"></label>
+      <label class="f"><span>Подпись под названием</span><input type="text" id="tagline" maxlength="70"></label>
+      <label class="f"><span>Главный заголовок</span><input type="text" id="headline" maxlength="90"></label>
+      <label class="f"><span>Подзаголовок</span><textarea id="sub" rows="2" maxlength="220"></textarea></label>
+      <div class="st">Услуги и цены</div>
+      <label class="f"><textarea id="services" rows="7"></textarea></label>
+      <p class="hint">Одна строка = одна услуга. Формат: «Название — цена». Можно «от 5000», «1200 ₽/ч».</p>
+      <div class="st">Контакты</div>
+      <div class="row2"><label class="f"><span>Телефон</span><input type="tel" id="phone"></label><label class="f"><span>Email</span><input type="email" id="email"></label></div>
+      <label class="f"><span>Адрес</span><input type="text" id="address"></label>
+      <div class="row2"><label class="f"><span>Режим работы</span><input type="text" id="hours"></label><label class="f"><span>ИНН</span><input type="text" id="inn"></label></div>
+      <label class="f"><span>О компании</span><textarea id="about" rows="2"></textarea></label>
+    </div>
+    <!-- 3. механики -->
+    <div class="pane" data-p="2">
+      <div class="st">Блоки на сайте</div>
+      <div id="mods"></div>
+      <div id="calcBox">
+        <div class="st">Калькулятор</div>
+        <label class="f"><span>Заголовок</span><input type="text" id="calcTitle"></label>
+        <div class="seg" id="calcMode" style="margin-bottom:12px"><button data-v="rate">Кол-во × ставка</button><button data-v="sum">Сумма услуг</button></div>
+        <div id="rateBox">
+          <div class="row2"><label class="f"><span>Что считаем</span><input type="text" id="qName"></label><label class="f"><span>Единица</span><input type="text" id="qUnit"></label></div>
+          <div class="row2"><label class="f"><span>От</span><input type="number" id="qMin"></label><label class="f"><span>До</span><input type="number" id="qMax"></label></div>
+          <div class="row2"><label class="f"><span>Шаг</span><input type="number" id="qStep" step="any"></label><label class="f"><span>Ставка, ₽ за ед.</span><input type="number" id="calcRate"></label></div>
+          <label class="f"><span>Доп. опции (Название — цена)</span><textarea id="calcExtras" rows="3"></textarea></label>
+        </div>
+        <label class="f"><span>Название переключателя</span><input type="text" id="calcModName"></label>
+        <label class="f"><span>Варианты и коэффициенты (Название — 1.2)</span><textarea id="calcModTxt" rows="3"></textarea></label>
+        <p class="hint">«Сумма услуг» берёт цены из списка услуг, у каждой появляется кнопка «+».</p>
+      </div>
+      <div class="st">Куда отправлять заявки</div>
+      <div class="seg" id="leadTo"><button data-v="demo">Только показать</button><button data-v="wa">WhatsApp</button><button data-v="mail">Email</button></div>
+      <p class="hint" style="margin-top:8px">WhatsApp — на номер из «Телефона», Email — на почту из контактов.</p>
+      <div class="st">Акция</div>
+      <label class="f"><span>Заголовок акции</span><input type="text" id="promoTitle"></label>
+      <label class="f"><span>Условие</span><input type="text" id="promoText"></label>
+    </div>
+    <!-- 4. стиль -->
+    <div class="pane" data-p="3">
+      <div class="st">Палитра <span id="palName"></span></div><div class="pals" id="pals"></div>
+      <div class="st">Шрифт</div><div class="seg" id="fonts"></div>
+      <div class="st">Первый экран</div><div class="seg" id="heroes"></div>
+      <div class="st">Вид услуг</div><div class="seg" id="svcs"></div>
+      <div class="st">Графика</div><div class="seg" id="arts"></div>
+      <div class="st">Скругление</div><div class="seg" id="rads"></div>
+      <div class="st">Порядок блоков</div><div class="seg" id="orders"></div>
+      <div class="st">Заголовки разделов</div><div class="seg" id="caps"><button data-v="0">Крупные</button><button data-v="1">Мелкие капсом</button></div>
+    </div>
+  </div>
+  <div class="bot">
+    <button class="b s" id="rnd" title="Случайный пресет">Случайно</button>
+    <button class="b s" id="open" title="Открыть в новой вкладке">Открыть</button>
+    <button class="b p" id="dl">Скачать сайт</button>
+  </div>
+</aside>
+<main>
+  <div class="bar"><span class="code" id="code"></span><span class="meta" id="meta"></span><span class="sp"></span>
+    <div class="dev" id="dev"><button class="on" data-v="d">Десктоп</button><button data-v="m">Телефон</button></div></div>
+  <div class="stage"><div class="frame" id="frame"><iframe id="pv" title="Превью сайта"></iframe></div></div>
+</main>
+</div>
+
+<div class="gal" id="gal">
+  <header><b>100 пресетов</b><span style="color:var(--mut)" id="galCount"></span><span class="sp"></span><button class="x" id="galX" aria-label="Закрыть">×</button></header>
+  <div class="flt" id="flt"></div>
+  <div class="grid" id="grid"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="data.js"></script>
+<script src="render.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
